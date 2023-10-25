@@ -151,14 +151,14 @@ if __name__ == '__main__':
     channel_colors = [rack_colors[configuration]\
                             for configuration in hardware_configurations]
 
-    fig, ax = plt.subplots(figsize=(7, 5), dpi=300)
+    fig, ax = plt.subplots(figsize=(7, 3), dpi=300)
 
     # plt.yticks(rotation=30, ha='right')
 
     ax.set_xlabel('Time [h]')
     ax.set_ylabel('Event Rate [Hz]')
 
-    ax.set_ylim(-1, 80)
+    ax.set_ylim(-1, 60)
 
     ax.grid()
 

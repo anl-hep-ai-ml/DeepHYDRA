@@ -557,7 +557,7 @@ def run_with_best_parameters_method_3(data: np.array,
                                         labels: np.array,
                                         threshold: np.float64):
 
-    results_best_method_4 =\
+    results_best_method_3 =\
         pd.read_csv('parameters_best_method_3_smd.csv', sep='\t')
 
     diff = np.diff(data, axis=0)
@@ -568,8 +568,8 @@ def run_with_best_parameters_method_3(data: np.array,
 
     abs_diff_normalized = MinMaxScaler().fit_transform(abs_diff)
     
-    bs = results_best_method_4.iloc[:, 2].to_numpy()
-    mccs = results_best_method_4.iloc[:, 1].to_numpy()
+    bs = results_best_method_3.iloc[:, 2].to_numpy()
+    mccs = results_best_method_3.iloc[:, 1].to_numpy()
 
     print('Method 3:')
 

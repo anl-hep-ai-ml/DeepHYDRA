@@ -308,10 +308,10 @@ def print_results(label: np.array,
     #     load_numpy_array(f'predictions/l2_dist_train_mse_seed_{seed}.npy')
     # preds_l2_dist_mse =\
     #     load_numpy_array(f'predictions/l2_dist_mse_seed_{seed}.npy')
-    # preds_l2_dist_train_smse =\
-    #     load_numpy_array(f'predictions/l2_dist_train_smse_seed_{seed}.npy')
-    # preds_l2_dist_smse =\
-    #     load_numpy_array(f'predictions/l2_dist_smse_seed_{seed}.npy')
+    preds_l2_dist_train_smse =\
+        load_numpy_array(f'predictions/l2_dist_train_smse_seed_{seed}.npy')
+    preds_l2_dist_smse =\
+        load_numpy_array(f'predictions/l2_dist_smse_seed_{seed}.npy')
 
     spot_train_size = int(len(preds_l2_dist_smse_no_augment)*0.1)
 
@@ -363,16 +363,16 @@ def print_results(label: np.array,
 #                         preds_l2_dist_train_mse[:spot_train_size],
 #                         preds_l2_dist_mse,
 #                         label[offset:len(preds_l2_dist_mse) + offset], 0.007, 0.8, to_csv)
-# 
-#     print('Informer-SMSE:')
-# 
-#     offset = 64
-# 
-#     preds_l2_dist_smse =\
-#         get_scores('informer_smse', seed,
-#                         preds_l2_dist_train_smse[:spot_train_size],
-#                         preds_l2_dist_smse,
-#                         label[offset:len(preds_l2_dist_smse) + offset], 0.008, 0.8, to_csv)
+
+    print('Informer-SMSE:')
+
+    offset = 64
+
+    preds_l2_dist_smse =\
+        get_scores('informer_smse', seed,
+                        preds_l2_dist_train_smse[:spot_train_size],
+                        preds_l2_dist_smse,
+                        label[offset:len(preds_l2_dist_smse) + offset], 0.008, 0.8, to_csv)
     
 
 if __name__ == '__main__':
@@ -386,7 +386,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     labels_pd = pd.read_hdf(args.data_dir +\
-                            '/reduced_hlt_test_set_2023_y.h5')
+                            '/reduced_hlt_ppd_test_set_2023_y.h5')
 
     labels_np = labels_pd.to_numpy()
 

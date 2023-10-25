@@ -18,6 +18,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.ticker as mtick
 import seaborn as sns
 from tqdm import trange
 
@@ -178,7 +179,9 @@ if __name__ == '__main__':
 
     plt.rcParams['figure.constrained_layout.use'] = True
 
-    fig, ax = plt.subplots(figsize=(6.5, 3.5), dpi=300)
+    fig, ax = plt.subplots(figsize=(6.5, 3), dpi=300)
+
+    ax.xaxis.set_major_formatter(mtick.PercentFormatter(1.0))
 
     sns.boxplot(data=results_per_category,
                             y='Anomaly Type',
@@ -221,7 +224,9 @@ if __name__ == '__main__':
 
     plt.rcParams['figure.constrained_layout.use'] = True
 
-    fig, ax = plt.subplots(figsize=(6.5, 3.5), dpi=300)
+    fig, ax = plt.subplots(figsize=(6.5, 3), dpi=300)
+
+    ax.xaxis.set_major_formatter(mtick.PercentFormatter(1.0))
 
     sns.boxplot(data=results_per_model,
                             y='Model',
