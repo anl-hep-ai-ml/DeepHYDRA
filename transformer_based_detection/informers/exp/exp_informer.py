@@ -21,13 +21,16 @@ from exp.exp_basic import ExpBasic
 from models.model import Informer
 from models.sad_like_loss import *
 from utils.tools import EarlyStopping, adjust_learning_rate
-from utils.torch_op_count_handlers import add_sub_op_handler
+from utils.torch_op_count_handlers import add_sub_mul_div_op_handler,\
+                                                        sum_op_handler,\
+                                                        mean_op_handler,\
+                                                        cumsum_op_handler
 
 
 def log_gradients_in_model(model, summary_writer, step):
     for tag, value in model.named_parameters():
         if value.grad is not None:
-            summary_writer.add_histogram(tag, value.cpu(), step)
+            summary_writer.add_histogram(tag, value.cpu(), sbep)
             summary_writer.add_histogram(tag + "/grad", value.grad.cpu(), step)
 
 
@@ -502,8 +505,13 @@ class ExpInformer(ExpBasic):
                                         batch_x_mark,
                                         dec_inp,
                                         batch_y_mark))\
-                                            .set_op_handle('aten::add', add_sub_op_handler)\
-                                            .set_op_handle('aten::sub', add_sub_op_handler)
+                                            .set_op_handle('aten::add', add_sub_mul_div_op_handler)\
+                                            .set_op_handle('aten::sub', add_sub_mul_div_op_handler)\
+                                            .set_op_handle('aten::mul', add_sub_mul_div_op_handler)\
+                                            .set_op_handle('aten::div', add_sub_mul_div_op_handler)\
+                                            .set_op_handle('aten::sum', sum_op_handler)\
+                                            .set_op_handle('aten::mean', mean_op_handler)\
+                                            .set_op_handle('aten::cumsum', cumsum_op_handler)
 
         with open('flops_by_op_informer_mse_full_attn.json', 'w') as output_file:
             json.dump(flops.by_operator(), output_file)
