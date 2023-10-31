@@ -1,6 +1,7 @@
 import os
 import time
 import warnings
+import json
 from functools import partialmethod
 
 warnings.filterwarnings('ignore')
@@ -11,6 +12,7 @@ import torch.nn as nn
 from torch import optim
 from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
+from fvcore.nn import FlopCountAnalysis, flop_count_table
 from tqdm import tqdm
 
 from dataset_loaders.omni_anomaly_dataset import OmniAnomalyDataset
@@ -19,6 +21,7 @@ from exp.exp_basic import ExpBasic
 from models.model import Informer
 from models.sad_like_loss import *
 from utils.tools import EarlyStopping, adjust_learning_rate
+from utils.torch_op_count_handlers import add_sub_op_handler
 
 
 def log_gradients_in_model(model, summary_writer, step):
@@ -493,6 +496,22 @@ class ExpInformer(ExpBasic):
         dec_inp = torch.cat([batch_y[:,:self.args.label_len,:], dec_inp], dim=1).float().to(self.device)
 
         # Encoder - decoder
+
+        flops = FlopCountAnalysis(self.model,
+                                    (batch_x,
+                                        batch_x_mark,
+                                        dec_inp,
+                                        batch_y_mark))\
+                                            .set_op_handle('aten::add', add_sub_op_handler)\
+                                            .set_op_handle('aten::sub', add_sub_op_handler)
+
+        with open('flops_by_op_informer_mse_full_attn.json', 'w') as output_file:
+            json.dump(flops.by_operator(), output_file)
+
+        with open('flops_by_module_informer_mse_full_attn.json', 'w') as output_file:
+            json.dump(flops.by_module(), output_file)
+
+        exit()
 
         if self.args.use_amp:
             with torch.cuda.amp.autocast():
