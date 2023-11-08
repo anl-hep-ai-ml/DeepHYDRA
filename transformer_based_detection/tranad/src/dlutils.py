@@ -224,7 +224,7 @@ class TransformerEncoderLayer(nn.Module):
         self.dropout1 = nn.Dropout(dropout)
         self.dropout2 = nn.Dropout(dropout)
 
-        self.activation = nn.LeakyReLU(True)
+        self.activation = nn.ReLU(True) #nn.LeakyReLU(True)
 
     def forward(self, src,src_mask=None, src_key_padding_mask=None):
         src2 = self.self_attn(src, src, src)[0]
@@ -245,7 +245,7 @@ class TransformerDecoderLayer(nn.Module):
         self.dropout2 = nn.Dropout(dropout)
         self.dropout3 = nn.Dropout(dropout)
 
-        self.activation = nn.LeakyReLU(True)
+        self.activation = nn.ReLU(True) #nn.LeakyReLU(True)
 
     def forward(self, tgt, memory, tgt_mask=None, memory_mask=None, tgt_key_padding_mask=None, memory_key_padding_mask=None):
         tgt2 = self.self_attn(tgt, tgt, tgt)[0]

@@ -2,17 +2,22 @@ import os
 import time
 import warnings
 import json
-from functools import partialmethod
+from collections import defaultdict
+from functools import partial, partialmethod
 
 warnings.filterwarnings('ignore')
 
 import numpy as np
+import pandas as pd
 import torch
 import torch.nn as nn
 from torch import optim
 from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
-from fvcore.nn import FlopCountAnalysis, flop_count_table
+from fvcore.nn import FlopCountAnalysis, ActivationCountAnalysis
+from torchinfo import summary
+from bigtree import Node, tree_to_dataframe, tree_to_dot
+from bigtree.tree.search import find_child_by_name
 from tqdm import tqdm
 
 from dataset_loaders.omni_anomaly_dataset import OmniAnomalyDataset
@@ -21,10 +26,11 @@ from exp.exp_basic import ExpBasic
 from models.model import Informer
 from models.sad_like_loss import *
 from utils.tools import EarlyStopping, adjust_learning_rate
-from utils.torch_op_count_handlers import add_sub_mul_div_op_handler,\
-                                                        sum_op_handler,\
-                                                        mean_op_handler,\
-                                                        cumsum_op_handler
+from utils.torch_profiling import get_params_hook,\
+                                        add_sub_mul_div_op_handler,\
+                                        sum_op_handler,\
+                                        mean_op_handler,\
+                                        cumsum_op_handler
 
 
 def log_gradients_in_model(model, summary_writer, step):
@@ -139,8 +145,6 @@ class ExpInformer(ExpBasic):
                                     self.args.augmented_dataset_size_relative,
                             augmented_data_ratio=\
                                     self.args.augmented_data_ratio)
-
-        print(f'{flag} size: {len(dataset)}')
 
         data_loader = DataLoader(dataset,
                                     batch_size=batch_size,
@@ -500,24 +504,177 @@ class ExpInformer(ExpBasic):
 
         # Encoder - decoder
 
-        flops = FlopCountAnalysis(self.model,
-                                    (batch_x,
-                                        batch_x_mark,
-                                        dec_inp,
-                                        batch_y_mark))\
-                                            .set_op_handle('aten::add', add_sub_mul_div_op_handler)\
-                                            .set_op_handle('aten::sub', add_sub_mul_div_op_handler)\
-                                            .set_op_handle('aten::mul', add_sub_mul_div_op_handler)\
-                                            .set_op_handle('aten::div', add_sub_mul_div_op_handler)\
-                                            .set_op_handle('aten::sum', sum_op_handler)\
-                                            .set_op_handle('aten::mean', mean_op_handler)\
-                                            .set_op_handle('aten::cumsum', cumsum_op_handler)
+        # FLOP and activation count retrieval
 
-        with open('flops_by_op_informer_mse_full_attn.json', 'w') as output_file:
-            json.dump(flops.by_operator(), output_file)
+        # flops = FlopCountAnalysis(self.model,
+        #                             (batch_x,
+        #                                 batch_x_mark,
+        #                                 dec_inp,
+        #                                 batch_y_mark))\
+        #                                     .set_op_handle('aten::add', add_sub_mul_div_op_handler)\
+        #                                     .set_op_handle('aten::sub', add_sub_mul_div_op_handler)\
+        #                                     .set_op_handle('aten::mul', add_sub_mul_div_op_handler)\
+        #                                     .set_op_handle('aten::div', add_sub_mul_div_op_handler)\
+        #                                     .set_op_handle('aten::sum', sum_op_handler)\
+        #                                     .set_op_handle('aten::mean', mean_op_handler)\
+        #                                     .set_op_handle('aten::cumsum', cumsum_op_handler)
 
-        with open('flops_by_module_informer_mse_full_attn.json', 'w') as output_file:
-            json.dump(flops.by_module(), output_file)
+        # activations = FlopCountAnalysis(self.model,
+        #                                     (batch_x,
+        #                                         batch_x_mark,
+        #                                         dec_inp,
+        #                                         batch_y_mark))
+
+        output_filename = f'informer_{self.args.data}_'\
+                                f'{self.args.loss.lower()}_'\
+                                f'sl_{self.args.seq_len}_'\
+                                f'll_{self.args.label_len}_'\
+                                f'pl_{self.args.pred_len}_'\
+                                f'ein_{self.args.enc_in}_'\
+                                f'din_{self.args.dec_in}_'\
+                                f'cout_{self.args.c_out}_'\
+                                f'dm_{self.args.d_model}_'\
+                                f'nh_{self.args.n_heads}_'\
+                                f'el_{self.args.e_layers}_'\
+                                f'dl_{self.args.d_layers}_'\
+                                f'dff_{self.args.d_ff}_'\
+                                f'f_{self.args.factor}_'\
+                                f'attn_{self.args.attn}_'\
+                                f'emb_{self.args.embed}_'\
+                                f'act_{self.args.activation.lower()}'
+
+        # with open('../../evaluation/computational_intensity_analysis/data/'
+        #                                     f'by_operator/{output_filename}.json', 'w') as output_file:
+        #     json.dump(flops.by_operator(), output_file)
+
+        # with open('../../evaluation/computational_intensity_analysis/data/'
+        #                                         f'by_module/{output_filename}.json', 'w') as output_file:
+        #     json.dump(flops.by_module(), output_file)
+
+        # with open('../../evaluation/activation_analysis/data/'
+        #                         f'by_operator/{output_filename}.json', 'w') as output_file:
+        #     json.dump(activations.by_operator(), output_file)
+
+        # with open('../../evaluation/activation_analysis/data/'
+        #                             f'by_module/{output_filename}.json', 'w') as output_file:
+        #     json.dump(activations.by_module(), output_file)
+
+        # exit()
+
+        # Parameter count retrieval
+
+        # hook = partial(get_params_hook,
+        #                 log_filename=f'../../evaluation/parameter_analysis/'
+        #                                                 f'{output_filename}.txt',
+        #                 detailed=True)
+
+        # torch.nn.modules.module.register_module_forward_hook(hook)
+
+        model_summary = summary(self.model,
+                                    input_data=(batch_x,
+                                                    batch_x_mark,
+                                                    dec_inp,
+                                                    batch_y_mark),
+                                    verbose=0)
+
+        def label_to_row_entries(label: str) -> str:
+            parts = label.split(' (')
+            type_ = parts[0]
+            name = parts[1][:-1]
+            return name, type_
+
+        # layer_list = []
+
+        # layer_params = defaultdict(int)
+        # layer_macs = defaultdict(int)
+
+        nodes_at_level = defaultdict(list)
+
+        postfixes_at_level = defaultdict(lambda: defaultdict(int))
+
+        for layer_info in model_summary.summary_list:
+
+            name, type_ = label_to_row_entries(
+                            layer_info.get_layer_name(True, False))
+
+            trainable = True if layer_info.trainable == 'True' else False
+
+            if (not layer_info.is_recursive) and trainable:
+                nodes_at_level[layer_info.depth].append(
+                                Node.from_dict({'name': name,
+                                                    'Type': type_,
+                                                    'Kernel Size': layer_info.kernel_size,
+                                                    'Input Size': layer_info.input_size,
+                                                    'Output Size': layer_info.output_size,
+                                                    'Parameters': layer_info.num_params,
+                                                    'MACs': layer_info.macs}))
+
+                nodes_at_level[layer_info.depth][-1].sep = '.'
+
+                if layer_info.depth > 0:
+
+                    # Check if a child with the same path as the
+                    # element to be inserted exists
+                    if find_child_by_name(nodes_at_level[layer_info.depth - 1][-1], name):
+                        nodes_at_level[layer_info.depth][-1].name =\
+                            f'{name}_{postfixes_at_level[layer_info.depth][name]}'
+
+                    nodes_at_level[layer_info.depth][-1].parent =\
+                                nodes_at_level[layer_info.depth - 1][-1]
+
+                postfixes_at_level[layer_info.depth][name] += 1
+            
+        nodes_at_level[0][0].show(style='const')
+
+        model_summary_pd = tree_to_dataframe(nodes_at_level[0][0],
+                                                    path_col='Path',
+                                                    name_col='Name',
+                                                    all_attrs=True)
+
+        model_summary_pd['Path'] = [path.lstrip('.') for path in model_summary_pd['Path']]
+
+        model_summary_pd.set_index('Path', inplace=True)      
+
+        print(model_summary_pd)
+
+        tree_to_dot(nodes_at_level[0][0]).write_png('test.png')
+
+        exit()
+
+        # val_last = None
+
+        # print('Param diffs')
+
+        # for key, val in layer_params.items():
+        #     if not isinstance(val_last, type(None)):
+        #         print(val_last - val)
+        #     else:
+        #         val_last = val
+
+        # val_last = None
+
+        # print('MAC diffs')
+
+        # for key, val in layer_macs.items():
+        #     if not isinstance(val_last, type(None)):
+        #         print(val_last - val)
+        #     else:
+        #         val_last = val
+
+        # exit()
+
+        model_summary_df = pd.DataFrame(layer_list,
+                                            columns=('Name',
+                                                        'Type',
+                                                        'Kernel Size',
+                                                        'Input Size',
+                                                        'Output Size',
+                                                        'Parameters',
+                                                        'MACs'))
+        
+        model_summary_df.set_index('Name', inplace=True)
+
+        print(model_summary_df)
 
         exit()
 

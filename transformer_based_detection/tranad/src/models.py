@@ -9,7 +9,7 @@ from torch.nn import TransformerEncoder
 from torch.nn import TransformerDecoder
 from src.dlutils import *
 from src.constants import *
-torch.manual_seed(1)
+# torch.manual_seed(1)
 
 ## Separate LSTM for each variable
 class LSTM_Univariate(nn.Module):
@@ -298,12 +298,12 @@ class GDN(nn.Module):
         self.g = dgl.add_self_loop(self.g)
         self.feature_gat = GATConv(1, 1, feats)
         self.attention = nn.Sequential(
-            nn.Linear(self.n, self.n_hidden), nn.LeakyReLU(True),
-            nn.Linear(self.n_hidden, self.n_hidden), nn.LeakyReLU(True),
+            nn.Linear(self.n, self.n_hidden), nn.ReLU(True), # nn.LeakyReLU(True),
+            nn.Linear(self.n_hidden, self.n_hidden), nn.ReLU(True), # nn.LeakyReLU(True),
             nn.Linear(self.n_hidden, self.n_window), nn.Softmax(dim=0),
         )
         self.fcn = nn.Sequential(
-            nn.Linear(self.n_feats, self.n_hidden), nn.LeakyReLU(True),
+            nn.Linear(self.n_feats, self.n_hidden), nn.ReLU(True), # nn.LeakyReLU(True),
             nn.Linear(self.n_hidden, self.n_window), nn.Sigmoid(),
         )
 
@@ -331,14 +331,14 @@ class MAD_GAN(nn.Module):
         self.n = self.n_feats * self.n_window
         self.generator = nn.Sequential(
             nn.Flatten(),
-            nn.Linear(self.n, self.n_hidden), nn.LeakyReLU(True),
-            nn.Linear(self.n_hidden, self.n_hidden), nn.LeakyReLU(True),
+            nn.Linear(self.n, self.n_hidden), nn.ReLU(True), # nn.LeakyReLU(True),
+            nn.Linear(self.n_hidden, self.n_hidden), nn.ReLU(True), # nn.LeakyReLU(True),
             nn.Linear(self.n_hidden, self.n), nn.Sigmoid(),
         )
         self.discriminator = nn.Sequential(
             nn.Flatten(),
-            nn.Linear(self.n, self.n_hidden), nn.LeakyReLU(True),
-            nn.Linear(self.n_hidden, self.n_hidden), nn.LeakyReLU(True),
+            nn.Linear(self.n, self.n_hidden), nn.ReLU(True), # nn.LeakyReLU(True),
+            nn.Linear(self.n_hidden, self.n_hidden), nn.ReLU(True), # nn.LeakyReLU(True),
             nn.Linear(self.n_hidden, 1), nn.Sigmoid(),
         )
 

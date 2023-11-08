@@ -15,9 +15,15 @@ from src.merlin import *
 from src.dataset_loader_hlt_datasets import HLTDataset
 from torch.utils.data import Dataset, DataLoader, TensorDataset
 import torch.nn as nn
+from fvcore.nn import FlopCountAnalysis, ActivationCountAnalysis, flop_count_table
+
 from torch.utils.tensorboard import SummaryWriter
 from sklearn.preprocessing import MinMaxScaler
 
+from src.torch_op_count_handlers import add_sub_mul_div_op_handler,\
+                                                        sum_op_handler,\
+                                                        mean_op_handler,\
+                                                        cumsum_op_handler
 
 device='cuda:0'
 
@@ -47,6 +53,7 @@ def load_dataset(dataset):
 
     loader = []
 
+    data_source = dataset.split('_')[1]
     variant = int(dataset.split('_')[-1])
 
     if 'HLT' not in dataset:
@@ -63,14 +70,15 @@ def load_dataset(dataset):
 
     else:
 
-            train_set = HLTDataset(variant, 'train', False,
-                                        'minmax', 'train_set_fit',
-                                        applied_augmentations=\
-                                                args.augmentations,
-                                        augmented_dataset_size_relative=\
-                                                args.augmented_dataset_size_relative,
-                                        augmented_data_ratio=\
-                                                args.augmented_data_ratio)
+            train_set = HLTDataset(data_source, variant,
+                                            'train', False,
+                                            'minmax', 'train_set_fit',
+                                            applied_augmentations=\
+                                                    args.augmentations,
+                                            augmented_dataset_size_relative=\
+                                                    args.augmented_dataset_size_relative,
+                                            augmented_data_ratio=\
+                                                    args.augmented_data_ratio)
 
             folder = f'./checkpoints/{args.model}_{args.dataset}_{augmentation_string}_seed_{int(args.seed)}/'
 
@@ -79,14 +87,15 @@ def load_dataset(dataset):
 
             loader.append(train_set.get_data())
 
-            test_set = HLTDataset(variant, 'test', False,
-                                    'minmax', 'train_set_fit',
-                                    applied_augmentations=\
-                                            args.augmentations,
-                                    augmented_dataset_size_relative=\
-                                            args.augmented_dataset_size_relative,
-                                    augmented_data_ratio=\
-                                            args.augmented_data_ratio)
+            test_set = HLTDataset(data_source, variant,
+                                            'test', False,
+                                            'minmax', 'train_set_fit',
+                                            applied_augmentations=\
+                                                    args.augmentations,
+                                            augmented_dataset_size_relative=\
+                                                    args.augmented_dataset_size_relative,
+                                            augmented_data_ratio=\
+                                                    args.augmented_data_ratio)
 
             loader.append(test_set.get_data())
             loader.append(test_set.get_labels())
@@ -335,9 +344,10 @@ def backprop(epoch,
 
         dataset = TensorDataset(data_x, data_x)
         
-        bs = model.batch if training else len(data)
+        # bs = model.batch if training else len(data)
         # bs = model.batch
-        
+        bs = 1
+
         dataloader = DataLoader(dataset, batch_size=bs, drop_last=True)
         
         n = epoch + 1; w_size = model.n_window
@@ -355,6 +365,42 @@ def backprop(epoch,
                 window = d.permute(1, 0, 2)
 
                 elem = window[-1, :, :].view(1, local_bs, feats)
+
+                flops = FlopCountAnalysis(model,
+                                            (window, elem))\
+                                            .set_op_handle('aten::add', add_sub_mul_div_op_handler)\
+                                            .set_op_handle('aten::sub', add_sub_mul_div_op_handler)\
+                                            .set_op_handle('aten::mul', add_sub_mul_div_op_handler)\
+                                            .set_op_handle('aten::div', add_sub_mul_div_op_handler)\
+                                            .set_op_handle('aten::sum', sum_op_handler)\
+                                            .set_op_handle('aten::mean', mean_op_handler)\
+                                            .set_op_handle('aten::cumsum', cumsum_op_handler)
+
+                print(flop_count_table(flops))
+
+                output_filename = 'tranad_hlt_dcm_2018.json'
+
+                with open('../../evaluation/computational_intensity_analysis/data/'
+                                                    f'by_operator/{output_filename}', 'w') as output_file:
+                    json.dump(flops.by_operator(), output_file)
+
+                with open('../../evaluation/computational_intensity_analysis/data/'
+                                                        f'by_module/{output_filename}', 'w') as output_file:
+                    json.dump(flops.by_module(), output_file)
+
+                activations = ActivationCountAnalysis(model,
+                                                        (window, elem))
+
+                with open('../../evaluation/activation_analysis/data/'
+                                            f'by_operator/{output_filename}', 'w') as output_file:
+                    json.dump(activations.by_operator(), output_file)
+
+                with open('../../evaluation/activation_analysis/data/'
+                                            f'by_module/{output_filename}', 'w') as output_file:
+                    json.dump(activations.by_module(), output_file)
+
+
+                exit()
 
                 z = model(window, elem)
 
