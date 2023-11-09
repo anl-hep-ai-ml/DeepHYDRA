@@ -26,11 +26,12 @@ from exp.exp_basic import ExpBasic
 from models.model import Informer
 from models.sad_like_loss import *
 from utils.tools import EarlyStopping, adjust_learning_rate
-from utils.torch_profiling import get_params_hook,\
-                                        add_sub_mul_div_op_handler,\
-                                        sum_op_handler,\
-                                        mean_op_handler,\
-                                        cumsum_op_handler
+# from utils.torch_profiling import add_sub_mul_div_op_handler,\
+#                                                 sum_op_handler,\
+#                                                 mean_op_handler,\
+#                                                 cumsum_op_handler
+from utils.fvcorewriter import FVCoreWriter
+from utils.torchinfowriter import TorchinfoWriter
 
 
 def log_gradients_in_model(model, summary_writer, step):
@@ -511,19 +512,19 @@ class ExpInformer(ExpBasic):
         #                                 batch_x_mark,
         #                                 dec_inp,
         #                                 batch_y_mark))\
-        #                                     .set_op_handle('aten::add', add_sub_mul_div_op_handler)\
-        #                                     .set_op_handle('aten::sub', add_sub_mul_div_op_handler)\
-        #                                     .set_op_handle('aten::mul', add_sub_mul_div_op_handler)\
-        #                                     .set_op_handle('aten::div', add_sub_mul_div_op_handler)\
-        #                                     .set_op_handle('aten::sum', sum_op_handler)\
-        #                                     .set_op_handle('aten::mean', mean_op_handler)\
-        #                                     .set_op_handle('aten::cumsum', cumsum_op_handler)
+        #                                     .set_op_handle('aten::add', _add_sub_mul_div_op_handler)\
+        #                                     .set_op_handle('aten::sub', _add_sub_mul_div_op_handler)\
+        #                                     .set_op_handle('aten::mul', _add_sub_mul_div_op_handler)\
+        #                                     .set_op_handle('aten::div', _add_sub_mul_div_op_handler)\
+        #                                     .set_op_handle('aten::sum', _sum_op_handler)\
+        #                                     .set_op_handle('aten::mean', _mean_op_handler)\
+        #                                     .set_op_handle('aten::cumsum', _cumsum_op_handler)
 
-        # activations = FlopCountAnalysis(self.model,
-        #                                     (batch_x,
-        #                                         batch_x_mark,
-        #                                         dec_inp,
-        #                                         batch_y_mark))
+        # activations = ActivationCountAnalysis(self.model,
+        #                                         (batch_x,
+        #                                             batch_x_mark,
+        #                                             dec_inp,
+        #                                             batch_y_mark))
 
         output_filename = f'informer_{self.args.data}_'\
                                 f'{self.args.loss.lower()}_'\
@@ -559,122 +560,48 @@ class ExpInformer(ExpBasic):
         #                             f'by_module/{output_filename}.json', 'w') as output_file:
         #     json.dump(activations.by_module(), output_file)
 
-        # exit()
-
-        # Parameter count retrieval
-
-        # hook = partial(get_params_hook,
-        #                 log_filename=f'../../evaluation/parameter_analysis/'
-        #                                                 f'{output_filename}.txt',
-        #                 detailed=True)
-
-        # torch.nn.modules.module.register_module_forward_hook(hook)
-
-        model_summary = summary(self.model,
-                                    input_data=(batch_x,
+        fvcore_writer = FVCoreWriter(self.model, (batch_x,
                                                     batch_x_mark,
                                                     dec_inp,
-                                                    batch_y_mark),
-                                    verbose=0)
+                                                    batch_y_mark))
 
-        def label_to_row_entries(label: str) -> str:
-            parts = label.split(' (')
-            type_ = parts[0]
-            name = parts[1][:-1]
-            return name, type_
+        print(fvcore_writer.get_flop_dict('by_module'))
+        print(fvcore_writer.get_flop_dict('by_operator'))
+        print(fvcore_writer.get_activation_dict('by_module'))
+        print(fvcore_writer.get_activation_dict('by_operator'))
 
-        # layer_list = []
+        fvcore_writer.write_flops_to_json('../../evaluation/computational_intensity_analysis/'
+                                                        f'data/by_module/{output_filename}.json',
+                                            'by_module')
 
-        # layer_params = defaultdict(int)
-        # layer_macs = defaultdict(int)
+        fvcore_writer.write_flops_to_json('../../evaluation/computational_intensity_analysis/'
+                                                        f'data/by_operator/{output_filename}.json',
+                                            'by_operator')
 
-        nodes_at_level = defaultdict(list)
+        fvcore_writer.write_activations_to_json('../../evaluation/activation_analysis/'
+                                                        f'data/by_module/{output_filename}.json',
+                                                    'by_module')
 
-        postfixes_at_level = defaultdict(lambda: defaultdict(int))
-
-        for layer_info in model_summary.summary_list:
-
-            name, type_ = label_to_row_entries(
-                            layer_info.get_layer_name(True, False))
-
-            trainable = True if layer_info.trainable == 'True' else False
-
-            if (not layer_info.is_recursive) and trainable:
-                nodes_at_level[layer_info.depth].append(
-                                Node.from_dict({'name': name,
-                                                    'Type': type_,
-                                                    'Kernel Size': layer_info.kernel_size,
-                                                    'Input Size': layer_info.input_size,
-                                                    'Output Size': layer_info.output_size,
-                                                    'Parameters': layer_info.num_params,
-                                                    'MACs': layer_info.macs}))
-
-                nodes_at_level[layer_info.depth][-1].sep = '.'
-
-                if layer_info.depth > 0:
-
-                    # Check if a child with the same path as the
-                    # element to be inserted exists
-                    if find_child_by_name(nodes_at_level[layer_info.depth - 1][-1], name):
-                        nodes_at_level[layer_info.depth][-1].name =\
-                            f'{name}_{postfixes_at_level[layer_info.depth][name]}'
-
-                    nodes_at_level[layer_info.depth][-1].parent =\
-                                nodes_at_level[layer_info.depth - 1][-1]
-
-                postfixes_at_level[layer_info.depth][name] += 1
-            
-        nodes_at_level[0][0].show(style='const')
-
-        model_summary_pd = tree_to_dataframe(nodes_at_level[0][0],
-                                                    path_col='Path',
-                                                    name_col='Name',
-                                                    all_attrs=True)
-
-        model_summary_pd['Path'] = [path.lstrip('.') for path in model_summary_pd['Path']]
-
-        model_summary_pd.set_index('Path', inplace=True)      
-
-        print(model_summary_pd)
-
-        tree_to_dot(nodes_at_level[0][0]).write_png('test.png')
+        fvcore_writer.write_activations_to_json('../../evaluation/activation_analysis/'
+                                                        f'data/by_operator/{output_filename}.json',
+                                                    'by_operator')
 
         exit()
 
-        # val_last = None
+        torchinfo_writer = TorchinfoWriter(self.model,
+                                            input_data=(batch_x,
+                                                            batch_x_mark,
+                                                            dec_inp,
+                                                            batch_y_mark),
+                                            verbose=0)
 
-        # print('Param diffs')
+        torchinfo_writer.construct_model_tree()
 
-        # for key, val in layer_params.items():
-        #     if not isinstance(val_last, type(None)):
-        #         print(val_last - val)
-        #     else:
-        #         val_last = val
+        torchinfo_writer.show_model_tree(attr_list=['Parameters', 'MACs'])
 
-        # val_last = None
+        print(torchinfo_writer.get_dataframe())
 
-        # print('MAC diffs')
-
-        # for key, val in layer_macs.items():
-        #     if not isinstance(val_last, type(None)):
-        #         print(val_last - val)
-        #     else:
-        #         val_last = val
-
-        # exit()
-
-        model_summary_df = pd.DataFrame(layer_list,
-                                            columns=('Name',
-                                                        'Type',
-                                                        'Kernel Size',
-                                                        'Input Size',
-                                                        'Output Size',
-                                                        'Parameters',
-                                                        'MACs'))
-        
-        model_summary_df.set_index('Name', inplace=True)
-
-        print(model_summary_df)
+        torchinfo_writer.get_dot().write_png('test.png')
 
         exit()
 
