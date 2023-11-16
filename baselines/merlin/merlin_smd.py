@@ -243,6 +243,8 @@ def run_merlin(data: np.ndarray,
     distances_all = np.column_stack(distances_all)
     lengths_all = np.column_stack(lengths_all)
 
+    exit()
+
     save_numpy_array(distances_all, 'distances_smd.npy')
     save_numpy_array(discords_all, 'discords_smd.npy')
     save_numpy_array(lengths_all, 'lengths_smd.npy')
@@ -372,7 +374,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='MERLIN SMD')
 
-    parser.add_argument('--data-dir', type=str, default='../../../datasets/smd')
+    parser.add_argument('--data-dir', type=str, default='../../datasets/smd')
     parser.add_argument('--l-min', type=int, default=8)
     parser.add_argument('--l-max', type=int, default=96)
     parser.add_argument('--k', type=int, default=1)

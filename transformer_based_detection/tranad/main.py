@@ -15,17 +15,49 @@ from src.merlin import *
 from src.dataset_loader_hlt_datasets import HLTDataset
 from torch.utils.data import Dataset, DataLoader, TensorDataset
 import torch.nn as nn
-from fvcore.nn import FlopCountAnalysis, ActivationCountAnalysis, flop_count_table
-
 from torch.utils.tensorboard import SummaryWriter
 from sklearn.preprocessing import MinMaxScaler
 
-from src.torch_op_count_handlers import add_sub_mul_div_op_handler,\
-                                                        sum_op_handler,\
-                                                        mean_op_handler,\
-                                                        cumsum_op_handler
+from torch_profiling_utils.torchinfowriter import TorchinfoWriter
+from torch_profiling_utils.fvcorewriter import FVCoreWriter
 
 device='cuda:0'
+
+
+def _save_model_attributes(model,
+                            data):
+
+    output_filename = f'{model.name.lower()}_hlt_dcm_2018'
+
+    fvcore_writer = FVCoreWriter(model, data)
+
+    fvcore_writer.write_flops_to_json('../../evaluation/computational_intensity_analysis/'
+                                                    f'data/by_module/{output_filename}.json',
+                                        'by_module')
+
+    fvcore_writer.write_flops_to_json('../../evaluation/computational_intensity_analysis/'
+                                                    f'data/by_operator/{output_filename}.json',
+                                        'by_operator')
+
+    fvcore_writer.write_activations_to_json('../../evaluation/activation_analysis/'
+                                                    f'data/by_module/{output_filename}.json',
+                                                'by_module')
+
+    fvcore_writer.write_activations_to_json('../../evaluation/activation_analysis/'
+                                                    f'data/by_operator/{output_filename}.json',
+                                                'by_operator')
+
+    torchinfo_writer = TorchinfoWriter(model,
+                                        input_data=data,
+                                        verbose=0)
+
+    torchinfo_writer.construct_model_tree()
+
+    torchinfo_writer.show_model_tree(attr_list=['Parameters', 'MACs'])
+
+    torchinfo_writer.get_dataframe().to_pickle(
+        f'../../evaluation/parameter_analysis/{output_filename}.pkl')
+
 
 def _save_numpy_array(array: np.array,
                         filename: str):
@@ -168,6 +200,11 @@ def backprop(epoch,
         l1s = []; l2s = []
         if training:
             for d in data:
+                d = d.to(device)
+
+                _save_model_attributes(model, d)
+                exit()
+
                 _, x_hat, z, gamma = model(d)
                 l1, l2 = l(x_hat, d), l(gamma, d)
                 l1s.append(torch.mean(l1).item()); l2s.append(torch.mean(l2).item())
@@ -220,6 +257,12 @@ def backprop(epoch,
         if training:
             mses, klds = [], []
             for i, d in enumerate(data):
+                d = d.to(device)
+
+                if i:
+                    _save_model_attributes(model, (d, hidden))
+                    exit()
+
                 y_pred, mu, logvar, hidden = model(d, hidden if i else None)
                 MSE = l(y_pred, d)
                 KLD = -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp(), dim=0)
@@ -245,6 +288,11 @@ def backprop(epoch,
         l1s, l2s = [], []
         if training:
             for d in data:
+                d = d.to(device)
+
+                _save_model_attributes(model, d)
+                exit()                
+
                 ae1s, ae2s, ae2ae1s = model(d)
                 l1 = (1 / n) * l(ae1s, d) + (1 - 1/n) * l(ae2ae1s, d)
                 l2 = (1 / n) * l(ae2s, d) - (1 - 1/n) * l(ae2ae1s, d)
@@ -273,6 +321,11 @@ def backprop(epoch,
         l1s = []
         if training:
             for i, d in enumerate(data):
+                d = d.to(device)
+
+                _save_model_attributes(model, d)
+                exit()
+
                 if 'MTAD_GAT' in model.name: 
                     x, h = model(d, h if i else None)
                 else:
@@ -366,39 +419,36 @@ def backprop(epoch,
 
                 elem = window[-1, :, :].view(1, local_bs, feats)
 
-                flops = FlopCountAnalysis(model,
-                                            (window, elem))\
-                                            .set_op_handle('aten::add', add_sub_mul_div_op_handler)\
-                                            .set_op_handle('aten::sub', add_sub_mul_div_op_handler)\
-                                            .set_op_handle('aten::mul', add_sub_mul_div_op_handler)\
-                                            .set_op_handle('aten::div', add_sub_mul_div_op_handler)\
-                                            .set_op_handle('aten::sum', sum_op_handler)\
-                                            .set_op_handle('aten::mean', mean_op_handler)\
-                                            .set_op_handle('aten::cumsum', cumsum_op_handler)
+                output_filename = f'{model.name.lower()}_hlt_dcm_2018.json'
 
-                print(flop_count_table(flops))
+                fvcore_writer = FVCoreWriter(model, (window, elem))
 
-                output_filename = 'tranad_hlt_dcm_2018.json'
+                fvcore_writer.write_flops_to_json('../../evaluation/computational_intensity_analysis/'
+                                                                f'data/by_module/{output_filename}.json',
+                                                    'by_module')
 
-                with open('../../evaluation/computational_intensity_analysis/data/'
-                                                    f'by_operator/{output_filename}', 'w') as output_file:
-                    json.dump(flops.by_operator(), output_file)
+                fvcore_writer.write_flops_to_json('../../evaluation/computational_intensity_analysis/'
+                                                                f'data/by_operator/{output_filename}.json',
+                                                    'by_operator')
 
-                with open('../../evaluation/computational_intensity_analysis/data/'
-                                                        f'by_module/{output_filename}', 'w') as output_file:
-                    json.dump(flops.by_module(), output_file)
+                fvcore_writer.write_activations_to_json('../../evaluation/activation_analysis/'
+                                                                f'data/by_module/{output_filename}.json',
+                                                            'by_module')
 
-                activations = ActivationCountAnalysis(model,
-                                                        (window, elem))
+                fvcore_writer.write_activations_to_json('../../evaluation/activation_analysis/'
+                                                                f'data/by_operator/{output_filename}.json',
+                                                            'by_operator')
 
-                with open('../../evaluation/activation_analysis/data/'
-                                            f'by_operator/{output_filename}', 'w') as output_file:
-                    json.dump(activations.by_operator(), output_file)
+                torchinfo_writer = TorchinfoWriter(model,
+                                                    input_data=(window, elem),
+                                                    verbose=0)
 
-                with open('../../evaluation/activation_analysis/data/'
-                                            f'by_module/{output_filename}', 'w') as output_file:
-                    json.dump(activations.by_module(), output_file)
+                torchinfo_writer.construct_model_tree()
 
+                torchinfo_writer.show_model_tree(attr_list=['Parameters', 'MACs'])
+
+                torchinfo_writer.get_dataframe().to_pickle(
+                    f'../../evaluation/parameter_analysis/{output_filename}.pkl')
 
                 exit()
 
@@ -608,9 +658,20 @@ if __name__ == '__main__':
 
         augment_label = '_no_augment_' if augmentation_string == 'no_augment' else '_'
 
-        _save_numpy_array(lossTfinal, f'../../evaluation/reduced_detection_{variant}/predictions/tranad_train{augment_label}seed_{int(args.seed)}.npy')
-        _save_numpy_array(lossTfinal, f'../../evaluation/combined_detection_{variant}/predictions/tranad_train{augment_label}seed_{int(args.seed)}.npy')
-        _save_numpy_array(lossFinal, f'../../evaluation/reduced_detection_{variant}/predictions/tranad{augment_label}seed_{int(args.seed)}.npy')
+        _save_numpy_array(lossTfinal,
+                            f'../../evaluation/reduced_detection_{variant}/'\
+                                            f'predictions/{args.model.lower()}_'\
+                                            f'train{augment_label}seed_{int(args.seed)}.npy')
+
+        _save_numpy_array(lossTfinal,
+                            f'../../evaluation/combined_detection_{variant}/'\
+                                            f'predictions/{args.model.lower()}_'\
+                                            f'train{augment_label}seed_{int(args.seed)}.npy')
+
+        _save_numpy_array(lossFinal,
+                            f'../../evaluation/reduced_detection_{variant}/'\
+                                            f'predictions/{args.model.lower()}_'\
+                                            f'{augment_label}seed_{int(args.seed)}.npy')
 
         parameter_dict = {"window_size": 10}
 
@@ -629,9 +690,9 @@ if __name__ == '__main__':
         metrics_to_save = np.atleast_2d(metrics_to_save)
 
         metrics_to_save_pd = pd.DataFrame(data=metrics_to_save)
-        metrics_to_save_pd.to_csv(f'results_tranad_{args.dataset}.csv',
-                                                                mode='a+',
-                                                                header=False,
-                                                                index=False)
+        metrics_to_save_pd.to_csv(f'results_{args.model.lower()}_{args.dataset}.csv',
+                                                                            mode='a+',
+                                                                            header=False,
+                                                                            index=False)
 
 

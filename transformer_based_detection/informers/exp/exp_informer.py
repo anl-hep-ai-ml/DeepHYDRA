@@ -30,8 +30,11 @@ from utils.tools import EarlyStopping, adjust_learning_rate
 #                                                 sum_op_handler,\
 #                                                 mean_op_handler,\
 #                                                 cumsum_op_handler
-from utils.fvcorewriter import FVCoreWriter
-from utils.torchinfowriter import TorchinfoWriter
+# from utils.fvcorewriter import FVCoreWriter
+# from utils.torchinfowriter import TorchinfoWriter
+
+from torch_profiling_utils.torchinfowriter import TorchinfoWriter
+from torch_profiling_utils.fvcorewriter import FVCoreWriter
 
 
 def log_gradients_in_model(model, summary_writer, step):
@@ -507,25 +510,6 @@ class ExpInformer(ExpBasic):
 
         # FLOP and activation count retrieval
 
-        # flops = FlopCountAnalysis(self.model,
-        #                             (batch_x,
-        #                                 batch_x_mark,
-        #                                 dec_inp,
-        #                                 batch_y_mark))\
-        #                                     .set_op_handle('aten::add', _add_sub_mul_div_op_handler)\
-        #                                     .set_op_handle('aten::sub', _add_sub_mul_div_op_handler)\
-        #                                     .set_op_handle('aten::mul', _add_sub_mul_div_op_handler)\
-        #                                     .set_op_handle('aten::div', _add_sub_mul_div_op_handler)\
-        #                                     .set_op_handle('aten::sum', _sum_op_handler)\
-        #                                     .set_op_handle('aten::mean', _mean_op_handler)\
-        #                                     .set_op_handle('aten::cumsum', _cumsum_op_handler)
-
-        # activations = ActivationCountAnalysis(self.model,
-        #                                         (batch_x,
-        #                                             batch_x_mark,
-        #                                             dec_inp,
-        #                                             batch_y_mark))
-
         output_filename = f'informer_{self.args.data}_'\
                                 f'{self.args.loss.lower()}_'\
                                 f'sl_{self.args.seq_len}_'\
@@ -544,49 +528,31 @@ class ExpInformer(ExpBasic):
                                 f'emb_{self.args.embed}_'\
                                 f'act_{self.args.activation.lower()}'
 
-        # with open('../../evaluation/computational_intensity_analysis/data/'
-        #                                     f'by_operator/{output_filename}.json', 'w') as output_file:
-        #     json.dump(flops.by_operator(), output_file)
+        # fvcore_writer = FVCoreWriter(self.model, (batch_x,
+        #                                             batch_x_mark,
+        #                                             dec_inp,
+        #                                             batch_y_mark))
 
-        # with open('../../evaluation/computational_intensity_analysis/data/'
-        #                                         f'by_module/{output_filename}.json', 'w') as output_file:
-        #     json.dump(flops.by_module(), output_file)
+        # print(fvcore_writer.get_flop_dict('by_module'))
+        # print(fvcore_writer.get_flop_dict('by_operator'))
+        # print(fvcore_writer.get_activation_dict('by_module'))
+        # print(fvcore_writer.get_activation_dict('by_operator'))
 
-        # with open('../../evaluation/activation_analysis/data/'
-        #                         f'by_operator/{output_filename}.json', 'w') as output_file:
-        #     json.dump(activations.by_operator(), output_file)
+        # fvcore_writer.write_flops_to_json('../../evaluation/computational_intensity_analysis/'
+        #                                                 f'data/by_module/{output_filename}.json',
+        #                                     'by_module')
 
-        # with open('../../evaluation/activation_analysis/data/'
-        #                             f'by_module/{output_filename}.json', 'w') as output_file:
-        #     json.dump(activations.by_module(), output_file)
+        # fvcore_writer.write_flops_to_json('../../evaluation/computational_intensity_analysis/'
+        #                                                 f'data/by_operator/{output_filename}.json',
+        #                                     'by_operator')
 
-        fvcore_writer = FVCoreWriter(self.model, (batch_x,
-                                                    batch_x_mark,
-                                                    dec_inp,
-                                                    batch_y_mark))
+        # fvcore_writer.write_activations_to_json('../../evaluation/activation_analysis/'
+        #                                                 f'data/by_module/{output_filename}.json',
+        #                                             'by_module')
 
-        print(fvcore_writer.get_flop_dict('by_module'))
-        print(fvcore_writer.get_flop_dict('by_operator'))
-        print(fvcore_writer.get_activation_dict('by_module'))
-        print(fvcore_writer.get_activation_dict('by_operator'))
-
-        fvcore_writer.write_flops_to_json('../../evaluation/computational_intensity_analysis/'
-                                                        f'data/by_module/{output_filename}.json',
-                                            'by_module')
-
-        fvcore_writer.write_flops_to_json('../../evaluation/computational_intensity_analysis/'
-                                                        f'data/by_operator/{output_filename}.json',
-                                            'by_operator')
-
-        fvcore_writer.write_activations_to_json('../../evaluation/activation_analysis/'
-                                                        f'data/by_module/{output_filename}.json',
-                                                    'by_module')
-
-        fvcore_writer.write_activations_to_json('../../evaluation/activation_analysis/'
-                                                        f'data/by_operator/{output_filename}.json',
-                                                    'by_operator')
-
-        exit()
+        # fvcore_writer.write_activations_to_json('../../evaluation/activation_analysis/'
+        #                                                 f'data/by_operator/{output_filename}.json',
+        #                                             'by_operator')
 
         torchinfo_writer = TorchinfoWriter(self.model,
                                             input_data=(batch_x,
@@ -599,9 +565,8 @@ class ExpInformer(ExpBasic):
 
         torchinfo_writer.show_model_tree(attr_list=['Parameters', 'MACs'])
 
-        print(torchinfo_writer.get_dataframe())
-
-        torchinfo_writer.get_dot().write_png('test.png')
+        torchinfo_writer.get_dataframe().to_pickle(
+            f'../../evaluation/parameter_analysis/{output_filename}.pkl')
 
         exit()
 
