@@ -198,12 +198,15 @@ def backprop(epoch,
         compute = ComputeLoss(model, 0.1, 0.005, 'cpu', model.n_gmm)
         n = epoch + 1; w_size = model.n_window
         l1s = []; l2s = []
+
+        data = data.to(device)
+
         if training:
             for d in data:
-                d = d.to(device)
+                 #d = d.to(device)
 
-                _save_model_attributes(model, d)
-                exit()
+                # _save_model_attributes(model, d)
+                # exit()
 
                 _, x_hat, z, gamma = model(d)
                 l1, l2 = l(x_hat, d), l(gamma, d)
@@ -217,13 +220,15 @@ def backprop(epoch,
             return np.mean(l1s)+np.mean(l2s), optimizer.param_groups[0]['lr']
         else:
             ae1s = []
-            for d in data: 
+
+            for d in data:
+                # d = d.to(device)
                 _, x_hat, _, _ = model(d)
                 ae1s.append(x_hat)
             ae1s = torch.stack(ae1s)
             y_pred = ae1s[:, data.shape[1]-feats:data.shape[1]].view(-1, feats)
             loss = l(ae1s, data)[:, data.shape[1]-feats:data.shape[1]].view(-1, feats)
-            return loss.detach().numpy(), y_pred.detach().numpy()
+            return loss.detach().cpu().numpy(), y_pred.detach().cpu().numpy()
 
     if 'Attention' in model.name:
         l = nn.MSELoss(reduction = 'none')
@@ -254,14 +259,17 @@ def backprop(epoch,
             return loss.detach().numpy(), y_pred.detach().numpy()
 
     elif 'OmniAnomaly' in model.name:
+
+        model.to(device)
+
         if training:
             mses, klds = [], []
             for i, d in enumerate(data):
                 d = d.to(device)
 
-                if i:
-                    _save_model_attributes(model, (d, hidden))
-                    exit()
+                # if i:
+                #     _save_model_attributes(model, (d, hidden))
+                #     exit()
 
                 y_pred, mu, logvar, hidden = model(d, hidden if i else None)
                 MSE = l(y_pred, d)
@@ -277,6 +285,7 @@ def backprop(epoch,
         else:
             y_preds = []
             for i, d in enumerate(data):
+                d = d.to(device)
                 y_pred, _, _, hidden = model(d, hidden if i else None)
                 y_preds.append(y_pred)
             y_pred = torch.stack(y_preds)
@@ -286,12 +295,14 @@ def backprop(epoch,
         l = nn.MSELoss(reduction = 'none')
         n = epoch + 1; w_size = model.n_window
         l1s, l2s = [], []
+
+        data = data.to(device)
+
         if training:
             for d in data:
-                d = d.to(device)
 
-                _save_model_attributes(model, d)
-                exit()                
+                # _save_model_attributes(model, d)
+                # exit()                
 
                 ae1s, ae2s, ae2ae1s = model(d)
                 l1 = (1 / n) * l(ae1s, d) + (1 - 1/n) * l(ae2ae1s, d)
@@ -306,25 +317,31 @@ def backprop(epoch,
             return np.mean(l1s)+np.mean(l2s), optimizer.param_groups[0]['lr']
         else:
             ae1s, ae2s, ae2ae1s = [], [], []
-            for d in data: 
+
+            data = data.to(device)
+
+            for d in data:
                 ae1, ae2, ae2ae1 = model(d)
                 ae1s.append(ae1); ae2s.append(ae2); ae2ae1s.append(ae2ae1)
             ae1s, ae2s, ae2ae1s = torch.stack(ae1s), torch.stack(ae2s), torch.stack(ae2ae1s)
-            y_pred = ae1s[:, data.shape[1]-feats:data.shape[1]].view(-1, feats)
+            y_pred = ae1s[:, data.shape[1] - feats:data.shape[1]].view(-1, feats)
             loss = 0.1 * l(ae1s, data) + 0.9 * l(ae2ae1s, data)
             loss = loss[:, data.shape[1]-feats:data.shape[1]].view(-1, feats)
-            return loss.detach().numpy(), y_pred.detach().numpy()
+            return loss.detach().cpu().numpy(), y_pred.detach().cpu().numpy()
 
     elif model.name in ['GDN', 'MTAD_GAT', 'MSCRED', 'CAE_M']:
         l = nn.MSELoss(reduction = 'none')
         n = epoch + 1; w_size = model.n_window
         l1s = []
+
+        data = data.to(device)
+
         if training:
             for i, d in enumerate(data):
-                d = d.to(device)
+                # d = d.to(device)
 
-                _save_model_attributes(model, d)
-                exit()
+                # _save_model_attributes(model, d)
+                # exit()
 
                 if 'MTAD_GAT' in model.name: 
                     x, h = model(d, h if i else None)
@@ -339,7 +356,8 @@ def backprop(epoch,
             return np.mean(l1s), optimizer.param_groups[0]['lr']
         else:
             xs = []
-            for d in data: 
+            for d in data:
+                # d = d.to(device)
                 if 'MTAD_GAT' in model.name: 
                     x, h = model(d, None)
                 else:
@@ -349,7 +367,7 @@ def backprop(epoch,
             y_pred = xs[:, data.shape[1]-feats:data.shape[1]].view(-1, feats)
             loss = l(xs, data)
             loss = loss[:, data.shape[1]-feats:data.shape[1]].view(-1, feats)
-            return loss.detach().numpy(), y_pred.detach().numpy()
+            return loss.detach().cpu().numpy(), y_pred.detach().cpu().numpy()
 
     elif 'GAN' in model.name:
         l = nn.MSELoss(reduction = 'none')
@@ -398,8 +416,8 @@ def backprop(epoch,
         dataset = TensorDataset(data_x, data_x)
         
         # bs = model.batch if training else len(data)
-        # bs = model.batch
-        bs = 1
+        bs = model.batch
+        # bs = 1
 
         dataloader = DataLoader(dataset, batch_size=bs, drop_last=True)
         
@@ -419,37 +437,7 @@ def backprop(epoch,
 
                 elem = window[-1, :, :].view(1, local_bs, feats)
 
-                output_filename = f'{model.name.lower()}_hlt_dcm_2018.json'
-
-                fvcore_writer = FVCoreWriter(model, (window, elem))
-
-                fvcore_writer.write_flops_to_json('../../evaluation/computational_intensity_analysis/'
-                                                                f'data/by_module/{output_filename}.json',
-                                                    'by_module')
-
-                fvcore_writer.write_flops_to_json('../../evaluation/computational_intensity_analysis/'
-                                                                f'data/by_operator/{output_filename}.json',
-                                                    'by_operator')
-
-                fvcore_writer.write_activations_to_json('../../evaluation/activation_analysis/'
-                                                                f'data/by_module/{output_filename}.json',
-                                                            'by_module')
-
-                fvcore_writer.write_activations_to_json('../../evaluation/activation_analysis/'
-                                                                f'data/by_operator/{output_filename}.json',
-                                                            'by_operator')
-
-                torchinfo_writer = TorchinfoWriter(model,
-                                                    input_data=(window, elem),
-                                                    verbose=0)
-
-                torchinfo_writer.construct_model_tree()
-
-                torchinfo_writer.show_model_tree(attr_list=['Parameters', 'MACs'])
-
-                torchinfo_writer.get_dataframe().to_pickle(
-                    f'../../evaluation/parameter_analysis/{output_filename}.pkl')
-
+                _save_model_attributes(model, d)
                 exit()
 
                 z = model(window, elem)
@@ -654,7 +642,8 @@ if __name__ == '__main__':
 
     if 'HLT' in args.dataset:
 
-        variant = int(args.dataset.split('_')[-1])
+        variant = f'{args.dataset.split("_")[-2].lower()}_'\
+                                f'{args.dataset.split("_")[-1]}'
 
         augment_label = '_no_augment_' if augmentation_string == 'no_augment' else '_'
 
@@ -673,7 +662,7 @@ if __name__ == '__main__':
                                             f'predictions/{args.model.lower()}_'\
                                             f'{augment_label}seed_{int(args.seed)}.npy')
 
-        parameter_dict = {"window_size": 10}
+        parameter_dict = {"window_size": model.n_window}
 
         with open(f'checkpoints/{args.model}_{args.dataset}_{augmentation_string}_seed_{int(args.seed)}/model_parameters.json', 'w') as parameter_dict_file:
             json.dump(parameter_dict,

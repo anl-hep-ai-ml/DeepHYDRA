@@ -11,6 +11,9 @@ from src.dlutils import *
 from src.constants import *
 # torch.manual_seed(1)
 
+device='cuda:0'
+
+
 ## Separate LSTM for each variable
 class LSTM_Univariate(nn.Module):
     def __init__(self, feats):
@@ -146,7 +149,12 @@ class OmniAnomaly(nn.Module):
         )
 
     def forward(self, x, hidden = None):
-        hidden = torch.rand(2, 1, self.n_hidden, dtype=torch.float64) if hidden is not None else hidden
+        hidden = torch.rand(2, 1, self.n_hidden, dtype=torch.float64, device=device)\
+                                                        if hidden is not None else hidden
+        
+        # if hidden is not None:
+        #     hidden.to(device)
+
         out, hidden = self.lstm(x.view(1, 1, -1), hidden)
         ## Encode
         x = self.encoder(out)
