@@ -195,11 +195,13 @@ def backprop(epoch,
 
     if 'DAGMM' in model.name:
         l = nn.MSELoss(reduction = 'none')
-        compute = ComputeLoss(model, 0.1, 0.005, 'cpu', model.n_gmm)
+        compute = ComputeLoss(model, 0.1, 0.005, device, model.n_gmm)
         n = epoch + 1; w_size = model.n_window
         l1s = []; l2s = []
 
         data = data.to(device)
+
+        print(data.shape)
 
         if training:
             for d in data:
@@ -334,11 +336,12 @@ def backprop(epoch,
         n = epoch + 1; w_size = model.n_window
         l1s = []
 
-        data = data.to(device)
+        # data = data.to(device)
 
         if training:
             for i, d in enumerate(data):
-                # d = d.to(device)
+
+                d = d.to(device)
 
                 # _save_model_attributes(model, d)
                 # exit()
@@ -365,7 +368,10 @@ def backprop(epoch,
                 xs.append(x)
             xs = torch.stack(xs)
             y_pred = xs[:, data.shape[1]-feats:data.shape[1]].view(-1, feats)
-            loss = l(xs, data)
+
+            torch.cuda.empty_cache()
+
+            loss = l(xs, data.to(device))
             loss = loss[:, data.shape[1]-feats:data.shape[1]].view(-1, feats)
             return loss.detach().cpu().numpy(), y_pred.detach().cpu().numpy()
 
