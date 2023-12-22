@@ -193,6 +193,12 @@ def backprop(epoch,
     l = nn.MSELoss(reduction = 'mean' if training else 'none')
     feats = dataO.shape[1]
 
+    data_train_list = []
+    preds_train_list = []
+    data_test_list = []
+    preds_test_list = []
+
+
     if 'DAGMM' in model.name:
         l = nn.MSELoss(reduction = 'none')
         compute = ComputeLoss(model, 0.1, 0.005, device, model.n_gmm)
@@ -232,6 +238,7 @@ def backprop(epoch,
             loss = l(ae1s, data)[:, data.shape[1]-feats:data.shape[1]].view(-1, feats)
             return loss.detach().cpu().numpy(), y_pred.detach().cpu().numpy()
 
+
     if 'Attention' in model.name:
         l = nn.MSELoss(reduction = 'none')
         n = epoch + 1; w_size = model.n_window
@@ -259,6 +266,7 @@ def backprop(epoch,
             ae1s, y_pred = torch.stack(ae1s), torch.stack(y_pred)
             loss = torch.mean(l(ae1s, data), axis=1)
             return loss.detach().numpy(), y_pred.detach().numpy()
+
 
     elif 'OmniAnomaly' in model.name:
 
@@ -293,6 +301,8 @@ def backprop(epoch,
             y_pred = torch.stack(y_preds)
             MSE = l(y_pred, data)
             return MSE.detach().numpy(), y_pred.detach().numpy()
+
+
     elif 'USAD' in model.name:
         l = nn.MSELoss(reduction = 'none')
         n = epoch + 1; w_size = model.n_window
@@ -331,17 +341,18 @@ def backprop(epoch,
             loss = loss[:, data.shape[1]-feats:data.shape[1]].view(-1, feats)
             return loss.detach().cpu().numpy(), y_pred.detach().cpu().numpy()
 
+
     elif model.name in ['GDN', 'MTAD_GAT', 'MSCRED', 'CAE_M']:
         l = nn.MSELoss(reduction = 'none')
         n = epoch + 1; w_size = model.n_window
         l1s = []
 
-        # data = data.to(device)
+        data = data.to(device)
 
         if training:
-            for i, d in enumerate(data):
+            for i, d in enumerate(tqdm(data)):
 
-                d = d.to(device)
+                # d = d.to(device)
 
                 # _save_model_attributes(model, d)
                 # exit()
@@ -350,30 +361,134 @@ def backprop(epoch,
                     x, h = model(d, h if i else None)
                 else:
                     x = model(d)
+
+                data_train_list.append(d.detach().cpu().numpy())
+                preds_train_list.append(x.detach().cpu().numpy())
+
+                # print(x.shape)
+
                 loss = torch.mean(l(x, d))
                 l1s.append(torch.mean(loss).item())
                 optimizer.zero_grad()
                 loss.backward()
                 optimizer.step()
             tqdm.write(f'Epoch {epoch},\tMSE = {np.mean(l1s)}')
+
+            data_train = np.stack(data_train_list)
+            preds_train = np.stack(preds_train_list)
+
+            _save_numpy_array(data_train, 
+                                f'data_train_mscred_epoch_{epoch}.npy')
+
+            _save_numpy_array(preds_train, 
+                                f'preds_train_mscred_epoch_{epoch}.npy')
+
             return np.mean(l1s), optimizer.param_groups[0]['lr']
+
         else:
             xs = []
-            for d in data:
+            for d in tqdm(data):
                 # d = d.to(device)
                 if 'MTAD_GAT' in model.name: 
                     x, h = model(d, None)
                 else:
                     x = model(d)
-                xs.append(x)
-            xs = torch.stack(xs)
-            y_pred = xs[:, data.shape[1]-feats:data.shape[1]].view(-1, feats)
 
-            torch.cuda.empty_cache()
+                data_test_list.append(d.detach().cpu().numpy())
+                preds_test_list.append(x.detach().cpu().numpy())
+
+                xs.append(x.detach())
+            xs = torch.stack(xs)
+            y_pred = xs[:, data.shape[1]-feats:data.shape[1]].view(-1, feats)   
 
             loss = l(xs, data.to(device))
             loss = loss[:, data.shape[1]-feats:data.shape[1]].view(-1, feats)
+
+            data_test = np.stack(data_test_list)
+            preds_test = np.stack(preds_test_list)
+
+            _save_numpy_array(data_test, 
+                                f'data_test_mscred_epoch.npy')
+
+            _save_numpy_array(preds_test, 
+                                f'preds_test_mscred_epoch.npy')
+
             return loss.detach().cpu().numpy(), y_pred.detach().cpu().numpy()
+
+
+    elif model.name == 'MSCREDFull':
+        l = nn.MSELoss(reduction = 'none')
+        n = epoch + 1; w_size = model.n_window
+        l1s = []
+
+        data = data.to(device)
+
+        if training:
+            for i, d in enumerate(tqdm(data)):
+
+                # d = d.to(device)
+
+                # _save_model_attributes(model, d)
+                # exit()
+
+                if 'MTAD_GAT' in model.name: 
+                    x, h = model(d, h if i else None)
+                else:
+                    x = model(d)
+
+                data_train_list.append(d.detach().cpu().numpy())
+                preds_train_list.append(x.detach().cpu().numpy())
+
+                # print(x.shape)
+
+                loss = torch.mean(l(x, d))
+                l1s.append(torch.mean(loss).item())
+                optimizer.zero_grad()
+                loss.backward()
+                optimizer.step()
+            tqdm.write(f'Epoch {epoch},\tMSE = {np.mean(l1s)}')
+
+            data_train = np.stack(data_train_list)
+            preds_train = np.stack(preds_train_list)
+
+            _save_numpy_array(data_train, 
+                                f'data_train_mscred_epoch_{epoch}.npy')
+
+            _save_numpy_array(preds_train, 
+                                f'preds_train_mscred_epoch_{epoch}.npy')
+
+            return np.mean(l1s), optimizer.param_groups[0]['lr']
+
+        else:
+            xs = []
+            for d in tqdm(data):
+                # d = d.to(device)
+                if 'MTAD_GAT' in model.name: 
+                    x, h = model(d, None)
+                else:
+                    x = model(d)
+
+                data_test_list.append(d.detach().cpu().numpy())
+                preds_test_list.append(x.detach().cpu().numpy())
+
+                xs.append(x.detach())
+            xs = torch.stack(xs)
+            y_pred = xs[:, data.shape[1]-feats:data.shape[1]].view(-1, feats)   
+
+            loss = l(xs, data.to(device))
+            loss = loss[:, data.shape[1]-feats:data.shape[1]].view(-1, feats)
+
+            data_test = np.stack(data_test_list)
+            preds_test = np.stack(preds_test_list)
+
+            _save_numpy_array(data_test, 
+                                f'data_test_mscred_epoch.npy')
+
+            _save_numpy_array(preds_test, 
+                                f'preds_test_mscred_epoch.npy')
+
+            return loss.detach().cpu().numpy(), y_pred.detach().cpu().numpy()
+
 
     elif 'GAN' in model.name:
         l = nn.MSELoss(reduction = 'none')
@@ -414,6 +529,7 @@ def backprop(epoch,
             loss = l(outputs, data)
             loss = loss[:, data.shape[1]-feats:data.shape[1]].view(-1, feats)
             return loss.detach().numpy(), y_pred.detach().numpy()
+
 
     elif 'TranAD' in model.name:
         l = nn.MSELoss(reduction = 'none')
@@ -586,6 +702,9 @@ if __name__ == '__main__':
     trainO, testO = trainD, testD
     if model.name in ['Attention', 'DAGMM', 'USAD', 'MSCRED', 'CAE_M', 'GDN', 'MTAD_GAT', 'MAD_GAN'] or 'TranAD' in model.name: 
         trainD, testD = convert_to_windows(trainD, model), convert_to_windows(testD, model)
+    elif model.name == 'MSCREDFull':
+         trainD, testD = generate_mscred_signature_matrices(trainD),\
+                            generate_mscred_signature_matrices(testD)
 
     model.to(device)
 
@@ -595,7 +714,10 @@ if __name__ == '__main__':
 
     if not args.test:
         print(f'{color.HEADER}Training {args.model} on {args.dataset}{color.ENDC}')
-        num_epochs = 5; e = epoch + 1; start = time()
+        num_epochs = 5
+        # num_epochs = 1
+        e = epoch + 1
+        start = time()
 
         for e in list(range(epoch + 1, epoch + num_epochs + 1)):
             lossT, lr = backprop(e, model,

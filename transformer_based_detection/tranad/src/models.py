@@ -235,6 +235,28 @@ class MSCRED(nn.Module):
         x = self.decoder(z)
         return x.view(-1)
 
+
+# https://github.com/Zhang-Zhi-Jie/Pytorch-MSCRED/blob/master/model/mscred.py
+
+class MSCREDFull(nn.Module):
+    def __init__(self, feats):
+        super(MSCREDFull, self).__init__()
+        self.name = 'MSCREDFull'
+        self.lr = 0.0001
+        self.n_feats = feats
+        self.n_window = feats
+
+        self.cnn_encoder = MSCREDEncoder(3)
+        self.conv_lstm = MSCREDConvLSTM()
+        self.cnn_decoder = MSCREDDecoder(256)
+    
+    def forward(self, x):
+        enc_out = self.cnn_encoder(x)
+        lstm_out = self.conv_lstm(*enc_out)
+        gen_x = self.cnn_decoder(*lstm_out)
+        return gen_x
+
+
 ## CAE-M Model (TKDE 21)
 class CAE_M(nn.Module):
     def __init__(self, feats):
