@@ -181,14 +181,15 @@ def load_model(modelname, dims):
         epoch = -1; accuracy_list = []
     return model, optimizer, scheduler, epoch, accuracy_list
 
+
 def backprop(epoch,
                 model,
                 data,
                 dataO,
                 optimizer,
                 scheduler,
-                training = True,
-                summary_writer = None):
+                training=True,
+                summary_writer=None):
 
     l = nn.MSELoss(reduction = 'mean' if training else 'none')
     feats = dataO.shape[1]
@@ -418,55 +419,66 @@ def backprop(epoch,
 
     elif model.name == 'MSCREDFull':
         l = nn.MSELoss(reduction = 'none')
-        n = epoch + 1; w_size = model.n_window
-        l1s = []
+        n = epoch + 1
 
+        losses = []
+        
         data = data.to(device)
 
+        dataset = TensorDataset(data, data)
+        
+        bs = model.batch
+        # bs = 1
+
+        dataloader = DataLoader(dataset, batch_size=bs, drop_last=True)
+
+        train_steps = len(dataloader)
+
         if training:
-            for i, d in enumerate(tqdm(data)):
+            for i, (d, _) in enumerate(tqdm(dataloader)):
 
                 # d = d.to(device)
 
                 # _save_model_attributes(model, d)
                 # exit()
 
-                if 'MTAD_GAT' in model.name: 
-                    x, h = model(d, h if i else None)
-                else:
-                    x = model(d)
+                x = model(d)
 
                 data_train_list.append(d.detach().cpu().numpy())
                 preds_train_list.append(x.detach().cpu().numpy())
 
-                # print(x.shape)
-
                 loss = torch.mean(l(x, d))
-                l1s.append(torch.mean(loss).item())
+                losses.append(torch.mean(loss).item())
                 optimizer.zero_grad()
                 loss.backward()
                 optimizer.step()
-            tqdm.write(f'Epoch {epoch},\tMSE = {np.mean(l1s)}')
+
+                log_gradients_in_model(model,
+                                        summary_writer,
+                                        i + epoch*train_steps)
+
+                summary_writer.add_scalar("Train loss",
+                                            np.mean(losses),
+                                            i + epoch*train_steps)
+
+            tqdm.write(f'Epoch {epoch},\tMSE = {np.mean(losses)}')
 
             data_train = np.stack(data_train_list)
             preds_train = np.stack(preds_train_list)
 
             _save_numpy_array(data_train, 
-                                f'data_train_mscred_epoch_{epoch}.npy')
+                                f'data_train_mscred_full_epoch_{epoch}.npy')
 
             _save_numpy_array(preds_train, 
-                                f'preds_train_mscred_epoch_{epoch}.npy')
+                                f'preds_train_mscred_full_epoch_{epoch}.npy')
 
-            return np.mean(l1s), optimizer.param_groups[0]['lr']
+            return np.mean(losses), optimizer.param_groups[0]['lr']
 
         else:
             xs = []
-            for d in tqdm(data):
-                # d = d.to(device)
-                if 'MTAD_GAT' in model.name: 
-                    x, h = model(d, None)
-                else:
-                    x = model(d)
+            for d, _ in tqdm(dataloader):
+
+                x = model(d)
 
                 data_test_list.append(d.detach().cpu().numpy())
                 preds_test_list.append(x.detach().cpu().numpy())
@@ -482,10 +494,10 @@ def backprop(epoch,
             preds_test = np.stack(preds_test_list)
 
             _save_numpy_array(data_test, 
-                                f'data_test_mscred_epoch.npy')
+                                f'data_test_mscred_full.npy')
 
             _save_numpy_array(preds_test, 
-                                f'preds_test_mscred_epoch.npy')
+                                f'preds_test_mscred_full.npy')
 
             return loss.detach().cpu().numpy(), y_pred.detach().cpu().numpy()
 
@@ -725,6 +737,7 @@ if __name__ == '__main__':
                                     trainO,
                                     optimizer,
                                     scheduler,
+                                    True,
                                     summary_writer)
 
             torch.cuda.empty_cache()

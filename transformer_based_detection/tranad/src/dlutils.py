@@ -8,6 +8,7 @@ from torch.autograd import Variable
 import numpy as np
 from tqdm import trange
 
+
 class ConvLSTMCell(nn.Module):
 
     def __init__(self, input_dim, hidden_dim, kernel_size, bias):
@@ -32,7 +33,7 @@ class ConvLSTMCell(nn.Module):
         self.hidden_dim = hidden_dim
 
         self.kernel_size = kernel_size
-        self.padding = kernel_size[0] // 2, kernel_size[1] // 2
+        self.padding = kernel_size[0]//2, kernel_size[1]//2
         self.bias = bias
 
         self.conv = nn.Conv2d(in_channels=self.input_dim + self.hidden_dim,
@@ -62,6 +63,7 @@ class ConvLSTMCell(nn.Module):
         height, width = image_size
         return (torch.zeros(batch_size, self.hidden_dim, height, width, device=self.conv.weight.device),
                 torch.zeros(batch_size, self.hidden_dim, height, width, device=self.conv.weight.device))
+
 
 class ConvLSTM(nn.Module):
 
@@ -204,42 +206,19 @@ def generate_mscred_signature_matrices(data_in,
                                         device='cuda:0'):
 
     data_in.to(device)
-
     length, channels = data_in.shape
-    
-    data_out_method_0 = []
-    data_out_method_1 = []
+    data_out = []
 
 	# Generate multi-scale signature matrices
 
     for t in trange(max(window_sizes), length, step,
                         desc='Generating MSCRED signature matrices'):
 
-        start = time()
-
-        element_method_0 = torch.empty((channels,
-                                                channels,
-                                                len(window_sizes)),
-                                            device=device)
-
-        for i in range(channels):
-            for j in range(i, channels):
-                for c, window_size in enumerate(window_sizes):
-                    element_method_0[i, j, c] =\
-                        torch.inner(data_in[t - window_size:t, i],
-                                        data_in[t - window_size:t, j])
-                element_method_0[j, i] = element_method_0[i, j]
-
-        data_out_method_0.append(element_method_0)
-
-        print(f'Time method 0: {1000*(time() - start):.4f} ms')
-        start = time()
-
         # Prepare the tensor to store results
-        element_method_1 = torch.empty((channels,
-                                                channels,
-                                                len(window_sizes)),
-                                            device=device)
+        element = torch.empty((channels,
+                                    channels,
+                                    len(window_sizes)),
+                                device=device)
 
         # Using torch.einsum to compute the inner products
         for c, window_size in enumerate(window_sizes):
@@ -247,34 +226,99 @@ def generate_mscred_signature_matrices(data_in,
 
             result = torch.einsum('ki,kl->li', sliced, sliced)
 
-            element_method_1[:, :, c] = result
+            element[:, :, c] = result
         
-        data_out_method_1.append(element_method_1)
+        data_out.append(element)
 
-        print(f'Time method 1: {1000*(time() - start):.4f} ms')
+        assert(torch.all(torch.isclose(element, element)))
 
-        assert(torch.all(torch.isclose(element_method_0, element_method_1)))
+    data_out = torch.stack(data_out)
 
+    scale_factor = torch.from_numpy(np.array([[[window_sizes]]],
+                                                    dtype=np.float64))
 
-
-    data_out_method_0 = torch.stack(data_out_method_0)
-    data_out_method_1 = torch.stack(data_out_method_1)
-
-    print(data_out_method_0.shape)
-
-    exit()
-
-    scale_factor = torch.from_numpy(np.array([[[window_sizes]]]),
-                                                device=device).detach()
+    scale_factor = scale_factor.detach().to(device)
 
     data_out = data_out/scale_factor
 
+    # print(data_out.shape)
+
+    data_out = torch.permute(data_out, (0, 3, 1, 2))
+
+    # print(data_out.shape)
+
     return data_out
+
+
+# def generate_mscred_signature_matrices(data_in,
+#                                         window_sizes=[10, 30, 60],
+#                                         step=10,
+#                                         block_size=5,
+#                                         device='cuda:0'):
+
+#     data_in.to(device)
+#     length, channels = data_in.shape
+
+#     element = None
+#     data_out_block = []
+#     data_out_all = []
+
+# 	# Generate multi-scale signature matrices
+
+#     for t in trange(max(window_sizes), length, step,
+#                         desc='Generating MSCRED signature matrices'):
+
+#         # Prepare the tensor to store results
+#         element = torch.empty((channels,
+#                                     channels,
+#                                     len(window_sizes)),
+#                                 device=device)
+
+#         # Using torch.einsum to compute the inner products
+#         for c, window_size in enumerate(window_sizes):
+#             sliced = data_in[t - window_size:t, :]
+
+#             result = torch.einsum('ki,kl->li', sliced, sliced)
+
+#             element[:, :, c] = result
+        
+#         data_out_block.append(element)
+
+#         if len(data_out_block) >= block_size:
+#             data_out_all.append(data_out_block)
+#             data_out_block = []
+
+#     while len(data_out_all[-1]) < 5:
+#         data_out_all[-1].append(element)
+
+#     data_out = [torch.stack(block) for block in data_out_all]
+
+#     data_out = torch.stack(data_out)
+
+#     scale_factor = torch.from_numpy(np.array([[[[window_sizes]]]],
+#                                                     dtype=np.float64))
+
+#     scale_factor = scale_factor.detach().to(device)
+
+#     data_out = data_out/scale_factor
+
+#     print(data_out.shape)
+
+#     data_out = torch.permute(data_out, (0, 1, 4, 2, 3))
+
+#     print(data_out.shape)
+
+#     return data_out
+
 
 # https://github.com/Zhang-Zhi-Jie/Pytorch-MSCRED/blob/master/model/mscred.py
 
 class MSCREDBaseConvLSTMCell(nn.Module):
-    def __init__(self, input_channels, hidden_channels, kernel_size):
+    def __init__(self,
+                    input_channels,
+                    hidden_channels,
+                    kernel_size,
+                    device='cuda:0'):
         super(MSCREDBaseConvLSTMCell, self).__init__()
 
         assert hidden_channels % 2 == 0
@@ -282,9 +326,10 @@ class MSCREDBaseConvLSTMCell(nn.Module):
         self.input_channels = input_channels
         self.hidden_channels = hidden_channels
         self.kernel_size = kernel_size
+        self.device = device
         self.num_features = 4
 
-        self.padding = int((kernel_size - 1) / 2)
+        self.padding = int((kernel_size - 1)/2)
 
         self.Wxi = nn.Conv2d(self.input_channels, self.hidden_channels, self.kernel_size, 1, self.padding, bias=True)
         self.Whi = nn.Conv2d(self.hidden_channels, self.hidden_channels, self.kernel_size, 1, self.padding, bias=False)
@@ -300,6 +345,7 @@ class MSCREDBaseConvLSTMCell(nn.Module):
         self.Wco = None
 
     def forward(self, x, h, c):
+
         ci = torch.sigmoid(self.Wxi(x) + self.Whi(h) + c*self.Wci)
         cf = torch.sigmoid(self.Wxf(x) + self.Whf(h) + c*self.Wcf)
         cc = cf*c + ci*torch.tanh(self.Wxc(x) + self.Whc(h))
@@ -309,14 +355,37 @@ class MSCREDBaseConvLSTMCell(nn.Module):
 
     def init_hidden(self, batch_size, hidden, shape):
         if self.Wci is None:
-            self.Wci = Variable(torch.zeros(1, hidden, shape[0], shape[1])).to("cpu")
-            self.Wcf = Variable(torch.zeros(1, hidden, shape[0], shape[1])).to("cpu")
-            self.Wco = Variable(torch.zeros(1, hidden, shape[0], shape[1])).to("cpu")
+            self.Wci = Variable(torch.zeros((1, hidden,
+                                                    shape[0],
+                                                    shape[1]),
+                                                device=torch.device(self.device),
+                                                dtype=torch.float64))
+            self.Wcf = Variable(torch.zeros((1, hidden,
+                                                    shape[0],
+                                                    shape[1]),
+                                                    device=torch.device(self.device),
+                                                dtype=torch.float64))
+            self.Wco = Variable(torch.zeros((1, hidden,
+                                                    shape[0],
+                                                    shape[1]),
+                                                device=torch.device(self.device),
+                                                dtype=torch.float64))
         else:
             assert shape[0] == self.Wci.size()[2], 'Input Height Mismatched!'
             assert shape[1] == self.Wci.size()[3], 'Input Width Mismatched!'
-        return (Variable(torch.zeros(batch_size, hidden, shape[0], shape[1])).to("cpu"),
-                Variable(torch.zeros(batch_size, hidden, shape[0], shape[1])).to("cpu"))
+
+        return (Variable(torch.zeros((batch_size,
+                                                hidden,
+                                                shape[0],
+                                                shape[1]),
+                                            device=torch.device(self.device),
+                                            dtype=torch.float64)),
+                Variable(torch.zeros((batch_size,
+                                                hidden,
+                                                shape[0],
+                                                shape[1]),
+                                            device=torch.device(self.device),
+                                            dtype=torch.float64)))
 
 
 class MSCREDBaseConvLSTM(nn.Module):
@@ -333,11 +402,14 @@ class MSCREDBaseConvLSTM(nn.Module):
         self._all_layers = []
         for i in range(self.num_layers):
             name = 'cell{}'.format(i)
-            cell = MSCREDBaseConvLSTMCell(self.input_channels[i], self.hidden_channels[i], self.kernel_size)
+            cell = MSCREDBaseConvLSTMCell(self.input_channels[i],
+                                            self.hidden_channels[i],
+                                            self.kernel_size)
             setattr(self, name, cell)
             self._all_layers.append(cell)
 
     def forward(self, input):
+
         internal_state = []
         outputs = []
         for step in range(self.step):
@@ -347,8 +419,10 @@ class MSCREDBaseConvLSTM(nn.Module):
                 name = 'cell{}'.format(i)
                 if step == 0:
                     bsize, _, height, width = x.size()
-                    (h, c) = getattr(self, name).init_hidden(batch_size=bsize, hidden=self.hidden_channels[i],
-                                                             shape=(height, width))
+                    (h, c) = getattr(self, name).init_hidden(
+                                                    batch_size=bsize,
+                                                    hidden=self.hidden_channels[i],
+                                                    shape=(height, width))
                     internal_state.append((h, c))
 
                 # do forward
@@ -356,22 +430,35 @@ class MSCREDBaseConvLSTM(nn.Module):
                 x, new_c = getattr(self, name)(x, h, c)
                 internal_state[i] = (x, new_c)
             # only record effective steps
-            if step in self.effective_step:
-                outputs.append(x)
+            # if step in self.effective_step:
+            outputs.append(x)
+
+        outputs = torch.stack(outputs, dim=1)
 
         return outputs, (x, new_c)
 
 
 def mscred_attention(conv_lstm_out):
+
+    # print(conv_lstm_out.shape)
+
     attention_w = []
     for k in range(5):
-        attention_w.append(torch.sum(torch.mul(conv_lstm_out[k], conv_lstm_out[-1]))/5)
+        attention_w.append(torch.sum(torch.mul(conv_lstm_out[:, k], conv_lstm_out[:, -1]))/5)
     m = nn.Softmax()
+
     attention_w = torch.reshape(m(torch.stack(attention_w)), (-1, 5))
+
     cl_out_shape = conv_lstm_out.shape
+
     conv_lstm_out = torch.reshape(conv_lstm_out, (5, -1))
     conv_lstm_out = torch.matmul(attention_w, conv_lstm_out)
-    conv_lstm_out = torch.reshape(conv_lstm_out, (cl_out_shape[1], cl_out_shape[2], cl_out_shape[3]))
+
+    conv_lstm_out = torch.reshape(conv_lstm_out, (cl_out_shape[0],
+                                                    cl_out_shape[2],
+                                                    cl_out_shape[3],
+                                                    cl_out_shape[4]))
+
     return conv_lstm_out
 
 
@@ -406,6 +493,7 @@ class MSCREDEncoder(nn.Module):
 class MSCREDConvLSTM(nn.Module):
     def __init__(self):
         super(MSCREDConvLSTM, self).__init__()
+
         self.conv1_lstm = MSCREDBaseConvLSTM(input_channels=32, hidden_channels=[32], 
                                                 kernel_size=3, step=5, effective_step=[4])
         self.conv2_lstm = MSCREDBaseConvLSTM(input_channels=64, hidden_channels=[64], 
@@ -417,20 +505,24 @@ class MSCREDConvLSTM(nn.Module):
 
     def forward(self, conv1_out, conv2_out, 
                         conv3_out, conv4_out):
-        
-        conv1_lstm_out = self.conv1_lstm(conv1_out)
-        conv1_lstm_out = mscred_attention(conv1_lstm_out[0][0])
-        conv2_lstm_out = self.conv2_lstm(conv2_out)
-        conv2_lstm_out = mscred_attention(conv2_lstm_out[0][0])
-        conv3_lstm_out = self.conv3_lstm(conv3_out)
-        conv3_lstm_out = mscred_attention(conv3_lstm_out[0][0])
-        conv4_lstm_out = self.conv4_lstm(conv4_out)
-        conv4_lstm_out = mscred_attention(conv4_lstm_out[0][0])
 
-        return conv1_lstm_out.unsqueeze(0),\
-                conv2_lstm_out.unsqueeze(0),\
-                conv3_lstm_out.unsqueeze(0),\
-                conv4_lstm_out.unsqueeze(0)
+        # conv1_out = F.pad(conv1_out,
+        #                     (1, 2, 1, 2),
+        #                     mode='replicate')
+
+        conv1_lstm_out = self.conv1_lstm(conv1_out)
+        conv1_lstm_out = mscred_attention(conv1_lstm_out[0])
+        conv2_lstm_out = self.conv2_lstm(conv2_out)
+        conv2_lstm_out = mscred_attention(conv2_lstm_out[0])
+        conv3_lstm_out = self.conv3_lstm(conv3_out)
+        conv3_lstm_out = mscred_attention(conv3_lstm_out[0])
+        conv4_lstm_out = self.conv4_lstm(conv4_out)
+        conv4_lstm_out = mscred_attention(conv4_lstm_out[0])
+
+        return conv1_lstm_out,\
+                conv2_lstm_out,\
+                conv3_lstm_out,\
+                conv4_lstm_out
 
 class MSCREDDecoder(nn.Module):
     def __init__(self, in_channels):
@@ -504,6 +596,7 @@ class TransformerEncoderLayer(nn.Module):
         src = src + self.dropout2(src2)
         return src
 
+
 class TransformerDecoderLayer(nn.Module):
     def __init__(self, d_model, nhead, dim_feedforward=16, dropout=0):
         super(TransformerDecoderLayer, self).__init__()
@@ -526,6 +619,7 @@ class TransformerDecoderLayer(nn.Module):
         tgt2 = self.linear2(self.dropout(self.activation(self.linear1(tgt))))
         tgt = tgt + self.dropout3(tgt2)
         return tgt
+
 
 class ComputeLoss:
     def __init__(self, model, lambda_energy, lambda_cov, device, n_gmm):
@@ -595,6 +689,7 @@ class ComputeLoss:
 
         return phi, mu, cov
         
+
 class Cholesky(torch.autograd.Function):
     def forward(ctx, a):
         l = torch.cholesky(a, False)

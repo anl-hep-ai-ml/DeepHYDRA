@@ -243,6 +243,7 @@ class MSCREDFull(nn.Module):
         super(MSCREDFull, self).__init__()
         self.name = 'MSCREDFull'
         self.lr = 0.0001
+        self.batch = 64
         self.n_feats = feats
         self.n_window = feats
 

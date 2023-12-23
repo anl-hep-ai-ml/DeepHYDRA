@@ -170,6 +170,10 @@ videos/
 *.npy
 *.csv
 
+# MacOS-specific files
+
+*.DS_Store
+
 # Datasets and checkpoints 
 
 **/datasets/
