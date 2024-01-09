@@ -238,7 +238,7 @@ def render_time_series(output_filename: str,
 
 if __name__ == '__main__':
 
-    for epoch in range(4):
+    for epoch in range(10):
         data = load_numpy_array(f'data/data_train_mscred_full_epoch_{epoch}.npy')
         pred = load_numpy_array(f'data/preds_train_mscred_full_epoch_{epoch}.npy')
 

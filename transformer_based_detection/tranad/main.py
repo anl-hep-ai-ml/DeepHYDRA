@@ -724,9 +724,12 @@ if __name__ == '__main__':
 
     summary_writer = SummaryWriter()
 
+    testD = testD.to('cpu')
+    testO = testO.to('cpu')
+
     if not args.test:
         print(f'{color.HEADER}Training {args.model} on {args.dataset}{color.ENDC}')
-        num_epochs = 5
+        num_epochs = 10
         # num_epochs = 1
         e = epoch + 1
         start = time()
@@ -744,6 +747,9 @@ if __name__ == '__main__':
 
             accuracy_list.append((lossT, lr))
 
+        trainD = trainD.to('cpu')
+        trainO = trainO.to('cpu')
+
         print(color.BOLD + 'Training time: ' + "{:10.4f}".format(time() - start) + ' s' + color.ENDC)
         save_model(model, optimizer, scheduler, e, accuracy_list)
         plot_accuracies(accuracy_list, f'{args.model}_{args.dataset}')
@@ -753,6 +759,10 @@ if __name__ == '__main__':
     torch.zero_grad = True
     model.eval()
     print(f'{color.HEADER}Testing {args.model} on {args.dataset}{color.ENDC}')
+
+    testD = testD.to(device)
+    testO = testO.to(device)
+
     loss, y_pred = backprop(0, model, testD, testO, optimizer, scheduler, training=False)
 
     torch.cuda.empty_cache()
@@ -765,10 +775,13 @@ if __name__ == '__main__':
 
         plotter(f'{args.model}_{args.dataset}', testO, y_pred, loss, labels)
 
+    testD = testD.to('cpu')
+    testO = testO.to('cpu')
+
     ### Scores
 
     df = pd.DataFrame()
-    lossT, _ = backprop(0, model, trainD, trainO, optimizer, scheduler, training=False)
+    lossT, _ = backprop(0, model, trainD.to(device), trainO.to(device), optimizer, scheduler, training=False)
 
     torch.cuda.empty_cache()
 
