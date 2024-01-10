@@ -378,11 +378,11 @@ def backprop(epoch,
             data_train = np.stack(data_train_list)
             preds_train = np.stack(preds_train_list)
 
-            _save_numpy_array(data_train, 
-                                f'data_train_mscred_epoch_{epoch}.npy')
+            # _save_numpy_array(data_train, 
+            #                     f'data_train_mscred_epoch_{epoch}.npy')
 
-            _save_numpy_array(preds_train, 
-                                f'preds_train_mscred_epoch_{epoch}.npy')
+            # _save_numpy_array(preds_train, 
+            #                     f'preds_train_mscred_epoch_{epoch}.npy')
 
             return np.mean(l1s), optimizer.param_groups[0]['lr']
 
@@ -408,11 +408,11 @@ def backprop(epoch,
             data_test = np.stack(data_test_list)
             preds_test = np.stack(preds_test_list)
 
-            _save_numpy_array(data_test, 
-                                f'data_test_mscred_epoch.npy')
+            # _save_numpy_array(data_test, 
+            #                     f'data_test_mscred.npy')
 
-            _save_numpy_array(preds_test, 
-                                f'preds_test_mscred_epoch.npy')
+            # _save_numpy_array(preds_test, 
+            #                     f'preds_test_mscred.npy')
 
             return loss.detach().cpu().numpy(), y_pred.detach().cpu().numpy()
 
@@ -571,8 +571,8 @@ def backprop(epoch,
 
                 elem = window[-1, :, :].view(1, local_bs, feats)
 
-                _save_model_attributes(model, d)
-                exit()
+                # _save_model_attributes(model, d)
+                # exit()
 
                 z = model(window, elem)
 
@@ -729,7 +729,8 @@ if __name__ == '__main__':
 
     if not args.test:
         print(f'{color.HEADER}Training {args.model} on {args.dataset}{color.ENDC}')
-        num_epochs = 10
+        num_epochs = 5
+        # num_epochs = 10
         # num_epochs = 1
         e = epoch + 1
         start = time()
@@ -747,8 +748,8 @@ if __name__ == '__main__':
 
             accuracy_list.append((lossT, lr))
 
-        trainD = trainD.to('cpu')
-        trainO = trainO.to('cpu')
+        trainD = trainD.cpu()
+        trainO = trainO.cpu()
 
         print(color.BOLD + 'Training time: ' + "{:10.4f}".format(time() - start) + ' s' + color.ENDC)
         save_model(model, optimizer, scheduler, e, accuracy_list)
@@ -767,6 +768,12 @@ if __name__ == '__main__':
 
     torch.cuda.empty_cache()
 
+    loss = loss.cpu()
+    y_pred = y_pred.cpu()
+    testD = testD.cpu()
+    testO = testO.cpu()
+    labels = labels.cpu()
+
     ### Plot curves
 
     if not args.test:
@@ -775,15 +782,14 @@ if __name__ == '__main__':
 
         plotter(f'{args.model}_{args.dataset}', testO, y_pred, loss, labels)
 
-    testD = testD.to('cpu')
-    testO = testO.to('cpu')
-
     ### Scores
 
     df = pd.DataFrame()
     lossT, _ = backprop(0, model, trainD.to(device), trainO.to(device), optimizer, scheduler, training=False)
 
     torch.cuda.empty_cache()
+
+    lossT = lossT.cpu()
 
     for i in range(loss.shape[1]):
         lt, l, ls = lossT[:, i], loss[:, i], labels[:, i]
@@ -799,17 +805,17 @@ if __name__ == '__main__':
         variant = f'{args.dataset.split("_")[-2].lower()}_'\
                                 f'{args.dataset.split("_")[-1]}'
 
-        augment_label = '_no_augment_' if augmentation_string == 'no_augment' else '_'
+        augment_label = 'no_augment_' if augmentation_string == 'no_augment' else ''
 
         _save_numpy_array(lossTfinal,
                             f'../../evaluation/reduced_detection_{variant}/'\
                                             f'predictions/{args.model.lower()}_'\
-                                            f'train{augment_label}seed_{int(args.seed)}.npy')
+                                            f'train_{augment_label}seed_{int(args.seed)}.npy')
 
         _save_numpy_array(lossTfinal,
                             f'../../evaluation/combined_detection_{variant}/'\
                                             f'predictions/{args.model.lower()}_'\
-                                            f'train{augment_label}seed_{int(args.seed)}.npy')
+                                            f'train_{augment_label}seed_{int(args.seed)}.npy')
 
         _save_numpy_array(lossFinal,
                             f'../../evaluation/reduced_detection_{variant}/'\

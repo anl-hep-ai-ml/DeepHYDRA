@@ -219,7 +219,7 @@ def get_scores_tranad(model_name,
         try:
             s = SPOT(q)  # SPOT object
             s.fit(pred_train, pred_test)  # data import
-            s.initialize(level=lms, min_extrema=False, verbose=True)  # initialization step
+            s.initialize(level=lms, min_extrema=False, verbose=False)  # initialization step
         except: lms = lms * 0.999
         else: break
     ret = s.run(dynamic=False)  # run
@@ -266,6 +266,7 @@ def get_scores_dagmm(model_name,
                             true,
                             q=1e-3,
                             level=0.02,
+                            thresh_tweak_factor=20,
                             to_csv=False):
     """
     Run POT method on given score.
@@ -281,18 +282,18 @@ def get_scores_dagmm(model_name,
         dict: pot result dict
     """
 
-    lms = 0.01
+    lms = 0.99995
     while True:
         try:
             s = SPOT(q)  # SPOT object
             s.fit(pred_train, pred_test)  # data import
-            s.initialize(level=lms, min_extrema=False, verbose=True)  # initialization step
+            s.initialize(level=lms, min_extrema=False, verbose=False)  # initialization step
         except: lms = lms * 0.999
         else: break
     ret = s.run(dynamic=False)  # run
     # print(len(ret['alarms']))
     # print(len(ret['thresholds']))
-    pot_th = np.mean(ret['thresholds']) * 0.1
+    pot_th = np.mean(ret['thresholds'])*thresh_tweak_factor
     # pot_th = np.percentile(score, 100 * lm[0])
     # np.percentile(score, 100 * lm[0])
 
@@ -355,30 +356,30 @@ def print_results(label: np.array,
 
     label = np.any(label, axis=1).astype(np.uint8)
 
-    # preds_tranad_train_no_augment =\
-    #     load_numpy_array(f'predictions/tranad_train_no_augment_seed_{seed}.npy')
-    # preds_tranad_no_augment =\
-    #     load_numpy_array(f'predictions/tranad_no_augment_seed_{seed}.npy')
-    # preds_tranad_train =\
-    #     load_numpy_array(f'predictions/tranad_train_seed_{seed}.npy')
-    # preds_tranad =\
-    #     load_numpy_array(f'predictions/tranad_seed_{seed}.npy')
-    # preds_l2_dist_train_mse_no_augment =\
-    #     load_numpy_array(f'predictions/l2_dist_train_mse_no_augment_seed_{seed}.npy')
-    # preds_l2_dist_mse_no_augment =\
-    #     load_numpy_array(f'predictions/l2_dist_mse_no_augment_seed_{seed}.npy')
-    # preds_l2_dist_train_smse_no_augment =\
-    #     load_numpy_array(f'predictions/l2_dist_train_smse_no_augment_seed_{seed}.npy')
-    # preds_l2_dist_smse_no_augment =\
-    #     load_numpy_array(f'predictions/l2_dist_smse_no_augment_seed_{seed}.npy')
-    # preds_l2_dist_train_mse =\
-    #     load_numpy_array(f'predictions/l2_dist_train_mse_seed_{seed}.npy')
+    preds_tranad_train_no_augment =\
+        load_numpy_array(f'predictions/tranad_train_no_augment_seed_{seed}.npy')
+    preds_tranad_no_augment =\
+        load_numpy_array(f'predictions/tranad_no_augment_seed_{seed}.npy')
+    preds_tranad_train =\
+        load_numpy_array(f'predictions/tranad_train_seed_{seed}.npy')
+    preds_tranad =\
+        load_numpy_array(f'predictions/tranad_seed_{seed}.npy')
+    preds_l2_dist_train_mse_no_augment =\
+        load_numpy_array(f'predictions/l2_dist_train_mse_no_augment_seed_{seed}.npy')
+    preds_l2_dist_mse_no_augment =\
+        load_numpy_array(f'predictions/l2_dist_mse_no_augment_seed_{seed}.npy')
+    preds_l2_dist_train_smse_no_augment =\
+        load_numpy_array(f'predictions/l2_dist_train_smse_no_augment_seed_{seed}.npy')
+    preds_l2_dist_smse_no_augment =\
+        load_numpy_array(f'predictions/l2_dist_smse_no_augment_seed_{seed}.npy')
+    preds_l2_dist_train_mse =\
+        load_numpy_array(f'predictions/l2_dist_train_mse_seed_{seed}.npy')
     preds_l2_dist_mse =\
         load_numpy_array(f'predictions/l2_dist_mse_seed_{seed}.npy')
-    # preds_l2_dist_train_smse =\
-    #     load_numpy_array(f'predictions/l2_dist_train_smse_seed_{seed}.npy')
-    # preds_l2_dist_smse =\
-    #     load_numpy_array(f'predictions/l2_dist_smse_seed_{seed}.npy')
+    preds_l2_dist_train_smse =\
+        load_numpy_array(f'predictions/l2_dist_train_smse_seed_{seed}.npy')
+    preds_l2_dist_smse =\
+        load_numpy_array(f'predictions/l2_dist_smse_seed_{seed}.npy')
 
     preds_dagmm_train =\
         load_numpy_array('predictions/dagmm_train_seed_42.npy')
@@ -396,64 +397,64 @@ def print_results(label: np.array,
 
     spot_train_size = int(len(preds_l2_dist_mse)*0.1)
 
-    # print('TranAD - No Augmentation:')
+    print('TranAD - No Augmentation:')
 
-    # preds_tranad_no_augment,\
-    #     get_scores_tranad('tranad_no_augment', seed,
-    #                         preds_tranad_train_no_augment,
-    #                         preds_tranad_no_augment,
-    #                         label[:len(preds_l2_dist_mse_no_augment)],
-    #                         0.01, 0.02, to_csv)
+    preds_tranad_no_augment,\
+        get_scores_tranad('tranad_no_augment', seed,
+                            preds_tranad_train_no_augment,
+                            preds_tranad_no_augment,
+                            label[:len(preds_l2_dist_mse_no_augment)],
+                            0.01, 0.02, to_csv)
 
-    # print('TranAD:')
+    print('TranAD:')
 
-    # preds_tranad,\
-    #     get_scores_tranad('tranad', seed,
-    #                         preds_tranad_train,
-    #                         preds_tranad,
-    #                         label[:len(preds_l2_dist_mse_no_augment)],
-    #                         0.01, 0.02, to_csv)
+    preds_tranad,\
+        get_scores_tranad('tranad', seed,
+                            preds_tranad_train,
+                            preds_tranad,
+                            label[:len(preds_l2_dist_mse_no_augment)],
+                            0.01, 0.02, to_csv)
 
-    # print('Informer-MSE - No Augmentation:')
+    print('Informer-MSE - No Augmentation:')
 
-    # offset = 16
+    offset = 16
 
-    # preds_l2_dist_mse_no_augment =\
-    #     get_scores('informer_mse_no_augment', seed,
-    #                     preds_l2_dist_train_mse_no_augment[:spot_train_size],
-    #                     preds_l2_dist_mse_no_augment,
-    #                     label[offset:len(preds_l2_dist_mse_no_augment) + offset], 0.1, 0.8, to_csv)
+    preds_l2_dist_mse_no_augment =\
+        get_scores('informer_mse_no_augment', seed,
+                        preds_l2_dist_train_mse_no_augment[:spot_train_size],
+                        preds_l2_dist_mse_no_augment,
+                        label[offset:len(preds_l2_dist_mse_no_augment) + offset], 0.1, 0.8, to_csv)
 
 
-    # print('Informer-SMSE - No Augmentation:')
+    print('Informer-SMSE - No Augmentation:')
 
-    # offset = 64
+    offset = 64
 
-    # preds_l2_dist_smse_no_augment =\
-    #     get_scores('informer_smse_no_augment', seed,
-    #                     preds_l2_dist_train_smse_no_augment[:spot_train_size],
-    #                     preds_l2_dist_smse_no_augment,
-    #                     label[offset:len(preds_l2_dist_smse_no_augment) + offset], 0.005, 0.8, to_csv)
+    preds_l2_dist_smse_no_augment =\
+        get_scores('informer_smse_no_augment', seed,
+                        preds_l2_dist_train_smse_no_augment[:spot_train_size],
+                        preds_l2_dist_smse_no_augment,
+                        label[offset:len(preds_l2_dist_smse_no_augment) + offset], 0.005, 0.8, to_csv)
     
-    # print('Informer-MSE:')
+    print('Informer-MSE:')
 
-    # offset = 16
+    offset = 16
 
-    # preds_l2_dist_mse =\
-    #     get_scores('informer_mse', seed,
-    #                     preds_l2_dist_train_mse[:spot_train_size],
-    #                     preds_l2_dist_mse,
-    #                     label[offset:len(preds_l2_dist_mse) + offset], 0.007, 0.8, to_csv)
+    preds_l2_dist_mse =\
+        get_scores('informer_mse', seed,
+                        preds_l2_dist_train_mse[:spot_train_size],
+                        preds_l2_dist_mse,
+                        label[offset:len(preds_l2_dist_mse) + offset], 0.007, 0.8, to_csv)
 
-    # print('Informer-SMSE:')
+    print('Informer-SMSE:')
 
-    # offset = 64
+    offset = 64
 
-    # preds_l2_dist_smse =\
-    #     get_scores('informer_smse', seed,
-    #                     preds_l2_dist_train_smse[:spot_train_size],
-    #                     preds_l2_dist_smse,
-    #                     label[offset:len(preds_l2_dist_smse) + offset], 0.008, 0.8, to_csv)
+    preds_l2_dist_smse =\
+        get_scores('informer_smse', seed,
+                        preds_l2_dist_train_smse[:spot_train_size],
+                        preds_l2_dist_smse,
+                        label[offset:len(preds_l2_dist_smse) + offset], 0.008, 0.8, to_csv)
 
     print('DAGMM:')
 
@@ -461,23 +462,27 @@ def print_results(label: np.array,
         get_scores_dagmm('dagmm', 42,
                             preds_dagmm_train[:spot_train_size],
                             preds_dagmm,
-                            label, 0.0000000001, 0.02, to_csv)
+                            label, 0.001, 0.8, 20.5, to_csv)
 
     print('USAD:')
 
-    preds_dagmm =\
+    preds_usad =\
         get_scores_dagmm('usad', 42,
                             preds_usad_train[:spot_train_size],
                             preds_usad,
-                            label, 0.0000000001, 0.02, to_csv)
+                            label, 0.001, 0.8, 33.5, to_csv)
 
     print('MSCRED:')
 
-    preds_dagmm =\
-        get_scores_dagmm('mscred', 42,
+    # get_scores('mscred', 42,
+    #                         preds_mscred_train[:spot_train_size],
+    #                         preds_mscred,
+    #                         label, 0.00005, 0.4, to_csv)
+
+    get_scores_dagmm('mscred', 42,
                             preds_mscred_train[:spot_train_size],
                             preds_mscred,
-                            label, 0.0000000001, 0.02, to_csv)
+                            label, 0.001, 0.8, 780, to_csv)
     
 
 if __name__ == '__main__':

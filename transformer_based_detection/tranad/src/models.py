@@ -136,6 +136,7 @@ class OmniAnomaly(nn.Module):
         self.n_hidden = 32
         self.n_latent = 8
         self.lstm = nn.GRU(feats, self.n_hidden, 2)
+
         self.encoder = nn.Sequential(
             nn.Linear(self.n_hidden, self.n_hidden), nn.PReLU(),
             nn.Linear(self.n_hidden, self.n_hidden), nn.PReLU(),
