@@ -6,6 +6,8 @@ from collections import defaultdict
 
 import numpy as np
 import pandas as pd
+import prince
+from sklearn.preprocessing import StandardScaler
 import cv2 as cv
 import matplotlib.pyplot as plt
 from tqdm import tqdm
@@ -24,32 +26,47 @@ thickness = 1
 line_type = 2
 
 
-def find_timestamp_jumps(index: pd.DatetimeIndex) -> None:
+def run_pca(data_df: pd.DataFrame,
+                cols_without_contribution_all):
 
-        delta = index[1:] - index[:-1]
+    data_np = data_df.to_numpy(dtype=np.float64)
+    scaler = StandardScaler()
 
-        index = pd.Series(index)
+    scaler.fit(data_np)
 
-        for i in range(0, len(index) - 1):
-            if delta[i] >= pd.Timedelta(10, unit='s'):
-                # print(f'Found timestamp jump at {i} between '
-                #         f'timestamps {index[i]} and {index[i+1]}')
-                print(index[i])
-                print(index[i+1])
-            
+    data_scaled_np =\
+        scaler.transform(data_np)
 
-def create_channel_names(median_labels, stdev_labels):
+    dataset_df = pd.DataFrame(data_scaled_np,
+                                index=data_df.index,
+                                columns=data_df.columns)
 
-    median_labels = ['m_{}'.format(median_label)\
-                        for median_label in median_labels]
+    pca = prince.PCA(n_components=32, 
+                            n_iter=10,
+                            copy=True,
+                            check_input=True,
+                            random_state=42,
+                            engine='sklearn')
 
-    stdev_labels = ['std_{}'.format(stdev_label)
-                        for stdev_label in stdev_labels]
+    pca = pca.fit(data_df)
 
-    labels = np.concatenate((median_labels,
-                                stdev_labels))
+    print('Eigenvalue summary:')
+    print(pca.eigenvalues_summary)
 
-    return labels
+    cols_without_contribution = []
+
+    for index, data in pca.column_contributions_.iterrows():
+        if data.sum() <= 0.01:
+            cols_without_contribution.append(index)
+
+    if cols_without_contribution_all is None:
+        cols_without_contribution_all = cols_without_contribution
+    else:
+        cols_without_contribution_all =\
+            np.intersect1d(cols_without_contribution_all,
+                                cols_without_contribution)
+
+    return cols_without_contribution_all
 
 
 def fig_to_numpy_array(fig):
@@ -115,11 +132,33 @@ if __name__ == '__main__':
     test_set_x_df.set_index(label_indices, inplace=True)
     test_set_y_df.set_index(label_indices, inplace=True)
 
+    # Run PCA and drop columns that don't contribute
+    # to dataset variation
+
+    cols_without_contribution_all = None
+
+    cols_without_contribution_all =\
+                    run_pca(train_set_x_df,
+                                cols_without_contribution_all)
+
+    cols_without_contribution_all =\
+                    run_pca(test_set_x_df,
+                                cols_without_contribution_all)
+
+    print('Cols without contribution')
+    print(f'Amount: {len(cols_without_contribution_all)}')
+    print(f'Relative amount: {100*len(cols_without_contribution_all)/len(train_set_x_df.columns):3f} %')
+    
+    train_set_x_df.drop(cols_without_contribution_all,
+                                    axis=1, inplace=True)
+    test_set_x_df.drop(cols_without_contribution_all,
+                                    axis=1, inplace=True)
+
     train_set_x_df['app_name'] = train_set_y_df['app_name']
     train_set_x_df['binary_anom'] = train_set_y_df['binary_anom']
 
     test_set_x_df['app_name'] = test_set_y_df['app_name']
-    train_set_x_df['binary_anom'] = train_set_y_df['binary_anom']
+    test_set_x_df['binary_anom'] = test_set_y_df['binary_anom']
 
     train_set_x_df.reset_index(inplace=True)
     test_set_x_df.reset_index(inplace=True)
@@ -171,7 +210,7 @@ if __name__ == '__main__':
 
             per_instance_data = per_app_data.xs(id_, level=1)
 
-            print(f'ID: {id_}: {len(per_instance_data)}')
+            # print(f'ID: {id_}: {len(per_instance_data)}')
 
             timestamps = per_instance_data.reset_index()['timestamp']
 
@@ -180,8 +219,8 @@ if __name__ == '__main__':
             delta = timestamps[1:] - timestamps[:-1]
             delta = pd.Series(delta)
 
-            print(f'Delta mean: {delta.mean():.5f}\tmedian: {delta.median():.5f}'\
-                                        f'\tmin: {delta.min()}\tmax: {delta.max()}')
+            # print(f'Delta mean: {delta.mean():.5f}\tmedian: {delta.median():.5f}'\
+            #                             f'\tmin: {delta.min()}\tmax: {delta.max()}')
 
             lengths.append(len(timestamps))
 
@@ -200,23 +239,6 @@ if __name__ == '__main__':
             if timestamps[-1] > end_max:
                 end_max = timestamps[-1]
                 id_end_max = id_
-
-            # print(f'Timestamp range: {timestamps.min()} - {timestamps.max()}')
-
-        print(f'Earliest timestamp at: {id_start_min}'
-                            f'\ttimestamp: {start_min}'\
-                            f'\tstart time mean: {np.mean(starts):.3f}'\
-                            f'\tstart time std: {np.std(starts):.3f}')
-
-        print(f'Latest timestamp at: {id_end_max}'\
-                            f'\ttimestamp: {end_max}'\
-                            f'\tend time mean: {np.mean(ends):.3f}'\
-                            f'\tend time std: {np.std(ends):.3f}')
-
-        print(f'Longest series at: {id_length_max}'\
-                            f'\tlength: {length_max}'\
-                            f'\tlength mean: {np.mean(lengths):.3f}'\
-                            f'\tlength std: {np.std(lengths):.3f}')
 
     print('\nTest\n')
 
@@ -245,7 +267,7 @@ if __name__ == '__main__':
 
             per_instance_data = per_app_data.xs(id_, level=1)
 
-            print(f'ID: {id_}: {len(per_instance_data)}')
+            # print(f'ID: {id_}: {len(per_instance_data)}')
 
             timestamps = per_instance_data.reset_index()['timestamp']
 
@@ -254,8 +276,8 @@ if __name__ == '__main__':
             delta = timestamps[1:] - timestamps[:-1]
             delta = pd.Series(delta)
 
-            print(f'Delta mean: {delta.mean():.5f}\tmedian: {delta.median():.5f}'\
-                                        f'\tmin: {delta.min()}\tmax: {delta.max()}')
+            # print(f'Delta mean: {delta.mean():.5f}\tmedian: {delta.median():.5f}'\
+            #                             f'\tmin: {delta.min()}\tmax: {delta.max()}')
 
             lengths.append(len(timestamps))
 
@@ -275,83 +297,67 @@ if __name__ == '__main__':
                 end_max = timestamps[-1]
                 id_end_max = id_
 
-        print(f'Earliest timestamp at: {id_start_min}'
-                            f'\ttimestamp: {start_min}'\
-                            f'\tstart time mean: {np.mean(starts):.3f}'\
-                            f'\tstart time std: {np.std(starts):.3f}')
-
-        print(f'Latest timestamp at: {id_end_max}'\
-                            f'\ttimestamp: {end_max}'\
-                            f'\tend time mean: {np.mean(ends):.3f}'\
-                            f'\tend time std: {np.std(ends):.3f}')
-
-        print(f'Longest series at: {id_length_max}'\
-                            f'\tlength: {length_max}'\
-                            f'\tlength mean: {np.mean(lengths):.3f}'\
-                            f'\tlength std: {np.std(lengths):.3f}')
-
     exit()
-
+ 
     # Unlabeled train set
 
     # Reduce dataset
 
-    rack_data_train_unlabeled_all = []
+    app_data_train_unlabeled_all = []
 
     columns_reduced_train_unlabeled = None
     keys_last = None
 
     train_set_unlabeled_x_df = train_set_x_df
 
-    print(f'Train set size total: {len(train_set_x_df)}')
-
     for count, row_x_data in enumerate(tqdm(train_set_unlabeled_x_df.to_numpy(),
                                                 desc='Generating unlabeled train set')):
 
-        rack_buckets_data = defaultdict(list)
+        app_buckets_data = defaultdict(list)
 
         for index, datapoint in enumerate(row_x_data):
-            rack_buckets_data[rack_numbers_train[index]].append(datapoint)
+            app_buckets_data[app_numbers_train[index]].append(datapoint)
 
-        rack_median_dcm_rates = {}
-        rack_dcm_rate_stdevs = {}
+        app_data_mean
+        app_median_dcm_rates = {}
+        app_dcm_rate_stdevs = {}
 
-        for rack, rack_bucket in rack_buckets_data.items():
-            rack_median_dcm_rates[rack] = np.nanmedian(rack_bucket)
-            rack_dcm_rate_stdevs[rack] = np.nanstd(rack_bucket)
+        for app, app_bucket in app_buckets_data.items():
+            app_median_dcm_rates[app] = np.nanmedian(app_bucket)
+            app_dcm_rate_stdevs[app] = np.nanstd(app_bucket)
 
-        rack_median_dcm_rates = dict(sorted(rack_median_dcm_rates.items()))
-        rack_dcm_rate_stdevs = dict(sorted(rack_dcm_rate_stdevs.items()))
+        app_median_dcm_rates = dict(sorted(app_median_dcm_rates.items()))
+        app_dcm_rate_stdevs = dict(sorted(app_dcm_rate_stdevs.items()))
 
         if keys_last != None:
-            assert rack_median_dcm_rates.keys() == keys_last,\
-                                                    'Rack bucket keys changed between slices'
+            assert app_median_dcm_rates.keys() == keys_last,\
+                                                    'App bucket keys changed between slices'
 
-            assert rack_median_dcm_rates.keys() == rack_dcm_rate_stdevs.keys(),\
-                                                    'Rack bucket keys not identical'
+            assert app_median_dcm_rates.keys() == app_dcm_rate_stdevs.keys(),\
+                                                    'App bucket keys not identical'
 
-        keys_last = rack_median_dcm_rates.keys()
+        keys_last = app_median_dcm_rates.keys()
 
         if type(columns_reduced_train_unlabeled) == type(None):
-            columns_reduced_train_unlabeled = create_channel_names(rack_median_dcm_rates.keys(),
-                                                                    rack_dcm_rate_stdevs.keys())
+            columns_reduced_train_unlabeled = create_channel_names(app_median_dcm_rates.keys(),
+                                                                    app_dcm_rate_stdevs.keys())
 
-        rack_data_np = np.concatenate((np.array(list(rack_median_dcm_rates.values())),
-                                            np.array(list(rack_dcm_rate_stdevs.values()))))
+        app_data_np = np.concatenate((np.array(list(app_median_dcm_rates.values())),
+                                            np.array(list(app_dcm_rate_stdevs.values()))))
 
-        rack_data_train_unlabeled_all.append(rack_data_np)
+        app_data_train_unlabeled_all.append(app_data_np)
 
-    rack_data_train_unlabeled_all_np = np.stack(rack_data_train_unlabeled_all)
-    rack_data_train_unlabeled_all_np = np.nan_to_num(rack_data_train_unlabeled_all_np, nan=-1)
+    app_data_train_unlabeled_all_np = np.stack(app_data_train_unlabeled_all)
+    app_data_train_unlabeled_all_np = np.nan_to_num(app_data_train_unlabeled_all_np, nan=-1)
 
-    nan_amount_train_unlabeled = 100*pd.isna(rack_data_train_unlabeled_all_np.flatten()).sum()/\
-                                                            rack_data_train_unlabeled_all_np.size
+    nan_amount_train_unlabeled = 100*pd.isna(app_data_train_unlabeled_all_np.flatten()).sum()/\
+                                                            app_data_train_unlabeled_all_np.size
 
     print('NaN amount reduced train set: {:.3f} %'.format(nan_amount_train_unlabeled))
 
     # Save dataset
 
-    train_set_unlabeled_x_df = pd.DataFrame(rack_data_train_unlabeled_all_np,
+    train_set_unlabeled_x_df = pd.DataFrame(app_data_train_unlabeled_all_np,
                                                         train_set_unlabeled_x_df.index,
                                                         columns_reduced_train_unlabeled)
 
@@ -368,7 +374,7 @@ if __name__ == '__main__':
                                             f'train_set_{args.variant}.mp4',
                                         four_cc, 60, (image_width, image_height))
 
-        for count in tqdm(range(len(rack_data_train_unlabeled_all_np)),
+        for count in tqdm(range(len(app_data_train_unlabeled_all_np)),
                             desc='Generating unlabeled train set animation'):
 
             lower_bound = max(count - plot_window_size, 0)
@@ -376,8 +382,8 @@ if __name__ == '__main__':
 
             fig, ax = plt.subplots(figsize=(8, 4.5), dpi=240)
 
-            max_val_slice = np.max(rack_data_train_unlabeled_all_np[lower_bound:count, :])\
-                                if len(rack_data_train_unlabeled_all_np[lower_bound:count, :])\
+            max_val_slice = np.max(app_data_train_unlabeled_all_np[lower_bound:count, :])\
+                                if len(app_data_train_unlabeled_all_np[lower_bound:count, :])\
                             else 10
 
             max_val_slice = min(max_val_slice, 200)
@@ -387,12 +393,12 @@ if __name__ == '__main__':
 
             ax.grid(True)
 
-            ax.set_title("Per-Rack Median DCM Rates")
+            ax.set_title("Per-app Median DCM Rates")
             ax.set_xlabel("Timestep")
             ax.set_ylabel("DCM Rate")
 
             ax.plot(np.arange(lower_bound, count),
-                                rack_data_train_unlabeled_all_np[lower_bound:count, :])
+                                app_data_train_unlabeled_all_np[lower_bound:count, :])
 
             # plt.tight_layout()
 
@@ -403,850 +409,3 @@ if __name__ == '__main__':
             plt.close()
 
         writer.release()
-
-    # Labeled train set
-
-    test_set_size = len(test_set_x_df)
-
-    train_set_labeled_x_df = test_set_x_df.iloc[:test_set_size//4, :]
-
-    for count in range(1, len(train_set_labeled_x_df.index)):
-        if train_set_labeled_x_df.index[count] <=\
-                train_set_labeled_x_df.index[count-1]:
-            print(f'Non-monotonic timestamp increase at {count-1}:\t'
-                    f'First timestamp: {train_set_labeled_x_df.index[count-1]}\t'
-                     f'Second timestamp: {train_set_labeled_x_df.index[count]}')
-
-    column_names = train_set_labeled_x_df.columns
-    timestamps = train_set_labeled_x_df.index
-
-    # Generate labels for actual anomalies
-
-    labels = generate_anomaly_labels(tpu_failure_log_df,
-                                                timestamps,
-                                                column_names,
-                                                np.array(tpu_numbers_test),
-                                                prepad=5).to_numpy()
-    
-    # Generate synthetic anomalies and corresponding labels
-
-    anomaly_generator_train_labeled = MultivariateDataGenerator(train_set_labeled_x_df,
-                                                                                labels,
-                                                                                window_size_min=16,
-                                                                                window_size_max=256)
-
-    anomaly_generator_train_labeled.point_global_outliers(rack_count=3,
-                                                                ratio=0.001,
-                                                                factor=0.5,
-                                                                radius=50)
-    
-    anomaly_generator_train_labeled.point_contextual_outliers(rack_count=3,
-                                                                    ratio=0.001,
-                                                                    factor=0.5,
-                                                                    radius=50)
-
-    anomaly_generator_train_labeled.persistent_global_outliers(rack_count=3,
-                                                                    ratio=0.01,
-                                                                    factor=1,
-                                                                    radius=50)
-    
-    anomaly_generator_train_labeled.persistent_contextual_outliers(rack_count=3,
-                                                                        ratio=0.005,
-                                                                        factor=0.5,
-                                                                        radius=50)
-
-    anomaly_generator_train_labeled.collective_global_outliers(rack_count=3,
-                                                                    ratio=0.005,
-                                                                    option='square',
-                                                                    coef=5,
-                                                                    noise_amp=0.5,
-                                                                    level=10,
-                                                                    freq=0.1)
-
-    anomaly_generator_train_labeled.collective_trend_outliers(rack_count=3,
-                                                                    ratio=0.005,
-                                                                    factor=0.5)
-
-    # Reduce dataset and labels
-
-    dataset = anomaly_generator_train_labeled.get_dataset_np()
-    
-    labels = remove_undetectable_anomalies(
-                        np.nan_to_num(dataset),
-                        anomaly_generator_train_labeled.get_labels_np())
-
-    rack_data_train_labeled_all = []
-    rack_labels_train_labeled_all = []
-
-    columns_reduced_train_labeled = None
-    keys_last = None
-
-    for count, (row_x_data, row_x_labels)\
-            in enumerate(tqdm(zip(dataset, labels),
-                                total=len(dataset),
-                                desc='Generating labeled train set')):
-
-        rack_buckets_data = defaultdict(list)
-        rack_buckets_labels = defaultdict(list)
-
-        for index, datapoint in enumerate(row_x_data):
-            rack_buckets_data[rack_numbers_test[index]].append(datapoint)
-
-        for index, label in enumerate(row_x_labels):
-            rack_buckets_labels[rack_numbers_test[index]].append(label)
-
-        rack_median_dcm_rates = {}
-        rack_dcm_rate_stdevs = {}
-        rack_labels = {}
-
-        for rack, rack_bucket in rack_buckets_data.items():
-            rack_median_dcm_rates[rack] = np.nanmedian(rack_bucket)
-            rack_dcm_rate_stdevs[rack] = np.nanstd(rack_bucket)
-
-        for rack, rack_bucket in rack_buckets_labels.items():
-
-            rack_label = 0
-
-            for label in rack_bucket:
-                rack_label = rack_label | label
-                
-            rack_labels[rack] = rack_label
-
-        rack_median_dcm_rates = dict(sorted(rack_median_dcm_rates.items()))
-        rack_dcm_rate_stdevs = dict(sorted(rack_dcm_rate_stdevs.items()))
-
-        rack_labels = dict(sorted(rack_labels.items()))
-
-        if keys_last != None:
-            assert rack_median_dcm_rates.keys() == keys_last,\
-                                                    'Rack bucket keys changed between slices'
-
-            assert (rack_median_dcm_rates.keys() == rack_dcm_rate_stdevs.keys()) and\
-                                (rack_median_dcm_rates.keys() == rack_labels.keys()),\
-                                                        'Rack bucket keys not identical'
-
-        keys_last = rack_median_dcm_rates.keys()
-
-        if type(columns_reduced_train_labeled) == type(None):
-            columns_reduced_train_labeled = create_channel_names(rack_median_dcm_rates.keys(),
-                                                            rack_dcm_rate_stdevs.keys())
-            
-            assert np.array_equal(columns_reduced_train_labeled, columns_reduced_train_unlabeled),\
-                                            "Labeled train columns don't match unlabeled train columns" 
-
-        rack_data_np = np.concatenate((np.array(list(rack_median_dcm_rates.values())),
-                                            np.array(list(rack_dcm_rate_stdevs.values()))))
-
-        rack_data_train_labeled_all.append(rack_data_np)
-
-        rack_labels_train_labeled_all.append(np.array(list(rack_labels.values())))
-
-    rack_data_train_labeled_all_np = np.stack(rack_data_train_labeled_all)
-    rack_data_train_labeled_all_np = np.nan_to_num(rack_data_train_labeled_all_np, nan=-1)
-
-    nan_amount_train_labeled = 100*pd.isna(rack_data_train_labeled_all_np.flatten()).sum()/\
-                                                            rack_data_train_labeled_all_np.size
-
-    print('NaN amount reduced labeled train set: {:.3f} %'.format(nan_amount_train_labeled))
-
-    rack_labels_train_labeled_all_np = np.stack(rack_labels_train_labeled_all)
-
-    rack_labels_train_labeled_all_np = np.concatenate([rack_labels_train_labeled_all_np,\
-                                                        rack_labels_train_labeled_all_np],
-                                                        axis=1)
-    
-    # Save dataset and labels
-
-    train_set_labeled_x_df = pd.DataFrame(rack_data_train_labeled_all_np,
-                                                                timestamps,
-                                                                columns_reduced_train_labeled)
-
-    train_set_labeled_y_df = pd.DataFrame(rack_labels_train_labeled_all_np,
-                                                                timestamps,
-                                                                columns_reduced_train_labeled)
-
-    anomalies_per_column = np.count_nonzero(rack_labels_train_labeled_all_np, axis=0)
-
-    anomaly_ratio_per_column = anomalies_per_column/\
-                                len(rack_labels_train_labeled_all_np)
-
-    for anomalies, anomaly_ratio, column_name in zip(anomalies_per_column,
-                                                        anomaly_ratio_per_column,
-                                                        columns_reduced_train_labeled):
-
-        print(f'{column_name}: {anomalies} anomalies, {100*anomaly_ratio} % of all data')
-
-    train_set_labeled_x_df.to_hdf(f'{args.dataset_dir}/reduced_hlt_'\
-                                        f'labeled_train_set_{args.variant}_x.h5',
-                                    key='reduced_hlt_labeled_train_set_x',
-                                    mode='w')
-
-    train_set_labeled_y_df.to_hdf(f'{args.dataset_dir}/reduced_hlt_'\
-                                        f'labeled_train_set_{args.variant}_y.h5',
-                                    key='reduced_hlt_labeled_train_set_y',
-                                    mode='w')
-
-    if args.generate_videos:
-
-        writer = cv.VideoWriter(f'{args.video_output_dir}/reduced_hlt_'
-                                        f'labeled_train_set_{args.variant}.mp4',
-                                    four_cc, 60, (image_width, image_height))
-
-
-        for count in tqdm(range(len(rack_data_train_labeled_all_np)),
-                        desc='Generating labeled train set animation'):
-
-            lower_bound = max(count - plot_window_size, 0)
-            upper_bound_axis = max(count, plot_window_size) + 10
-
-            fig, ax = plt.subplots(figsize=(8, 4.5), dpi=240)
-
-            max_val_slice = np.max(rack_data_train_labeled_all_np[lower_bound:count, :])\
-                                if len(rack_data_train_labeled_all_np[lower_bound:count, :])\
-                                else 10
-
-            max_val_slice = min(max_val_slice, 200)
-
-            ax.set_xlim(lower_bound, upper_bound_axis)
-            ax.set_ylim(-2, max_val_slice + 10)
-
-            ax.grid(True)
-
-            ax.set_title("Per-Rack Median DCM Rates")
-            ax.set_xlabel("Timestep")
-            ax.set_ylabel("DCM Rate")
-
-            ax.plot(np.arange(lower_bound, count),
-                                rack_data_train_labeled_all_np[lower_bound:count, :])
-
-            # plt.tight_layout()
-
-            frame = fig_to_numpy_array(fig)
-
-            writer.write(frame)
-
-            plt.close()
-
-        writer.release()
-
-    # Unreduced test set
-
-    column_names = test_set_x_df.columns
-    timestamps = test_set_x_df.index
-
-    # Generate labels for actual anomalies
-
-    labels_actual = generate_anomaly_labels(tpu_failure_log_df,
-                                                    timestamps,
-                                                    column_names,
-                                                    np.array(tpu_numbers_test),
-                                                    prepad=5).to_numpy()
-
-    # Generate synthetic anomalies and corresponding labels
-
-    anomaly_generator_test = MultivariateDataGenerator(test_set_x_df,
-                                                            labels_actual,
-                                                            window_size_min=16,
-                                                            window_size_max=256)
-
-    anomaly_generator_test.point_global_outliers(rack_count=3,
-                                                        ratio=0.001,
-                                                        factor=0.5,
-                                                        radius=50)
-    
-    anomaly_generator_test.point_contextual_outliers(rack_count=3,
-                                                        ratio=0.001,
-                                                        factor=0.5,
-                                                        radius=50)
-
-    anomaly_generator_test.persistent_global_outliers(rack_count=3,
-                                                            ratio=0.005,
-                                                            factor=0.5,
-                                                            radius=50)
-    
-    anomaly_generator_test.persistent_contextual_outliers(rack_count=3,
-                                                                ratio=0.005,
-                                                                factor=0.5,
-                                                                radius=50)
-
-    anomaly_generator_test.collective_global_outliers(rack_count=3,
-                                                            ratio=0.005,
-                                                            option='square',
-                                                            coef=5,
-                                                            noise_amp=0.05,
-                                                            level=10,
-                                                            freq=0.1)
-
-    anomaly_generator_test.collective_trend_outliers(rack_count=3,
-                                                            ratio=0.005,
-                                                            factor=0.5)
-
-    anomaly_generator_test.intra_rack_outliers(ratio_temporal=0.001,
-                                                    ratio_channels=0.05,
-                                                    average_duration=10.,
-                                                    stdev_duration=1.)
-
-    labels_unreduced =\
-        remove_undetectable_anomalies(
-            np.nan_to_num(anomaly_generator_test.get_dataset_np()),
-            anomaly_generator_test.get_labels_np())
-
-    # Save dataset and labels
-
-    test_set_unreduced_x_df =\
-        pd.DataFrame(anomaly_generator_test.get_dataset_np(),
-                        anomaly_generator_test.get_timestamps_pd(),
-                        test_set_x_df.columns)
-
-    test_set_unreduced_y_df =\
-        pd.DataFrame(labels_unreduced,
-                        anomaly_generator_test.get_timestamps_pd(),
-                        test_set_x_df.columns)
-
-    test_set_unreduced_x_df.to_hdf(
-            f'{args.dataset_dir}/unreduced_hlt_test_set_{args.variant}_x.h5',
-            key='unreduced_hlt_test_set_x', mode='w')
-
-    test_set_unreduced_y_df.to_hdf(
-            f'{args.dataset_dir}/unreduced_hlt_test_set_{args.variant}_y.h5',
-            key='unreduced_hlt_test_set_y', mode='w')
-    
-    # Reduced test set
-
-    # Generate synthetic anomalies and corresponding labels
-
-    anomaly_generator_test = MultivariateDataGenerator(test_set_x_df,
-                                                            labels_actual,
-                                                            window_size_min=16,
-                                                            window_size_max=256)
-
-    anomaly_generator_test.point_global_outliers(rack_count=3,
-                                                        ratio=0.001,
-                                                        factor=0.5,
-                                                        radius=50)
-    
-    anomaly_generator_test.point_contextual_outliers(rack_count=3,
-                                                        ratio=0.001,
-                                                        factor=0.5,
-                                                        radius=50)
-
-    anomaly_generator_test.persistent_global_outliers(rack_count=3,
-                                                            ratio=0.005,
-                                                            factor=0.5,
-                                                            radius=50)
-    
-    anomaly_generator_test.persistent_contextual_outliers(rack_count=3,
-                                                                ratio=0.005,
-                                                                factor=0.5,
-                                                                radius=50)
-
-    anomaly_generator_test.collective_global_outliers(rack_count=3,
-                                                            ratio=0.005,
-                                                            option='square',
-                                                            coef=5,
-                                                            noise_amp=0.05,
-                                                            level=10,
-                                                            freq=0.1)
-
-    anomaly_generator_test.collective_trend_outliers(rack_count=3,
-                                                            ratio=0.005,
-                                                            factor=0.5)
-
-    # Reduce dataset and labels
-
-    dataset = anomaly_generator_test.get_dataset_np()
-
-    labels = remove_undetectable_anomalies(
-                        np.nan_to_num(dataset),
-                        anomaly_generator_test.get_labels_np())
-
-    rack_data_test_all = []
-    rack_labels_test_all = []
-
-    columns_reduced_test = None
-    keys_last = None
-
-    for count, (row_x_data, row_x_labels)\
-            in enumerate(tqdm(zip(dataset, labels),
-                                total=len(dataset),
-                                desc='Generating test set')):
-
-        rack_buckets_data = defaultdict(list)
-        rack_buckets_labels = defaultdict(list)
-
-        for index, datapoint in enumerate(row_x_data):
-            rack_buckets_data[rack_numbers_test[index]].append(datapoint)
-
-        for index, label in enumerate(row_x_labels):
-            rack_buckets_labels[rack_numbers_test[index]].append(label)
-
-        rack_median_dcm_rates = {}
-        rack_dcm_rate_stdevs = {}
-        rack_labels = {}
-
-        for rack, rack_bucket in rack_buckets_data.items():
-            rack_median_dcm_rates[rack] = np.nanmedian(rack_bucket)
-            rack_dcm_rate_stdevs[rack] = np.nanstd(rack_bucket)
-
-        for rack, rack_bucket in rack_buckets_labels.items():
-
-            rack_label = 0
-
-            for label in rack_bucket:
-                rack_label = rack_label | label
-                
-            rack_labels[rack] = rack_label
-
-        rack_median_dcm_rates = dict(sorted(rack_median_dcm_rates.items()))
-        rack_dcm_rate_stdevs = dict(sorted(rack_dcm_rate_stdevs.items()))
-
-        rack_labels = dict(sorted(rack_labels.items()))
-
-        if keys_last != None:
-            assert rack_median_dcm_rates.keys() == keys_last,\
-                            'Rack bucket keys changed between slices'
-
-            assert (rack_median_dcm_rates.keys() == rack_dcm_rate_stdevs.keys()) and\
-                                (rack_median_dcm_rates.keys() == rack_labels.keys()),\
-                                                        'Rack bucket keys not identical'
-
-        keys_last = rack_median_dcm_rates.keys()
-
-        if type(columns_reduced_test) == type(None):
-            columns_reduced_test = create_channel_names(rack_median_dcm_rates.keys(),
-                                                            rack_dcm_rate_stdevs.keys())
-            
-            assert np.array_equal(columns_reduced_test, columns_reduced_train_unlabeled),\
-                                                    "Test columns don't match train columns" 
-
-        rack_data_np = np.concatenate((np.array(list(rack_median_dcm_rates.values())),
-                                            np.array(list(rack_dcm_rate_stdevs.values()))))
-
-        rack_data_test_all.append(rack_data_np)
-
-        rack_labels_test_all.append(np.array(list(rack_labels.values())))
-
-    rack_data_test_all_np = np.stack(rack_data_test_all)
-    rack_data_test_all_np = np.nan_to_num(rack_data_test_all_np, nan=-1)
-
-    nan_amount_test = 100*pd.isna(rack_data_test_all_np.flatten()).sum()/\
-                                                    rack_data_test_all_np.size
-
-    print('NaN amount reduced test set: {:.3f} %'.format(nan_amount_test))
-
-    rack_labels_test_all_np = np.stack(rack_labels_test_all)
-
-    rack_labels_test_all_np = np.concatenate([rack_labels_test_all_np,\
-                                                rack_labels_test_all_np],
-                                                axis=1)
-    
-    # Save dataset and labels
-
-    test_set_reduced_x_df = pd.DataFrame(rack_data_test_all_np,
-                                            anomaly_generator_test.get_timestamps_pd(),
-                                            columns_reduced_test)
-
-    test_set_reduced_y_df = pd.DataFrame(rack_labels_test_all_np,
-                                            anomaly_generator_test.get_timestamps_pd(),
-                                            columns_reduced_test)
-
-    anomalies_per_column = np.count_nonzero(rack_labels_test_all_np, axis=0)
-
-    anomaly_ratio_per_column = anomalies_per_column/\
-                                    len(rack_labels_test_all_np)
-
-    for anomalies, anomaly_ratio, column_name in zip(anomalies_per_column,
-                                                        anomaly_ratio_per_column,
-                                                        columns_reduced_test):
-
-        print(f'{column_name}: {anomalies} anomalies, {100*anomaly_ratio} % of all data')
-
-    test_set_reduced_x_df.to_hdf(f'{args.dataset_dir}/reduced_hlt_'
-                                        f'test_set_{args.variant}_x.h5',
-                                    key='reduced_hlt_test_set_x',
-                                    mode='w')
-
-    test_set_reduced_y_df.to_hdf(f'{args.dataset_dir}/reduced_hlt_'
-                                        f'test_set_{args.variant}_y.h5',
-                                    key='reduced_hlt_test_set_y',
-                                    mode='w')
-
-    if args.generate_videos:
-
-        writer = cv.VideoWriter(f'{args.video_output_dir}/reduced_hlt_'
-                                        f'test_set_{args.variant}.mp4',
-                                    four_cc, 60, (image_width, image_height))
-
-        for count in tqdm(range(len(rack_data_test_all_np)),
-                                    desc='Generating test set animation'):
-
-            lower_bound = max(count - plot_window_size, 0)
-            upper_bound_axis = max(count, plot_window_size) + 10
-
-            fig, ax = plt.subplots(figsize=(8, 4.5), dpi=240)
-
-            max_val_slice = np.max(rack_data_test_all_np[lower_bound:count, :])\
-                                if len(rack_data_test_all_np[lower_bound:count, :])\
-                                else 10
-
-            max_val_slice = min(max_val_slice, 200)
-
-            ax.set_xlim(lower_bound, upper_bound_axis)
-            ax.set_ylim(-2, max_val_slice + 10)
-
-            ax.grid(True)
-
-            ax.set_title("Per-Rack Median DCM Rates")
-            ax.set_xlabel("Timestep")
-            ax.set_ylabel("DCM Rate")
-
-            ax.plot(np.arange(lower_bound, count),
-                                rack_data_test_all_np[lower_bound:count, :])
-
-            # plt.tight_layout()
-
-            frame = fig_to_numpy_array(fig)
-
-            writer.write(frame)
-
-            plt.close()
-
-        writer.release()
-
-    # Clean val set
-
-    # Reduce dataset
-
-    clean_val_set_x_df = val_set_x_df
-
-    column_names = clean_val_set_x_df.columns
-    timestamps = clean_val_set_x_df.index
-
-    rack_data_clean_val_all = []
-
-    columns_reduced_clean_val = None
-    keys_last = None
-
-    for count, row_x_data in enumerate(tqdm(val_set_x_df.to_numpy(),
-                                                desc='Generating clean val set')):
-
-        rack_buckets_data = defaultdict(list)
-
-        for index, datapoint in enumerate(row_x_data):
-            rack_buckets_data[rack_numbers_val[index]].append(datapoint)
-
-        rack_median_dcm_rates = {}
-        rack_dcm_rate_stdevs = {}
-
-        for rack, rack_bucket in rack_buckets_data.items():
-            rack_median_dcm_rates[rack] = np.nanmedian(rack_bucket)
-            rack_dcm_rate_stdevs[rack] = np.nanstd(rack_bucket)
-
-        rack_median_dcm_rates = dict(sorted(rack_median_dcm_rates.items()))
-        rack_dcm_rate_stdevs = dict(sorted(rack_dcm_rate_stdevs.items()))
-
-        if keys_last != None:
-            assert rack_median_dcm_rates.keys() == keys_last,\
-                                                    'Rack bucket keys changed between slices'
-
-            assert rack_median_dcm_rates.keys() == rack_dcm_rate_stdevs.keys(),\
-                                                    'Rack bucket keys not identical'
-
-        keys_last = rack_median_dcm_rates.keys()
-
-        if type(columns_reduced_clean_val) == type(None):
-            columns_reduced_clean_val = create_channel_names(rack_median_dcm_rates.keys(),
-                                                                rack_dcm_rate_stdevs.keys())
-
-            assert np.array_equal(columns_reduced_clean_val, columns_reduced_train_unlabeled),\
-                                                        "Val columns don't match train columns" 
-
-        rack_data_np = np.concatenate((np.array(list(rack_median_dcm_rates.values())),
-                                            np.array(list(rack_dcm_rate_stdevs.values()))))
-
-        rack_data_clean_val_all.append(rack_data_np)
-
-    rack_data_clean_val_all_np = np.stack(rack_data_clean_val_all)
-    rack_data_clean_val_all_np = np.nan_to_num(rack_data_clean_val_all_np, nan=-1)
-
-    nan_amount_clean_val = 100*pd.isna(rack_data_clean_val_all_np.flatten()).sum()/\
-                                                    rack_data_clean_val_all_np.size
-
-    print('NaN amount reduced clean val set: {:.3f} %'.format(nan_amount_clean_val))
-
-    # Save dataset
-
-    clean_val_set_x_df = pd.DataFrame(rack_data_clean_val_all_np,
-                                                val_set_x_df.index,
-                                                columns_reduced_clean_val)
-
-    clean_val_set_x_df.to_hdf(f'{args.dataset_dir}/reduced_hlt_'
-                                    f'clean_val_set_{args.variant}_x.h5',
-                                key='reduced_hlt_clean_val_set_x',
-                                mode='w')
-
-    if args.generate_videos:
-
-        writer = cv.VideoWriter(f'{args.video_output_dir}/reduced_hlt_'
-                                        f'clean_val_set_{args.variant}.mp4',
-                                    four_cc, 60, (image_width, image_height))
-
-        for count in tqdm(range(len(rack_data_clean_val_all_np)),
-                                    desc='Generating clean val set animation'):
-
-            lower_bound = max(count - plot_window_size, 0)
-            upper_bound_axis = max(count, plot_window_size) + 10
-
-            fig, ax = plt.subplots(figsize=(8, 4.5), dpi=240)
-
-            max_val_slice = np.max(rack_data_clean_val_all_np[lower_bound:count, :])\
-                                    if len(rack_data_clean_val_all_np[lower_bound:count, :])\
-                                    else 10
-
-            max_val_slice = min(max_val_slice, 200)
-
-            ax.set_xlim(lower_bound, upper_bound_axis)
-            ax.set_ylim(-2, max_val_slice + 10)
-
-            ax.grid(True)
-
-            ax.set_title("Per-Rack Median DCM Rates")
-            ax.set_xlabel("Timestep")
-            ax.set_ylabel("DCM Rate")
-
-            ax.plot(np.arange(lower_bound, count),
-                                rack_data_clean_val_all_np[lower_bound:count, :])
-
-            # plt.tight_layout()
-
-            frame = fig_to_numpy_array(fig)
-
-            writer.write(frame)
-
-            plt.close()
-
-        writer.release()
-
-    # Dirty val set
-
-    val_set_x_df = pd.concat((val_set_x_df.iloc[:9270, :],
-                                test_set_x_df.iloc[-8570:, :]))
-
-    column_names_val = list((val_set_x_df).columns.values)
-    tpu_numbers_val = [get_tpu_number(label) for label in column_names_val]
-    tpu_numbers_val_unique = np.array(list(set(tpu_numbers_val)))
-    rack_numbers_val = np.floor_divide(tpu_numbers_val, 1000)
-
-    for count in range(1, len(val_set_x_df.index)):
-        if val_set_x_df.index[count] <=\
-                val_set_x_df.index[count-1]:
-            print(f'Non-monotonic timestamp increase at {count-1}:\t'
-                    f'First timestamp: {val_set_x_df.index[count-1]}\t'
-                     f'Second timestamp: {val_set_x_df.index[count]}')
-
-    column_names = val_set_x_df.columns
-    timestamps = val_set_x_df.index
-
-    # Generate labels for actual anomalies
-
-    labels_actual = generate_anomaly_labels(tpu_failure_log_df,
-                                                    timestamps,
-                                                    column_names,
-                                                    np.array(tpu_numbers_val),
-                                                    prepad=5).to_numpy()
-    
-    # Generate synthetic anomalies and corresponding labels
-
-    anomaly_generator_val = MultivariateDataGenerator(val_set_x_df,
-                                                        labels_actual,
-                                                        window_size_min=16,
-                                                        window_size_max=256)
-
-    anomaly_generator_val.point_global_outliers(rack_count=3,
-                                                        ratio=0.001,
-                                                        factor=0.5,
-                                                        radius=50)
-    
-    anomaly_generator_val.point_contextual_outliers(rack_count=3,
-                                                        ratio=0.001,
-                                                        factor=0.5,
-                                                        radius=50)
-
-    anomaly_generator_val.persistent_global_outliers(rack_count=3,
-                                                            ratio=0.005,
-                                                            factor=0.5,
-                                                            radius=50)
-    
-    anomaly_generator_val.persistent_contextual_outliers(rack_count=3,
-                                                                ratio=0.005,
-                                                                factor=0.5,
-                                                                radius=50)
-
-    anomaly_generator_val.collective_global_outliers(rack_count=3,
-                                                        ratio=0.005,
-                                                        option='square',
-                                                        coef=5,
-                                                        noise_amp=0.5,
-                                                        level=10,
-                                                        freq=0.1)
-
-    anomaly_generator_val.collective_trend_outliers(rack_count=3,
-                                                        ratio=0.005,
-                                                        factor=0.5)
-    
-    # Reduce dataset and labels
-    
-    dataset = anomaly_generator_val.get_dataset_np()
-
-    labels = remove_undetectable_anomalies(
-                        np.nan_to_num(dataset),
-                        anomaly_generator_val.get_labels_np())
-
-    rack_data_val_all = []
-    rack_labels_val_all = []
-
-    columns_reduced_val = None
-    keys_last = None
-
-    for count, (row_x_data, row_x_labels)\
-            in enumerate(tqdm(zip(dataset, labels),
-                                    total=len(dataset),
-                                    desc='Generating dirty val set')):
-
-        rack_buckets_data = defaultdict(list)
-        rack_buckets_labels = defaultdict(list)
-
-        for index, datapoint in enumerate(row_x_data):
-            rack_buckets_data[rack_numbers_val[index]].append(datapoint)
-
-        for index, label in enumerate(row_x_labels):
-            rack_buckets_labels[rack_numbers_val[index]].append(label)
-
-        rack_median_dcm_rates = {}
-        rack_dcm_rate_stdevs = {}
-        rack_labels = {}
-
-        for rack, rack_bucket in rack_buckets_data.items():
-            rack_median_dcm_rates[rack] = np.nanmedian(rack_bucket)
-            rack_dcm_rate_stdevs[rack] = np.nanstd(rack_bucket)
-
-        for rack, rack_bucket in rack_buckets_labels.items():
-
-            rack_label = 0
-
-            for label in rack_bucket:
-                rack_label = rack_label | label
-                
-            rack_labels[rack] = rack_label
-
-        rack_median_dcm_rates = dict(sorted(rack_median_dcm_rates.items()))
-        rack_dcm_rate_stdevs = dict(sorted(rack_dcm_rate_stdevs.items()))
-
-        rack_labels = dict(sorted(rack_labels.items()))
-
-        if keys_last != None:
-            assert rack_median_dcm_rates.keys() == keys_last,\
-                                                    'Rack bucket keys changed between slices'
-
-            assert (rack_median_dcm_rates.keys() == rack_dcm_rate_stdevs.keys()) and\
-                                (rack_median_dcm_rates.keys() == rack_labels.keys()),\
-                                                        'Rack bucket keys not identical'
-
-        keys_last = rack_median_dcm_rates.keys()
-
-        if type(columns_reduced_val) == type(None):
-            columns_reduced_val = create_channel_names(rack_median_dcm_rates.keys(),
-                                                        rack_dcm_rate_stdevs.keys())
-
-            assert np.array_equal(columns_reduced_val, columns_reduced_train_unlabeled),\
-                                                    "Val columns don't match train columns" 
-
-        rack_data_np = np.concatenate((np.array(list(rack_median_dcm_rates.values())),
-                                            np.array(list(rack_dcm_rate_stdevs.values()))))
-
-        rack_data_val_all.append(rack_data_np)
-
-        rack_labels_val_all.append(np.array(list(rack_labels.values())))
-
-    rack_data_val_all_np = np.stack(rack_data_val_all)
-    rack_data_val_all_np = np.nan_to_num(rack_data_val_all_np, nan=-1)
-
-    nan_amount_dirty_val = 100*pd.isna(rack_data_val_all_np.flatten()).sum()/\
-                                                    rack_data_val_all_np.size
-
-    print('NaN amount reduced dirty val set: {:.3f} %'.format(nan_amount_dirty_val))
-
-    rack_labels_val_all_np = np.stack(rack_labels_val_all)
-
-    rack_labels_val_all_np = np.concatenate([rack_labels_val_all_np,\
-                                                rack_labels_val_all_np],
-                                                axis=1)
-
-    val_set_x_df = pd.DataFrame(rack_data_val_all_np,
-                                    anomaly_generator_val.get_timestamps_pd(),
-                                    columns_reduced_val)
-
-    val_set_y_df = pd.DataFrame(rack_labels_val_all_np,
-                                    anomaly_generator_val.get_timestamps_pd(),
-                                    columns_reduced_val)
-
-    anomalies_per_column = np.count_nonzero(rack_labels_val_all_np, axis=0)
-
-    anomaly_ratio_per_column = anomalies_per_column/\
-                                    len(rack_labels_val_all_np)
-    
-    # Save dataset and labels
-
-    val_set_x_df.to_hdf(f'{args.dataset_dir}/reduced_hlt_'
-                                f'val_set_{args.variant}_x.h5',
-                            key='reduced_hlt_val_set_x',
-                            mode='w')
-
-    val_set_y_df.to_hdf(f'{args.dataset_dir}/reduced_hlt_'
-                                f'val_set_{args.variant}_y.h5',
-                            key='reduced_hlt_val_set_y',
-                            mode='w')
-
-    if args.generate_videos:
-
-        writer = cv.VideoWriter(f'{args.video_output_dir}/reduced_hlt_'
-                                            f'val_set_{args.variant}.mp4',
-                                    four_cc, 60,(image_width, image_height))
-
-        for count in tqdm(range(len(rack_data_val_all_np)),
-                            desc='Generating dirty val set animation'):
-
-            lower_bound = max(count - plot_window_size, 0)
-            upper_bound_axis = max(count, plot_window_size) + 10
-
-            fig, ax = plt.subplots(figsize=(8, 4.5), dpi=240)
-
-            max_val_slice = np.max(rack_data_val_all_np[lower_bound:count, :])\
-                                if len(rack_data_val_all_np[lower_bound:count, :])\
-                                else 10
-
-            max_val_slice = min(max_val_slice, 200)
-
-            ax.set_xlim(lower_bound, upper_bound_axis)
-            ax.set_ylim(-2, max_val_slice + 10)
-
-            ax.grid(True)
-
-            ax.set_title("Per-Rack Median DCM Rates")
-            ax.set_xlabel("Timestep")
-            ax.set_ylabel("DCM Rate")
-
-            ax.plot(np.arange(lower_bound, count),
-                                rack_data_val_all_np[lower_bound:count, :])
-
-            # plt.tight_layout()
-
-            frame = fig_to_numpy_array(fig)
-
-            writer.write(frame)
-
-            plt.close()
-
-        writer.release()
-
-
