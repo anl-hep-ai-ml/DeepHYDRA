@@ -768,8 +768,6 @@ if __name__ == '__main__':
 
     torch.cuda.empty_cache()
 
-    loss = loss.cpu()
-    y_pred = y_pred.cpu()
     testD = testD.cpu()
     testO = testO.cpu()
     labels = labels.cpu()
@@ -784,12 +782,14 @@ if __name__ == '__main__':
 
     ### Scores
 
+    testD = testD.to(device)
+    testO = testO.to(device)
+    labels = labels.to(device)
+
     df = pd.DataFrame()
     lossT, _ = backprop(0, model, trainD.to(device), trainO.to(device), optimizer, scheduler, training=False)
 
     torch.cuda.empty_cache()
-
-    lossT = lossT.cpu()
 
     for i in range(loss.shape[1]):
         lt, l, ls = lossT[:, i], loss[:, i], labels[:, i]

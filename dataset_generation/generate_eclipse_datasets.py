@@ -36,57 +36,6 @@ def find_timestamp_jumps(index: pd.DatetimeIndex) -> None:
                 #         f'timestamps {index[i]} and {index[i+1]}')
                 print(index[i])
                 print(index[i+1])
-
-
-def generate_anomaly_labels(failure_data: pd.DataFrame,
-                                        index: pd.Index,
-                                        columns: pd.Index,
-                                        tpu_numbers: np.array,
-                                        prepad: int = 0) -> pd.DataFrame:
-
-    index = pd.DatetimeIndex(index)
-    labels = pd.DataFrame(0, index, columns, dtype=np.uint32)
-
-    failure_data = failure_data.droplevel(0)
-
-    for failure in failure_data.itertuples():
-
-        start = pd.DatetimeIndex([failure.start], tz=index.tz)
-        end = pd.DatetimeIndex([failure.end], tz=index.tz)
-        
-        index_following_start =\
-            labels.index.get_indexer(start,
-                                        method='bfill',
-                                        tolerance=pd.Timedelta(5, unit='m'))[0]
-
-        if index_following_start != -1:
-
-            index_following_start =\
-                max(0, index_following_start - prepad)
-
-            print('Found start timestamp within tolerance')
-            print(f'Anomaly start: {start}')
-            print(f'Timestamp within tolerance: '\
-                        f'{index[index_following_start]}'\
-                        f' at index {index_following_start}')
-
-            index_following_end =\
-                labels.index.get_indexer(end,
-                                            method='bfill',
-                                            tolerance=pd.Timedelta(5, unit='s'))[0]
-
-            print('Found end timestamp within tolerance')
-            print(f'Anomaly end: {end}')
-            print(f'Timestamp within tolerance: '\
-                        f'{index[index_following_end]}'\
-                        f' at index {index_following_end}')
-
-            column_indices = np.flatnonzero(tpu_numbers == failure.Index)
-
-            labels.iloc[index_following_start:index_following_end, column_indices] =\
-                                                                int(failure.failure_source)
-
-    return labels
             
 
 def create_channel_names(median_labels, stdev_labels):
@@ -118,506 +67,13 @@ def fig_to_numpy_array(fig):
     return cv.cvtColor(buf,cv.COLOR_RGBA2BGR)
 
 
-def sine(length, freq=0.04, coef=1.5, offset=0.0, noise_amp=0.05):
-    timestamp = np.arange(length)
-    value = np.sin(2*np.pi*freq*timestamp)
-    if noise_amp != 0:
-        noise = np.random.normal(0, 1, length)
-        value = value + noise_amp*noise
-    value = coef*value + offset
-    return value
-
-
-def cosine(length, freq=0.04, coef=1.5, offset=0.0, noise_amp=0.05):
-    timestamp = np.arange(length)
-    value = np.cos(2*np.pi*freq*timestamp)
-    if noise_amp != 0:
-        noise = np.random.normal(0, 1, length)
-        value = value + noise_amp*noise
-    value = coef*value + offset
-    return value
-
-
-def square_sine(level=5, length=500, freq=0.04, coef=1.5, offset=0.0, noise_amp=0.05):
-    value = np.zeros(length)
-    for i in range(level):
-        value += 1/(2*i + 1)*sine(length=length, freq=freq*(2*i + 1), coef=coef, offset=offset, noise_amp=noise_amp)
-    return value
-
-
-def collective_global_synthetic(length, base, coef=1.5, noise_amp=0.005):
-    value = []
-    norm = np.linalg.norm(base)
-    base = base/norm
-    num = int(length/len(base))
-    for i in range(num):
-        value.extend(base)
-    residual = length - len(value)
-    value.extend(base[:residual])
-    value = np.array(value)
-    noise = np.random.normal(0, 1, length)
-    value = coef*value + noise_amp*noise
-    return value
-
-
-def generate_brownian_bridge(size: int) -> np.array:
-
-    wiener = np.cumsum(np.random.normal(size=size - 1))
-    wiener = np.pad(wiener, (1, 0))
-
-    tau = np.linspace(0, 1, size)
-
-    return wiener - tau*wiener[-1]
-
-
-def get_tpu_number(channel_name):
-    parameters = [int(substring) for substring in re.findall(r'\d+', channel_name)]
-    # print(f'{channel_name}: {parameters}')
-    return parameters[-1]
-
-
-def remove_undetectable_anomalies(data: np.array,
-                                        label: np.array):
-
-    rows, cols = data.shape
-
-    for row in range(rows):
-        for col in range(cols):
-            if (label[row, col] > 0) and\
-                    (np.allclose(data[row, :], 0, atol=0.5)):
-                label[row, col] = 0
-    return label
-
-
-class MultivariateDataGenerator:
-    def __init__(self,
-                    dataset: pd.DataFrame,
-                    labels_initial: np.array,
-                    window_size_min: int = 50,
-                    window_size_max: int = 200):
-
-        self.window_size_min = window_size_min
-        self.window_size_max = window_size_max
-
-        self.window_size_avg = window_size_min +\
-                                window_size_max//2 
-
-        self.dim = len(dataset.columns)
-        self.dataset_length = len(dataset)
-
-        self.dataset = dataset.to_numpy(copy=True)
-        self.dataset_unmodified = self.dataset.copy()
-
-        self.columns = dataset.columns.copy()
-        self.timestamps = dataset.index.copy()
-
-        self.labels = np.asarray(labels_initial)
-
-        self.rack_numbers = [get_tpu_number(column) for column in self.columns]
-    
-        dataset = None
-
-
-    def get_dataset_np(self) -> np.array:
-        return self.dataset
-
-
-    def get_dataset_unmodified_numpy(self) -> np.array:
-        return self.dataset_unmodified
-    
-
-    def get_columns_pd(self) -> pd.Series:
-        return self.columns
-
-
-    def get_timestamps_pd(self) -> pd.Index:
-        return self.timestamps
-
-
-    def get_labels_np(self) -> np.array:
-        return self.labels
-
-
-    def get_columns_in_rack(self, rack_number):
-        return [column for column in range(self.dim) if
-                                        self.rack_numbers[column] == rack_number]
-
-
-    def point_global_outliers(self,
-                                rack_count,
-                                ratio,
-                                factor,
-                                radius,
-                                ignored_racks=None):
-
-        if ignored_racks != None:
-
-            rack_numbers_available_racks =\
-                    [rack for rack in self.rack_numbers if rack not in ignored_racks]
-
-        else:
-            rack_numbers_available_racks = self.rack_numbers
-
-        positions = (np.random.rand(math.ceil(self.dataset_length*ratio))*self.dataset_length).astype(int)
-
-        for pos in tqdm(positions):
-            racks = list(np.random.choice(rack_numbers_available_racks, rack_count, replace=False))
-
-            for rack in racks:
-                columns = self.get_columns_in_rack(rack)
-                
-                for column in columns:
-
-                    maximum = np.nanmax(self.dataset_unmodified[:, column])
-                    minimum = np.nanmin(self.dataset_unmodified[:, column])
-
-                    local_std = np.nanstd(self.dataset_unmodified[max(0, pos - radius):\
-                                            min(pos + radius, self.dataset_length), column])
-
-                    self.dataset[pos, column] = self.dataset_unmodified[pos, column]*factor*local_std
-
-                    if 0 <= self.dataset[pos, column] < maximum:
-                        self.dataset[pos, column] = maximum
-                    if 0 > self.dataset[pos, column] > minimum:
-                        self.dataset[pos, column] = minimum
-                    self.labels[pos, column] = 0b0000001
-
-        return racks
-        
-
-    def point_contextual_outliers(self,
-                                    rack_count,
-                                    ratio,
-                                    factor,
-                                    radius,
-                                    ignored_racks=None):
-
-        if ignored_racks != None:
-
-            rack_numbers_available_racks =\
-                    [rack for rack in self.rack_numbers if rack not in ignored_racks]
-
-        else:
-            rack_numbers_available_racks = self.rack_numbers
-
-        positions = (np.random.rand(math.ceil(self.dataset_length*ratio))*\
-                                                    self.dataset_length).astype(int)
-
-        for pos in tqdm(positions):
-            racks = list(np.random.choice(rack_numbers_available_racks,
-                                                                rack_count,
-                                                                replace=False))
-
-            rand_val = min(0.95, abs(np.random.normal(0, 1)))
-
-            for rack in racks:
-                columns = self.get_columns_in_rack(rack)
-
-                for column in columns:
-                
-                    maximum = np.nanmax(self.dataset_unmodified[:, column])
-                    minimum = np.nanmin(self.dataset_unmodified[:, column])
-
-                    local_std = np.nanstd(self.dataset_unmodified[max(0, pos - radius):\
-                                            min(pos + radius, self.dataset_length), column])
-                    
-                    self.dataset[pos, column] = self.dataset_unmodified[pos, column]*factor*local_std
-
-                    if self.dataset[pos, column] > maximum: 
-                        self.dataset[pos, column] = maximum*rand_val
-                    if self.dataset[pos, column] < minimum:
-                        self.dataset[pos, column] = minimum*rand_val
-
-                    self.labels[pos, column] = 0b0000010
-
-        return racks
-
-
-    def persistent_global_outliers(self,
-                                    rack_count,
-                                    ratio,
-                                    factor,
-                                    radius,
-                                    ignored_racks=None):
-
-        if ignored_racks != None:
-
-            rack_numbers_available_racks =\
-                    [rack for rack in self.rack_numbers if rack not in ignored_racks]
-
-        else:
-            rack_numbers_available_racks = self.rack_numbers
-
-        positions = (np.random.rand(math.ceil(self.dataset_length*ratio/\
-                                                    self.window_size_avg))*self.dataset_length).astype(int)
-
-        for pos in tqdm(positions):
-            racks = list(np.random.choice(rack_numbers_available_racks, rack_count, replace=False))
-
-            radius = np.random.randint(self.window_size_min,
-                                            self.window_size_max)//2
-
-            start, end = max(0, pos - radius), min(self.dataset_length, pos + radius)
-
-            brownian_bridge = generate_brownian_bridge(end - start)
-
-            for rack in racks:
-                columns = self.get_columns_in_rack(rack)
-                
-                for column in columns:
-
-                    maximum = np.nanmax(self.dataset_unmodified[:, column])
-                    minimum = np.nanmin(self.dataset_unmodified[:, column])
-
-                    local_std = np.nanstd(self.dataset_unmodified[max(0, pos - 2*radius):\
-                                            min(pos + 2*radius, self.dataset_length), column])
-                    
-                    self.dataset[start:end, column] =\
-                                    self.dataset_unmodified[pos, column]*\
-                                                            brownian_bridge*\
-                                                            factor*\
-                                                            local_std
-
-                    for index in range(start, end):
-                        if 0 <= self.dataset[index, column] < maximum:
-                            self.dataset[index, column] = maximum
-                        if 0 > self.dataset[index, column] > minimum:
-                            self.dataset[index, column] = minimum
-                    
-                    self.labels[start:end, column] = 0b0000100
-
-        return racks
-
-
-    def persistent_contextual_outliers(self,
-                                        rack_count,
-                                        ratio,
-                                        factor,
-                                        radius,
-                                        ignored_racks=None):
-
-        if ignored_racks != None:
-
-            rack_numbers_available_racks =\
-                    [rack for rack in self.rack_numbers if rack not in ignored_racks]
-
-        else:
-            rack_numbers_available_racks = self.rack_numbers
-
-        positions = (np.random.rand(math.ceil(self.dataset_length*ratio/\
-                                                    self.window_size_avg))*self.dataset_length).astype(int)
-
-        for pos in tqdm(positions):
-            racks = list(np.random.choice(rack_numbers_available_racks,
-                                                                rack_count,
-                                                                replace=False))
-
-            radius = np.random.randint(self.window_size_min,
-                                            self.window_size_max)//2
-
-            start, end = max(0, pos - radius), min(self.dataset_length, pos + radius)
-
-            brownian_bridge = generate_brownian_bridge(end - start)
-
-            for rack in racks:
-                columns = self.get_columns_in_rack(rack)
-
-                for column in columns:
-                
-                    maximum = np.nanmax(self.dataset_unmodified[:, column])
-                    minimum = np.nanmin(self.dataset_unmodified[:, column])
-
-                    local_std = np.nanstd(self.dataset_unmodified[max(0, pos - 2*radius):\
-                                             min(pos + 2*radius, self.dataset_length), column])
-
-                    self.dataset[start:end, column] =\
-                            self.dataset_unmodified[start:end, column]*\
-                                                            brownian_bridge*\
-                                                            factor*\
-                                                            local_std
-
-                    for index in range(start, end):
-                        if self.dataset[index, column] > maximum:
-                            self.dataset[index, column] = maximum*min(0.95, abs(np.random.normal(0, 1)))
-                        if self.dataset[index, column] < minimum:
-                            self.dataset[index, column] = minimum*min(0.95, abs(np.random.normal(0, 1)))
-
-                    self.labels[start:end, column] = 0b0001000
-
-        return racks
-
-
-    def collective_global_outliers(self,
-                                    rack_count,
-                                    ratio,
-                                    option='square',
-                                    coef=3.,
-                                    noise_amp=0.0,
-                                    level=5,
-                                    freq=0.04,
-                                    base=[0.,], # only used when option=='other'
-                                    ignored_racks=None): 
-
-        if ignored_racks != None:
-
-            rack_numbers_available_racks =\
-                    [rack for rack in self.rack_numbers if rack not in ignored_racks]
-
-        else:
-            rack_numbers_available_racks = self.rack_numbers
-
-        positions =\
-            (np.random.rand(math.ceil(self.dataset_length*ratio/\
-                                        self.window_size_avg))*self.dataset_length).astype(int)
-
-        for pos in tqdm(positions):
-            racks = list(np.random.choice(rack_numbers_available_racks,
-                                                                rack_count,
-                                                                replace=False))
-
-            radius = np.random.randint(self.window_size_min,
-                                            self.window_size_max)//2
-
-            for rack in racks:
-                columns = self.get_columns_in_rack(rack)
-                
-                for column in columns:
-
-                    start, end = max(0, pos - radius), min(self.dataset_length, pos + radius)
-
-                    valid_option = {'square', 'other'}
-                    if option not in valid_option:
-                        raise ValueError("'option' must be one of {}.".format(valid_option))
-
-                    if option == 'square':
-                        offset = self.dataset_unmodified[start, column]
-
-                        sub_data = square_sine(level=level, length=self.dataset_length, freq=freq,
-                                                        coef=coef, offset=offset, noise_amp=noise_amp)
-                    else:
-                        sub_data = collective_global_synthetic(length=self.dataset_length, base=base,
-                                                                        coef=coef, noise_amp=noise_amp)
-                        
-                    self.dataset[start:end, column] = sub_data[start:end]
-                    self.labels[start:end, column] = 0b0010000
-
-        return racks
-
-
-    def collective_trend_outliers(self,
-                                    rack_count,
-                                    ratio,
-                                    factor,
-                                    ignored_racks=None):
-        
-        if ignored_racks != None:
-
-            rack_numbers_available_racks =\
-                    [rack for rack in racks if self.rack_numbers not in ignored_racks]
-
-        else:
-            rack_numbers_available_racks = self.rack_numbers
-
-        positions =\
-            (np.random.rand(math.ceil(self.dataset_length*ratio/\
-                                            self.window_size_avg))*self.dataset_length).astype(int)
-
-        for pos in tqdm(positions):
-
-            racks = list(np.random.choice(rack_numbers_available_racks,
-                                                            rack_count,
-                                                            replace=False))
-            
-            radius = np.random.randint(self.window_size_min,
-                                            self.window_size_max)//2
-
-            start, end = max(0, pos - radius), min(self.dataset_length, pos + radius)
-
-            slope = np.random.choice([-1, 1])*factor*np.arange(end - start)
-
-            for rack in racks:
-                columns = self.get_columns_in_rack(rack)
-
-                for column in columns:        
-                    self.dataset[start:end, column] = self.dataset_unmodified[start:end, column] + slope
-                    self.labels[start:end, column] = 0b0100000
-        
-        return racks
-    
-
-    def intra_rack_outliers(self,
-                                ratio_temporal: float,
-                                ratio_channels: float,
-                                average_duration: float = 10.,
-                                stdev_duration: float = 1.,
-                                ignored_racks=None) -> None:
-
-        if ignored_racks != None:
-
-            rack_numbers_available_racks =\
-                    [rack for rack in rack if self.rack_numbers not in ignored_racks]
-
-        else:
-            rack_numbers_available_racks = self.rack_numbers
-
-        rng = np.random.default_rng()
-
-        positions =\
-            (np.random.rand(math.ceil(self.dataset_length*ratio_temporal/\
-                                                        average_duration))*self.dataset_length).astype(int)
-
-        for pos in tqdm(positions):
-
-            rack = np.random.choice(rack_numbers_available_racks, 1)[0]
-
-
-            radius = max(5, int(rng.normal(average_duration,
-                                                stdev_duration)))
-
-            start, end = max(0, pos - radius), min(self.dataset_length, pos + radius)
-
-            columns = self.get_columns_in_rack(rack)
-
-            columns_without_nan = np.array(columns)[(~np.any(np.isnan(
-                                    self.dataset_unmodified[start:end, columns]), axis=0))]
-
-            if len(columns_without_nan) == 0:
-                continue
-
-            column_count = max(1, math.floor(len(columns_without_nan)*ratio_channels))
-
-            anomaly_type = rng.choice([0, 1])
-            factor = rng.choice([-0.5, 0.5])
-
-            columns_selected = np.random.choice(columns_without_nan, column_count)
-
-            trial_count = 0
-
-            while np.any(np.isnan(self.dataset_unmodified[start:end, columns_selected].flatten())):
-                trial_count += 1
-
-                columns_selected = np.random.choice(columns_without_nan, column_count)
-
-                if trial_count > 100:
-                    break
-
-            for column in columns_selected:
-                if anomaly_type == 0:
-                    self.dataset[start:end, column] = 0
-                else:
-                    self.dataset[start:end, column] =\
-                            self.dataset[start:end, column]*(1 + factor)
-                self.labels[start:end, column] = 0b1000000
-
-
 if __name__ == '__main__':
 
     np.random.seed(42)
 
-    parser = argparse.ArgumentParser(description='Hybrid DCM-Rate Anomaly Dataset Generator')
+    parser = argparse.ArgumentParser(description='Eclipse Dataset Generator')
 
-    parser.add_argument('--variant', type=str)
-    parser.add_argument('--dataset-dir', type=str, default='../../../../atlas-hlt-datasets')
+    parser.add_argument('--dataset-dir', type=str, default='../datasets/eclipse')
     parser.add_argument('--generate-videos', action='store_true')
     parser.add_argument('--video-output-dir', type=str, default='../videos')
     
@@ -625,154 +81,118 @@ if __name__ == '__main__':
 
     # Load datasets
 
-    train_set_x_df = pd.read_csv(f'{args.dataset_dir}/train_set_'\
-                                    f'dcm_rates_{args.variant}.csv', index_col=0)
-    test_set_x_df = pd.read_csv(f'{args.dataset_dir}/test_set_'\
-                                    f'dcm_rates_{args.variant}.csv', index_col=0)
-    val_set_x_df = pd.read_csv(f'{args.dataset_dir}/val_set_'\
-                                    f'dcm_rates_{args.variant}.csv', index_col=0)
+    train_set_x_df = pd.read_hdf(f'{args.dataset_dir}/prod_train_data.hdf')
+    train_set_y_df = pd.read_csv(f'{args.dataset_dir}/prod_train_label.csv')
+
+    train_set_x_df['job_id'] =\
+        pd.to_numeric(train_set_x_df['job_id'])
+    train_set_x_df['component_id'] =\
+        pd.to_numeric(train_set_x_df['component_id'])
+    
+    test_set_x_df = pd.read_hdf(f'{args.dataset_dir}/prod_test_data.hdf')
+    test_set_y_df = pd.read_csv(f'{args.dataset_dir}/prod_test_label.csv')
+
+    test_set_x_df['job_id'] =\
+        pd.to_numeric(test_set_x_df['job_id'])
+    test_set_x_df['component_id'] =\
+        pd.to_numeric(test_set_x_df['component_id'])
+    
 
     print(f'Train set size: {len(train_set_x_df)}')
     print(f'Test set size: {len(test_set_x_df)}')
-    print(f'Val set size: {len(val_set_x_df)}')
-
-    tpu_failure_log_df = pd.read_hdf(f'{args.dataset_dir}/'\
-                                        f'tpu_failures_{args.variant}_'\
-                                                'combined_preprocessed.h5')
-
-    print(f'Anomaly count total: {len(tpu_failure_log_df)}')
-
-    tpus_with_failures = np.array(list(set(
-                            tpu_failure_log_df.index.get_level_values(1))))
 
     column_names_train = list((train_set_x_df).columns.values)
     column_names_test = list((test_set_x_df).columns.values)
-    column_names_val = list((val_set_x_df).columns.values)
 
     print(f'Channels train: {len(column_names_train)}')
     print(f'Channels test: {len(column_names_test)}')
-    print(f'Channels val: {len(column_names_val)}')
 
-    intersection_train_test =\
-                np.intersect1d(column_names_train,
-                                    column_names_test)
+    label_indices = ['job_id', 'component_id']
 
-    intersection_train_val =\
-                np.intersect1d(column_names_train,
-                                    column_names_val) 
+    train_set_x_df.set_index(label_indices, inplace=True)
+    train_set_y_df.set_index(label_indices, inplace=True)
 
-    intersection_test_val =\
-                np.intersect1d(column_names_test,
-                                    column_names_val) 
+    test_set_x_df.set_index(label_indices, inplace=True)
+    test_set_y_df.set_index(label_indices, inplace=True)
 
-    print(f'Train/test overlap: {len(intersection_train_test)}')
-    print(f'Train/val overlap: {len(intersection_train_val)}')
-    print(f'Test/val overlap: {len(intersection_test_val)}')
+    train_set_x_df['app_name'] = train_set_y_df['app_name']
+    test_set_x_df['app_name'] = test_set_y_df['app_name']
 
-    nan_amount_train_unlabeled = np.mean(np.sum(pd.isna(train_set_x_df.to_numpy()), 1)/train_set_x_df.shape[1])
-    nan_amount_test = np.mean(np.sum(pd.isna(test_set_x_df.to_numpy()), 1)/test_set_x_df.shape[1])
-    nan_amount_val = np.mean(np.sum(pd.isna(val_set_x_df.to_numpy()), 1)/val_set_x_df.shape[1])
+    train_set_x_df.reset_index(inplace=True)
+    test_set_x_df.reset_index(inplace=True)
 
-    print('Mean sparsity original datasets:')
-    print(f'\tTrain set: {100*nan_amount_train_unlabeled:.3f} %')
-    print(f'\tTest set: {100*nan_amount_test:.3f} %')
-    print(f'\tVal set: {100*nan_amount_val:.3f} %')
+    train_set_x_df['id'] =\
+        train_set_x_df[['component_id', 'job_id']]\
+            .agg(lambda x: f'{x[0]}_{x[1]}', axis=1)
 
-    train_set_x_df.dropna(axis=0,
-                            thresh=50,
-                            inplace=True)
-    
-    test_set_x_df.dropna(axis=0,
-                            thresh=50,
-                            inplace=True)
+    test_set_x_df['id'] =\
+        test_set_x_df[['component_id', 'job_id']]\
+            .agg(lambda x: f'{x[0]}_{x[1]}', axis=1)
 
-    val_set_x_df.dropna(axis=0,
-                            thresh=50,
-                            inplace=True)
+    train_set_x_df.drop(['component_id', 'job_id'],
+                                axis=1, inplace=True)
+    test_set_x_df.drop(['component_id', 'job_id'],
+                                axis=1, inplace=True)
 
-    nan_amount_train_unlabeled = np.mean(np.sum(pd.isna(train_set_x_df.to_numpy()), 1)/train_set_x_df.shape[1])
-    nan_amount_test = np.mean(np.sum(pd.isna(test_set_x_df.to_numpy()), 1)/test_set_x_df.shape[1])
-    nan_amount_val = np.mean(np.sum(pd.isna(val_set_x_df.to_numpy()), 1)/val_set_x_df.shape[1])
+    data_indices = ['timestamp', 'app_name', 'id']
 
-    print('Mean sparsity preprocessed:')
-    print(f'\tTrain set: {100*nan_amount_train_unlabeled:.3f} %')
-    print(f'\tTest set: {100*nan_amount_test:.3f} %')
-    print(f'\tVal set: {100*nan_amount_val:.3f} %')
+    train_set_x_df.set_index(data_indices, inplace=True)
+    test_set_x_df.set_index(data_indices, inplace=True)
 
-    tpu_numbers_train = [get_tpu_number(label) for label in column_names_train]
-    tpu_numbers_test = [get_tpu_number(label) for label in column_names_test]
-    tpu_numbers_val = [get_tpu_number(label) for label in column_names_val]
+    app_names = train_set_y_df['app_name'].unique()
 
-    tpu_numbers_train_unique = np.array(list(set(tpu_numbers_train)))
-    tpu_numbers_test_unique = np.array(list(set(tpu_numbers_test)))
-    tpu_numbers_val_unique = np.array(list(set(tpu_numbers_val)))
+    print('Train set per-application size:')
 
-    rack_numbers_train = np.floor_divide(tpu_numbers_train, 1000)
-    rack_numbers_test = np.floor_divide(tpu_numbers_test, 1000)
-    rack_numbers_val = np.floor_divide(tpu_numbers_val, 1000)
+    for app_name in app_names:
 
-    racks_train, counts_train =\
-        np.unique(rack_numbers_train, return_counts=True)
+        per_app_data = train_set_x_df.xs(app_name, level=1)
 
-    print('Train set TPUs per rack:')
+        ids = per_app_data.reset_index()['id'].unique()
 
-    for rack, count in zip(racks_train, counts_train):
-        print(f'{rack}: {count}')
+        print(f'{app_name}: {len(per_app_data)}')
 
-    racks_test, counts_test =\
-        np.unique(rack_numbers_test, return_counts=True)
+        for id_ in ids:
 
-    print('Test set TPUs per rack:')
+            per_instance_data = per_app_data.xs(id_, level=1)
 
-    for rack, count in zip(racks_test, counts_test):
-        print(f'{rack}: {count}')
+            print(f'ID: {id_}: {len(per_instance_data)}')
 
-    racks_val, counts_val =\
-        np.unique(rack_numbers_val, return_counts=True)
+            timestamps = per_instance_data.reset_index()['timestamp']
+            timestamps = pd.Index(timestamps)
 
-    print('Val set TPUs per rack:')
+            delta = timestamps[1:] - timestamps[:-1]
+            delta = pd.Series(delta)
 
-    for rack, count in zip(racks_val, counts_val):
-        print(f'{rack}: {count}') 
+            print(f'Delta mean: {delta.mean():.5f}\tmedian: {delta.median():.5f}'\
+                                        f'\tmin: {delta.min()}\tmax: {delta.max()}')
 
-    print(f'Unique TPUs train set: {len(tpu_numbers_train_unique)}')
-    print(f'Unique TPUs test set: {len(tpu_numbers_test_unique)}')
-    print(f'Unique TPUs val set: {len(tpu_numbers_val_unique)}')
+    print('Test set per-application size:')
 
-    exclusive_tpu_numbers_train =\
-        np.setdiff1d(tpu_numbers_train_unique,
-                        np.union1d(tpu_numbers_test_unique,
-                                        tpu_numbers_val_unique))
+    for app_name in app_names:
 
-    exclusive_tpu_numbers_test =\
-        np.setdiff1d(tpu_numbers_test_unique,
-                        np.union1d(tpu_numbers_train_unique,
-                                        tpu_numbers_val_unique))
+        per_app_data = test_set_x_df.xs(app_name, level=1)
 
-    exclusive_tpu_numbers_val =\
-        np.setdiff1d(tpu_numbers_val_unique,
-                        np.union1d(tpu_numbers_train_unique,
-                                        tpu_numbers_test_unique))
+        ids = per_app_data.reset_index()['id'].unique()
 
-    print(f'Train set unique TPUs:\n{exclusive_tpu_numbers_train}')
-    print(f'Test set unique TPUs:\n{exclusive_tpu_numbers_test}')
-    print(f'Val set unique TPUs:\n{exclusive_tpu_numbers_val}')
+        print(f'{app_name}: {len(per_app_data)}')
 
-    exclusive_tpus_with_failures_train =\
-            np.intersect1d(exclusive_tpu_numbers_train,
-                                        tpus_with_failures)
+        for id_ in ids:
 
-    exclusive_tpus_with_failures_test =\
-            np.intersect1d(exclusive_tpu_numbers_test,
-                                        tpus_with_failures)
+            per_instance_data = per_app_data.xs(id_, level=1)
 
-    exclusive_tpus_with_failures_val =\
-            np.intersect1d(exclusive_tpu_numbers_val,
-                                        tpus_with_failures)
+            print(f'ID: {id_}: {len(per_instance_data)}')
 
-    print(f'Exclusive TPUs with failures train:\n{exclusive_tpus_with_failures_train}')
-    print(f'Exclusive TPUs with failures test:\n{exclusive_tpus_with_failures_test}')
-    print(f'Exclusive TPUs with failures val:\n{exclusive_tpus_with_failures_val}')
+            timestamps = per_instance_data.reset_index()['timestamp']
+            timestamps = pd.Index(timestamps)
+
+            delta = timestamps[1:] - timestamps[:-1]
+            delta = pd.Series(delta)
+
+            print(f'Delta mean: {delta.mean():.5f}\tmedian: {delta.median():.5f}'\
+                                        f'\tmin: {delta.min()}\tmax: {delta.max()}')
+
+
+    exit()
 
     # Unlabeled train set
 
