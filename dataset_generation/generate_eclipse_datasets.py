@@ -116,7 +116,10 @@ if __name__ == '__main__':
     test_set_y_df.set_index(label_indices, inplace=True)
 
     train_set_x_df['app_name'] = train_set_y_df['app_name']
+    train_set_x_df['binary_anom'] = train_set_y_df['binary_anom']
+
     test_set_x_df['app_name'] = test_set_y_df['app_name']
+    train_set_x_df['binary_anom'] = train_set_y_df['binary_anom']
 
     train_set_x_df.reset_index(inplace=True)
     test_set_x_df.reset_index(inplace=True)
@@ -141,7 +144,7 @@ if __name__ == '__main__':
 
     app_names = train_set_y_df['app_name'].unique()
 
-    print('Train set per-application size:')
+    print('Train\n')
 
     for app_name in app_names:
 
@@ -151,6 +154,19 @@ if __name__ == '__main__':
 
         print(f'{app_name}: {len(per_app_data)}')
 
+        lengths = []
+        starts = []
+        ends = []
+
+        length_max = 0
+        id_length_max = ''
+
+        start_min = np.iinfo(np.int64).max
+        id_start_min = ''
+
+        end_max = 0
+        id_end_max = ''
+
         for id_ in ids:
 
             per_instance_data = per_app_data.xs(id_, level=1)
@@ -158,6 +174,7 @@ if __name__ == '__main__':
             print(f'ID: {id_}: {len(per_instance_data)}')
 
             timestamps = per_instance_data.reset_index()['timestamp']
+
             timestamps = pd.Index(timestamps)
 
             delta = timestamps[1:] - timestamps[:-1]
@@ -166,7 +183,42 @@ if __name__ == '__main__':
             print(f'Delta mean: {delta.mean():.5f}\tmedian: {delta.median():.5f}'\
                                         f'\tmin: {delta.min()}\tmax: {delta.max()}')
 
-    print('Test set per-application size:')
+            lengths.append(len(timestamps))
+
+            if len(timestamps) > length_max:
+                length_max = len(timestamps)
+                id_length_max = id_
+
+            starts.append(timestamps[0])
+            
+            if timestamps[0] < start_min:
+                start_min = timestamps[0]
+                id_start_min = id_
+
+            ends.append(timestamps[-1])
+
+            if timestamps[-1] > end_max:
+                end_max = timestamps[-1]
+                id_end_max = id_
+
+            # print(f'Timestamp range: {timestamps.min()} - {timestamps.max()}')
+
+        print(f'Earliest timestamp at: {id_start_min}'
+                            f'\ttimestamp: {start_min}'\
+                            f'\tstart time mean: {np.mean(starts):.3f}'\
+                            f'\tstart time std: {np.std(starts):.3f}')
+
+        print(f'Latest timestamp at: {id_end_max}'\
+                            f'\ttimestamp: {end_max}'\
+                            f'\tend time mean: {np.mean(ends):.3f}'\
+                            f'\tend time std: {np.std(ends):.3f}')
+
+        print(f'Longest series at: {id_length_max}'\
+                            f'\tlength: {length_max}'\
+                            f'\tlength mean: {np.mean(lengths):.3f}'\
+                            f'\tlength std: {np.std(lengths):.3f}')
+
+    print('\nTest\n')
 
     for app_name in app_names:
 
@@ -176,6 +228,19 @@ if __name__ == '__main__':
 
         print(f'{app_name}: {len(per_app_data)}')
 
+        lengths = []
+        starts = []
+        ends = []
+
+        length_max = 0
+        id_length_max = ''
+
+        start_min = np.iinfo(np.int64).max
+        id_start_min = ''
+
+        end_max = 0
+        id_end_max = ''
+
         for id_ in ids:
 
             per_instance_data = per_app_data.xs(id_, level=1)
@@ -183,6 +248,7 @@ if __name__ == '__main__':
             print(f'ID: {id_}: {len(per_instance_data)}')
 
             timestamps = per_instance_data.reset_index()['timestamp']
+
             timestamps = pd.Index(timestamps)
 
             delta = timestamps[1:] - timestamps[:-1]
@@ -191,6 +257,38 @@ if __name__ == '__main__':
             print(f'Delta mean: {delta.mean():.5f}\tmedian: {delta.median():.5f}'\
                                         f'\tmin: {delta.min()}\tmax: {delta.max()}')
 
+            lengths.append(len(timestamps))
+
+            if len(timestamps) > length_max:
+                length_max = len(timestamps)
+                id_length_max = id_
+            
+            starts.append(timestamps[0])
+
+            if timestamps[0] < start_min:
+                start_min = timestamps[0]
+                id_start_min = id_
+
+            ends.append(timestamps[-1])
+
+            if timestamps[-1] > end_max:
+                end_max = timestamps[-1]
+                id_end_max = id_
+
+        print(f'Earliest timestamp at: {id_start_min}'
+                            f'\ttimestamp: {start_min}'\
+                            f'\tstart time mean: {np.mean(starts):.3f}'\
+                            f'\tstart time std: {np.std(starts):.3f}')
+
+        print(f'Latest timestamp at: {id_end_max}'\
+                            f'\ttimestamp: {end_max}'\
+                            f'\tend time mean: {np.mean(ends):.3f}'\
+                            f'\tend time std: {np.std(ends):.3f}')
+
+        print(f'Longest series at: {id_length_max}'\
+                            f'\tlength: {length_max}'\
+                            f'\tlength mean: {np.mean(lengths):.3f}'\
+                            f'\tlength std: {np.std(lengths):.3f}')
 
     exit()
 
