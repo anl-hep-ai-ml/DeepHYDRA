@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 import prince
 from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
 import cv2 as cv
 import matplotlib.pyplot as plt
 from tqdm import tqdm
@@ -50,8 +51,8 @@ def run_pca(data_df: pd.DataFrame,
 
     pca = pca.fit(data_df)
 
-    print('Eigenvalue summary:')
-    print(pca.eigenvalues_summary)
+    # print('Eigenvalue summary:')
+    # print(pca.eigenvalues_summary)
 
     cols_without_contribution = []
 
@@ -67,6 +68,24 @@ def run_pca(data_df: pd.DataFrame,
                                 cols_without_contribution)
 
     return cols_without_contribution_all
+
+
+def rename_columns(columns: pd.Index, 
+                            app_name: str,
+                            id: str):
+    
+    columns = pd.Series(columns)
+
+    def _renaming_func(element):
+        if element != 'label':
+            constituents = str(element).split('::')
+            name = f'{constituents[1].lower()}_{constituents[0].lower()}'
+        else:
+            name = element
+
+        return name + f'_{app_name}_{id}'
+
+    return pd.Index(columns.map(_renaming_func))
 
 
 def fig_to_numpy_array(fig):
@@ -113,8 +132,10 @@ if __name__ == '__main__':
         pd.to_numeric(test_set_x_df['job_id'])
     test_set_x_df['component_id'] =\
         pd.to_numeric(test_set_x_df['component_id'])
-    
 
+    timestamps_train = train_set_x_df.reset_index()['timestamp']
+    timestamps_test = test_set_x_df.reset_index()['timestamp']
+    
     print(f'Train set size: {len(train_set_x_df)}')
     print(f'Test set size: {len(test_set_x_df)}')
 
@@ -137,17 +158,28 @@ if __name__ == '__main__':
 
     cols_without_contribution_all = None
 
-    cols_without_contribution_all =\
-                    run_pca(train_set_x_df,
-                                cols_without_contribution_all)
+    # cols_without_contribution_all =\
+    #                 run_pca(train_set_x_df,
+    #                             cols_without_contribution_all)
+
+    # cols_without_contribution_all =\
+    #                 run_pca(test_set_x_df,
+    #                             cols_without_contribution_all)
+
+    dataset_combined_df = pd.concat((train_set_x_df,
+                                        test_set_x_df),
+                                        ignore_index=True)
 
     cols_without_contribution_all =\
-                    run_pca(test_set_x_df,
+                    run_pca(dataset_combined_df,
                                 cols_without_contribution_all)
+
+    amount_relative = len(cols_without_contribution_all)/\
+                                    len(train_set_x_df.columns)
 
     print('Cols without contribution')
     print(f'Amount: {len(cols_without_contribution_all)}')
-    print(f'Relative amount: {100*len(cols_without_contribution_all)/len(train_set_x_df.columns):3f} %')
+    print(f'Relative amount: {100*amount_relative:.3f} %')
     
     train_set_x_df.drop(cols_without_contribution_all,
                                     axis=1, inplace=True)
@@ -155,21 +187,30 @@ if __name__ == '__main__':
                                     axis=1, inplace=True)
 
     train_set_x_df['app_name'] = train_set_y_df['app_name']
-    train_set_x_df['binary_anom'] = train_set_y_df['binary_anom']
-
     test_set_x_df['app_name'] = test_set_y_df['app_name']
-    test_set_x_df['binary_anom'] = test_set_y_df['binary_anom']
+    
+    train_set_x_df['label'] = 0
+
+    label_map = {'none': 0,
+                    'cpuoccupy': 1,
+                    'memleak': 2}
+
+    test_set_x_df['label'] =\
+        test_set_y_df['anom_name'].map(label_map)
 
     train_set_x_df.reset_index(inplace=True)
     test_set_x_df.reset_index(inplace=True)
 
-    train_set_x_df['id'] =\
-        train_set_x_df[['component_id', 'job_id']]\
-            .agg(lambda x: f'{x[0]}_{x[1]}', axis=1)
+    # train_set_x_df['id'] =\
+    #     train_set_x_df[['component_id', 'job_id']]\
+    #         .agg(lambda x: f'{x[0]}_{x[1]}', axis=1)
 
-    test_set_x_df['id'] =\
-        test_set_x_df[['component_id', 'job_id']]\
-            .agg(lambda x: f'{x[0]}_{x[1]}', axis=1)
+    # test_set_x_df['id'] =\
+    #     test_set_x_df[['component_id', 'job_id']]\
+    #         .agg(lambda x: f'{x[0]}_{x[1]}', axis=1)
+
+    train_set_x_df['id'] = train_set_x_df['component_id']
+    test_set_x_df['id'] = test_set_x_df['component_id']
 
     train_set_x_df.drop(['component_id', 'job_id'],
                                 axis=1, inplace=True)
@@ -177,11 +218,16 @@ if __name__ == '__main__':
                                 axis=1, inplace=True)
 
     data_indices = ['timestamp', 'app_name', 'id']
+    # data_indices = ['timestamp', 'app_name', 'component_id', 'job_id']
 
     train_set_x_df.set_index(data_indices, inplace=True)
     test_set_x_df.set_index(data_indices, inplace=True)
+    
+    # Reshape datasets
 
     app_names = train_set_y_df['app_name'].unique()
+
+    train_subsets = defaultdict(list)
 
     print('Train\n')
 
@@ -240,6 +286,25 @@ if __name__ == '__main__':
                 end_max = timestamps[-1]
                 id_end_max = id_
 
+            per_instance_data.columns =\
+                    rename_columns(per_instance_data.columns,
+                                                app_name, id_)
+
+            train_subsets[id_].append(per_instance_data)
+
+    # train_set_reshaped_df = pd.concat(train_subsets, axis=1)
+
+    # print(train_set_reshaped_df)
+
+    # nan_amount = np.mean(np.sum(pd.isna(train_set_reshaped_df.to_numpy()), 1)/\
+    #                                                     train_set_reshaped_df.shape[1])
+
+    # print(f'Mean sparsity reshaped train set: {100*nan_amount:.3f} %')
+
+    app_names = test_set_y_df['app_name'].unique()
+
+    test_subsets_in = defaultdict(list)
+
     print('\nTest\n')
 
     for app_name in app_names:
@@ -297,8 +362,100 @@ if __name__ == '__main__':
                 end_max = timestamps[-1]
                 id_end_max = id_
 
+            per_instance_data.columns =\
+                    rename_columns(per_instance_data.columns,
+                                                app_name, id_)
+
+            test_subsets_in[id_].append(per_instance_data)
+
+    # test_set_reshaped_df = pd.concat(test_subsets_in, axis=1)
+
+    # print(test_set_reshaped_df)
+
+    # nan_amount = np.mean(np.sum(pd.isna(test_set_reshaped_df.to_numpy()), 1)/\
+    #                                                     test_set_reshaped_df.shape[1])
+
+    # print(f'Mean sparsity reshaped train set: {100*nan_amount:.3f} %')
+
+    # Compose unlabeled train, labeled train, test,
+    # unlabeled val, and labeled val datasets from
+    # existing train and test sets
+
+    output_datasets = {'unlabeled train': defaultdict(list),
+                        'labeled train': defaultdict(list),
+                        'test': defaultdict(list),
+                        'unlabeled val': defaultdict(list),
+                        'labeled val': defaultdict(list),}
+
+    choices = ['train', 'test', 'val']
+
+    p_train = [0.8, 0.1, 0.1]
+    p_test = [0.05, 0.9, 0.05]
+
+    rng = np.random.default_rng()
+
+    for id_, data in train_subsets.items():
+        for element in data:
+            # data_train, data_test = train_test_split(element, test_size=0.3)
+            # data_test, data_val = train_test_split(data_test, test_size=0.667)
+            # data_train_labeled, _ = train_test_split(data_train, test_size=0.2)
+            # data_val_labeled, _ = train_test_split(data_val, test_size=0.2)
+
+            # unlabeled_train_subsets[id_].append(data_train)
+            # labeled_train_subsets[id_].append(data_train_labeled)
+            # test_subsets_out[id_].append(data_test)
+            # unlabeled_val_subsets[id_].append(data_val)
+            # labeled_val_subsets[id_].append(data_val_labeled)
+
+            output_category = rng.choice(choices, p=p_train)
+
+            if output_category == 'train':
+                output_datasets['unlabeled train'][id_].append(element)
+
+                if rng.choice(2, p=[0.2, 0.8]):
+                    output_datasets['labeled train'][id_].append(element)
+
+            elif output_category == 'test':
+                output_datasets['test'][id_].append(element)
+
+            else:
+                output_datasets['unlabeled val'][id_].append(element)
+
+                if rng.choice(2, p=[0.2, 0.8]):
+                    output_datasets['labeled val'][id_].append(element)
+
+
+    for id_, data in test_subsets_in.items():
+        for element in data:
+            # data_test, data_train_labeled = train_test_split(element, test_size=0.1)
+            # data_test, data_val_labeled = train_test_split(data_test, test_size=0.1)
+
+            # labeled_train_subsets[id_].append(data_train_labeled)
+            # test_subsets_out[id_].append(data_test)
+            # labeled_val_subsets[id_].append(data_val_labeled)
+
+            output_category = rng.choice(choices, p=p_test)
+
+            if output_category == 'train':
+                output_datasets['labeled train'][id_].append(element)
+
+            elif output_category == 'test':
+                output_datasets['test'][id_].append(element)
+
+            else:
+                output_datasets['labeled val'][id_].append(element)
+
+    for type_key, dataset in output_datasets.items():
+        print(f'{type_key}:')
+
+        for id_, data in dataset.items():
+            for element in data:
+                print(f'{id_}\tsize: {len(element)}')
+
     exit()
- 
+
+    # TODO: Check timestamp overlap in generated datasets
+
     # Unlabeled train set
 
     # Reduce dataset
