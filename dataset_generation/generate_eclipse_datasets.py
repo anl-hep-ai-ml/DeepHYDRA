@@ -3,6 +3,7 @@ import math
 import re
 import argparse
 from collections import defaultdict
+from functools import reduce
 
 import numpy as np
 import pandas as pd
@@ -25,6 +26,63 @@ font_scale = 1
 font_color = (255,255,255)
 thickness = 1
 line_type = 2
+
+
+def get_contiguous_runs(x):
+    '''
+    Find runs of consecutive items in an array.
+    As published in https://gist.github.com/alimanfoo/c5977e87111abe8127453b21204c1065
+    '''
+
+    # Ensure array
+
+    x = np.asanyarray(x)
+
+    if x.ndim != 1:
+        raise ValueError('Only 1D arrays supported')
+
+    n = x.shape[0]
+
+    # Handle empty array
+
+    if n == 0:
+        return np.array([]), np.array([]), np.array([])
+
+    else:
+
+        # Find run starts
+
+        loc_run_start = np.empty(n, dtype=bool)
+        loc_run_start[0] = True
+
+        np.not_equal(x[:-1], x[1:], out=loc_run_start[1:])
+        run_starts = np.nonzero(loc_run_start)[0]
+
+        # Find run values
+        run_values = x[loc_run_start]
+
+        # Find run lengths
+        run_lengths = np.diff(np.append(run_starts, n))
+
+        run_starts = np.compress(run_values, run_starts)
+        run_lengths = np.compress(run_values, run_lengths)
+
+        run_ends = run_starts + run_lengths
+
+        return run_starts, run_ends
+
+
+def remove_timestamp_jumps(index: pd.Index) -> pd.Index:
+
+        delta = index[1:] - index[:-1]
+
+        index = pd.Series(index)
+
+        for i in range(1, len(index)):
+            if delta[i - 1] > 1:
+                index[i:] = index[i:] - delta[i - 1] + 1
+
+        return pd.Index(index)
 
 
 def run_pca(data_df: pd.DataFrame,
@@ -191,12 +249,15 @@ if __name__ == '__main__':
     
     train_set_x_df['label'] = 0
 
-    label_map = {'none': 0,
-                    'cpuoccupy': 1,
-                    'memleak': 2}
+    train_set_x_df['label'] =\
+        train_set_x_df['label'].astype(np.uint8)
+
+    label_map = {'none': 0b00,
+                    'cpuoccupy': 0b01,
+                    'memleak': 0b10}
 
     test_set_x_df['label'] =\
-        test_set_y_df['anom_name'].map(label_map)
+        test_set_y_df['anom_name'].map(label_map).astype(np.uint8)
 
     train_set_x_df.reset_index(inplace=True)
     test_set_x_df.reset_index(inplace=True)
@@ -229,7 +290,7 @@ if __name__ == '__main__':
 
     train_subsets = defaultdict(list)
 
-    print('Train\n')
+    # print('Train\n')
 
     for app_name in app_names:
 
@@ -237,7 +298,7 @@ if __name__ == '__main__':
 
         ids = per_app_data.reset_index()['id'].unique()
 
-        print(f'{app_name}: {len(per_app_data)}')
+        # print(f'{app_name}: {len(per_app_data)}')
 
         lengths = []
         starts = []
@@ -305,7 +366,7 @@ if __name__ == '__main__':
 
     test_subsets_in = defaultdict(list)
 
-    print('\nTest\n')
+    # print('\nTest\n')
 
     for app_name in app_names:
 
@@ -313,7 +374,7 @@ if __name__ == '__main__':
 
         ids = per_app_data.reset_index()['id'].unique()
 
-        print(f'{app_name}: {len(per_app_data)}')
+        # print(f'{app_name}: {len(per_app_data)}')
 
         lengths = []
         starts = []
@@ -381,7 +442,7 @@ if __name__ == '__main__':
     # unlabeled val, and labeled val datasets from
     # existing train and test sets
 
-    output_datasets = {'unlabeled train': defaultdict(list),
+    output_subsets = {'unlabeled train': defaultdict(list),
                         'labeled train': defaultdict(list),
                         'test': defaultdict(list),
                         'unlabeled val': defaultdict(list),
@@ -390,9 +451,9 @@ if __name__ == '__main__':
     choices = ['train', 'test', 'val']
 
     p_train = [0.8, 0.1, 0.1]
-    p_test = [0.05, 0.9, 0.05]
+    p_test = [0.02, 0.96, 0.02]
 
-    rng = np.random.default_rng()
+    rng = np.random.default_rng(42)
 
     for id_, data in train_subsets.items():
         for element in data:
@@ -410,19 +471,19 @@ if __name__ == '__main__':
             output_category = rng.choice(choices, p=p_train)
 
             if output_category == 'train':
-                output_datasets['unlabeled train'][id_].append(element)
+                output_subsets['unlabeled train'][id_].append(element)
 
-                if rng.choice(2, p=[0.2, 0.8]):
-                    output_datasets['labeled train'][id_].append(element)
+                if rng.choice(2, p=[0.1, 0.9]):
+                    output_subsets['labeled train'][id_].append(element)
 
             elif output_category == 'test':
-                output_datasets['test'][id_].append(element)
+                output_subsets['test'][id_].append(element)
 
             else:
-                output_datasets['unlabeled val'][id_].append(element)
+                output_subsets['unlabeled val'][id_].append(element)
 
-                if rng.choice(2, p=[0.2, 0.8]):
-                    output_datasets['labeled val'][id_].append(element)
+                if rng.choice(2, p=[0.1, 0.9]):
+                    output_subsets['labeled val'][id_].append(element)
 
 
     for id_, data in test_subsets_in.items():
@@ -437,20 +498,105 @@ if __name__ == '__main__':
             output_category = rng.choice(choices, p=p_test)
 
             if output_category == 'train':
-                output_datasets['labeled train'][id_].append(element)
+                output_subsets['labeled train'][id_].append(element)
 
             elif output_category == 'test':
-                output_datasets['test'][id_].append(element)
+                output_subsets['test'][id_].append(element)
 
             else:
-                output_datasets['labeled val'][id_].append(element)
+                output_subsets['labeled val'][id_].append(element)
 
-    for type_key, dataset in output_datasets.items():
-        print(f'{type_key}:')
+    # for dataset_type, dataset in output_subsets.items():
 
-        for id_, data in dataset.items():
-            for element in data:
-                print(f'{id_}\tsize: {len(element)}')
+    #     print(f'{dataset_type}:')
+
+    #     timestamp_counter = defaultdict(int)
+
+    #     for id_, data in dataset.items():
+    #         for element in data:
+    #             for ts in element.index:
+    #                 timestamp_counter[ts] += 1
+
+    #     overlaps = np.array(list(timestamp_counter.values())) - 1
+    #     timestamps = list(timestamp_counter.keys())
+
+    #     overlap_starts, overlap_ends  =\
+    #             get_contiguous_runs(overlaps)
+        
+    #     for start, end in zip(overlap_starts,
+    #                                 overlap_ends):
+            
+    #         end = min(end, (len(overlaps) - 1))
+
+    #         print('Found overlapping region between '\
+    #                 f'{timestamps[start]} and {timestamps[end]}')
+
+    output_datasets = {}
+
+    for dataset_type, dataset in output_subsets.items():
+
+        print(f'{dataset_type}:')
+
+        subset_list = []
+
+        for id_, subsets in dataset.items():
+            for subset in subsets:
+                subset_list.append(subset)
+
+        dataset_reshaped = pd.concat(subset_list, axis=1)
+
+        dataset_reshaped.sort_index(inplace=True)
+
+        print(dataset_reshaped.index)
+
+        dataset_reshaped.index =\
+            remove_timestamp_jumps(dataset_reshaped.index)
+
+        print(dataset_reshaped.index)
+
+        # print(dataset_reshaped)
+
+        nan_amount = np.mean(np.sum(pd.isna(dataset_reshaped.to_numpy()), 1)/\
+                                                        dataset_reshaped.shape[1])
+
+        print(f'Mean sparsity reshaped {dataset_type} set: {100*nan_amount:.3f} %')
+
+        label_columns =\
+            [col for col in dataset_reshaped.columns if 'label' in col]
+
+        dataset_reshaped[label_columns] =\
+            dataset_reshaped[label_columns].fillna(0).astype(np.uint8)
+
+        dataset_reshaped['label'] =\
+            dataset_reshaped[label_columns]\
+                .agg(lambda row: reduce(lambda x, y: x|y, row.tolist()), axis=1)
+
+        anomaly_count =\
+            np.count_nonzero(dataset_reshaped['label'].to_numpy().flatten()>=1)
+
+        print(f'Anomalous data ratio: {100*anomaly_count/len(dataset_reshaped):.3f} %')
+
+        anomaly_ratio_cumulative =\
+            np.cumsum(dataset_reshaped['label']\
+                .to_numpy().flatten()>=1)/len(dataset_reshaped)
+        
+        if dataset_type == 'test' or dataset_type.startswith('labeled'):
+            fig, ax = plt.subplots(figsize=(10, 6), dpi=300)
+
+            ax.set_title(f'Eclipse {dataset_type.title()} '\
+                                'Set Cumulative Anomaly Ratio')
+            
+            ax.set_xlabel('Timestamp')
+            ax.set_ylabel('Cumulative Anomaly Ratio')
+
+            ax.grid()
+
+            ax.plot(dataset_reshaped.index,
+                        anomaly_ratio_cumulative)
+            
+            plt.tight_layout()
+            plt.savefig(f"plots/eclipse_{dataset_type.replace(' ', '_')}"\
+                                                    '_set_anomaly_cumsum.png')
 
     exit()
 
