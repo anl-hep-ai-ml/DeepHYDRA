@@ -8,7 +8,7 @@ from functools import reduce
 import numpy as np
 import pandas as pd
 import prince
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from sklearn.model_selection import train_test_split
 import cv2 as cv
 import matplotlib.pyplot as plt
@@ -130,7 +130,7 @@ def run_pca(data_df: pd.DataFrame,
 
 def rename_columns(columns: pd.Index, 
                             app_name: str,
-                            id: str):
+                            id_: str):
     
     columns = pd.Series(columns)
 
@@ -138,12 +138,29 @@ def rename_columns(columns: pd.Index,
         if element != 'label':
             constituents = str(element).split('::')
             name = f'{constituents[1].lower()}_{constituents[0].lower()}'
+            name = name.replace('(', '_').replace(')', '_')
         else:
             name = element
 
-        return name + f'_{app_name}_{id}'
+        return f'{app_name}_{name}_{id_}'
 
     return pd.Index(columns.map(_renaming_func))
+
+
+def sort_columns(columns: pd.Index):
+    
+    columns = pd.Series(columns)
+
+    def _renaming_func(element):
+        if element != 'label':
+            constituents = str(element).split('::')
+            name = f'{constituents[1].lower()}_{constituents[0].lower()}'
+            name = name.replace('(', '_').replace(')', '_')
+        else:
+            name = element
+
+
+    return pd.Index(columns)
 
 
 def fig_to_numpy_array(fig):
@@ -547,12 +564,10 @@ if __name__ == '__main__':
 
         dataset_reshaped.sort_index(inplace=True)
 
-        print(dataset_reshaped.index)
-
         dataset_reshaped.index =\
             remove_timestamp_jumps(dataset_reshaped.index)
 
-        print(dataset_reshaped.index)
+        print(f'Length: {len(dataset_reshaped)}')
 
         # print(dataset_reshaped)
 
@@ -570,11 +585,20 @@ if __name__ == '__main__':
         dataset_reshaped['label'] =\
             dataset_reshaped[label_columns]\
                 .agg(lambda row: reduce(lambda x, y: x|y, row.tolist()), axis=1)
+        
+        dataset_reshaped.drop(label_columns, axis=1, inplace=True)
 
         anomaly_count =\
             np.count_nonzero(dataset_reshaped['label'].to_numpy().flatten()>=1)
 
         print(f'Anomalous data ratio: {100*anomaly_count/len(dataset_reshaped):.3f} %')
+
+        # Sort columns by application and metric
+
+        dataset_reshaped_ordered =\
+            dataset_reshaped.loc[:, ~(dataset_reshaped.columns == 'label')].sort_index(axis=1)
+
+        dataset_reshaped_ordered['label'] = dataset_reshaped['label']
 
         anomaly_ratio_cumulative =\
             np.cumsum(dataset_reshaped['label']\
@@ -598,9 +622,55 @@ if __name__ == '__main__':
             plt.savefig(f"plots/eclipse_{dataset_type.replace(' ', '_')}"\
                                                     '_set_anomaly_cumsum.png')
 
-    exit()
+        apps = ['exa', 'lammps', 'sw4', 'sw4lite']
 
-    # TODO: Check timestamp overlap in generated datasets
+        plt.rcParams['figure.constrained_layout.use'] = True
+
+        fig, axes = plt.subplots(4, 1, figsize=(10, 24), dpi=300)
+
+        fig.suptitle(f'Eclipse {dataset_type.title()} '\
+                                        'Set: MemInfo Data')
+
+        meminfo_data =\
+            dataset_reshaped_ordered.loc[:, dataset_reshaped_ordered.columns.str.contains('meminfo')]
+
+        for ax, app in zip(axes, apps):
+
+            ax.set_title(app.upper())
+            
+            ax.set_xlabel('Timestamp')
+            ax.set_ylabel('Data')
+
+            ax.grid()
+
+            meminfo_cols =  meminfo_data.columns.str.startswith(f'{app}_')
+
+            data = meminfo_data.loc[:, meminfo_cols]
+
+            if data.shape[-1]:
+
+                data = data.fillna(0)
+
+                data = MinMaxScaler().fit_transform(data.to_numpy())
+                
+                index = dataset_reshaped_ordered.index.values
+
+                ax.plot(dataset_reshaped_ordered.index.values, data)
+
+                anomaly_starts, anomaly_ends =\
+                    get_contiguous_runs(dataset_reshaped_ordered['label'].to_numpy().flatten()>=1)
+                    
+                for start, end in zip(anomaly_starts, anomaly_ends):
+
+                    start = max(0, start)
+                    end = min(end, (len(index) - 1))
+
+                    ax.axvspan(index[start], index[end], color='red', alpha=0.5)
+            
+        plt.savefig(f"plots/eclipse_{dataset_type.replace(' ', '_')}"\
+                                                    '_set_meminfo.png')
+
+    exit()
 
     # Unlabeled train set
 
@@ -611,8 +681,6 @@ if __name__ == '__main__':
     columns_reduced_train_unlabeled = None
     keys_last = None
 
-    train_set_unlabeled_x_df = train_set_x_df
-
     for count, row_x_data in enumerate(tqdm(train_set_unlabeled_x_df.to_numpy(),
                                                 desc='Generating unlabeled train set')):
 
@@ -621,13 +689,14 @@ if __name__ == '__main__':
         for index, datapoint in enumerate(row_x_data):
             app_buckets_data[app_numbers_train[index]].append(datapoint)
 
-        app_data_mean
-        app_median_dcm_rates = {}
-        app_dcm_rate_stdevs = {}
+        app_data_mean = {}
+        app_data_median = {}
+        app_data_std = {}
 
         for app, app_bucket in app_buckets_data.items():
-            app_median_dcm_rates[app] = np.nanmedian(app_bucket)
-            app_dcm_rate_stdevs[app] = np.nanstd(app_bucket)
+            app_data_mean[app] = np.nanmedian(app_bucket)
+            app_data_median[app] = np.nanmedian(app_bucket)
+            app_data_std[app] = np.nanstd(app_bucket)
 
         app_median_dcm_rates = dict(sorted(app_median_dcm_rates.items()))
         app_dcm_rate_stdevs = dict(sorted(app_dcm_rate_stdevs.items()))
@@ -664,9 +733,10 @@ if __name__ == '__main__':
                                                         train_set_unlabeled_x_df.index,
                                                         columns_reduced_train_unlabeled)
 
-    train_set_unlabeled_x_df.to_hdf(f'{args.dataset_dir}/reduced_hlt_'\
-                                            f'train_set_{args.variant}_x.h5',
-                                        key='reduced_hlt_train_set_x',
+    train_set_unlabeled_x_df.to_hdf(f'{args.dataset_dir}/reduced_eclipse_'\
+                                            f'unlabeled_train_set.h5',
+                                        key='reduced_eclipse_'\
+                                                'unlabeled_train_set',
                                         mode='w')
 
     if args.generate_videos:
