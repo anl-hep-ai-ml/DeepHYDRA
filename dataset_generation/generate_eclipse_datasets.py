@@ -17,7 +17,7 @@ from tqdm import tqdm
 max_val = 100
 
 image_width = 1920
-image_height = 1080
+image_height = 2160
 
 plot_window_size = 100
 
@@ -147,20 +147,18 @@ def rename_columns(columns: pd.Index,
     return pd.Index(columns.map(_renaming_func))
 
 
-def sort_columns(columns: pd.Index):
-    
-    columns = pd.Series(columns)
+def create_channel_names(mean_or_median_labels, stdev_labels):
 
-    def _renaming_func(element):
-        if element != 'label':
-            constituents = str(element).split('::')
-            name = f'{constituents[1].lower()}_{constituents[0].lower()}'
-            name = name.replace('(', '_').replace(')', '_')
-        else:
-            name = element
+    mean_or_median_labels = [f'm_{mean_or_median_label}'\
+                for mean_or_median_label in mean_or_median_labels]
 
+    stdev_labels = [f'std_{stdev_label}'\
+                    for stdev_label in stdev_labels]
 
-    return pd.Index(columns)
+    labels = np.concatenate((mean_or_median_labels,
+                                        stdev_labels))
+
+    return labels
 
 
 def fig_to_numpy_array(fig):
@@ -598,187 +596,219 @@ if __name__ == '__main__':
         dataset_reshaped_ordered =\
             dataset_reshaped.loc[:, ~(dataset_reshaped.columns == 'label')].sort_index(axis=1)
 
-        dataset_reshaped_ordered['label'] = dataset_reshaped['label']
-
-        anomaly_ratio_cumulative =\
-            np.cumsum(dataset_reshaped['label']\
-                .to_numpy().flatten()>=1)/len(dataset_reshaped)
+        # anomaly_ratio_cumulative =\
+        #     np.cumsum(dataset_reshaped['label']\
+        #         .to_numpy().flatten()>=1)/len(dataset_reshaped)
         
-        if dataset_type == 'test' or dataset_type.startswith('labeled'):
-            fig, ax = plt.subplots(figsize=(10, 6), dpi=300)
+        # if dataset_type == 'test' or dataset_type.startswith('labeled'):
+        #     fig, ax = plt.subplots(figsize=(10, 6), dpi=300)
 
-            ax.set_title(f'Eclipse {dataset_type.title()} '\
-                                'Set Cumulative Anomaly Ratio')
+        #     ax.set_title(f'Eclipse {dataset_type.title()} '\
+        #                         'Set Cumulative Anomaly Ratio')
             
-            ax.set_xlabel('Timestamp')
-            ax.set_ylabel('Cumulative Anomaly Ratio')
+        #     ax.set_xlabel('Timestamp')
+        #     ax.set_ylabel('Cumulative Anomaly Ratio')
 
-            ax.grid()
+        #     ax.grid()
 
-            ax.plot(dataset_reshaped.index,
-                        anomaly_ratio_cumulative)
+        #     ax.plot(dataset_reshaped.index,
+        #                 anomaly_ratio_cumulative)
             
-            plt.tight_layout()
-            plt.savefig(f"plots/eclipse_{dataset_type.replace(' ', '_')}"\
-                                                    '_set_anomaly_cumsum.png')
+        #     plt.tight_layout()
+        #     plt.savefig(f"plots/eclipse_{dataset_type.replace(' ', '_')}"\
+        #                                             '_set_anomaly_cumsum.png')
 
-        apps = ['exa', 'lammps', 'sw4', 'sw4lite']
+        # apps = ['exa', 'lammps', 'sw4', 'sw4lite']
 
-        plt.rcParams['figure.constrained_layout.use'] = True
+        # plt.rcParams['figure.constrained_layout.use'] = True
 
-        fig, axes = plt.subplots(4, 1, figsize=(10, 24), dpi=300)
+        # fig, axes = plt.subplots(4, 1, figsize=(10, 24), dpi=300)
 
-        fig.suptitle(f'Eclipse {dataset_type.title()} '\
-                                        'Set: MemInfo Data')
+        # fig.suptitle(f'Eclipse {dataset_type.title()} '\
+        #                                 'Set: MemInfo Data')
 
-        meminfo_data =\
-            dataset_reshaped_ordered.loc[:, dataset_reshaped_ordered.columns.str.contains('meminfo')]
+        # meminfo_data =\
+        #     dataset_reshaped_ordered.loc[:, dataset_reshaped_ordered.columns.str.contains('meminfo')]
 
-        for ax, app in zip(axes, apps):
+        # for ax, app in zip(axes, apps):
 
-            ax.set_title(app.upper())
+        #     ax.set_title(app.upper())
             
-            ax.set_xlabel('Timestamp')
-            ax.set_ylabel('Data')
+        #     ax.set_xlabel('Timestamp')
+        #     ax.set_ylabel('Data')
 
-            ax.grid()
+        #     ax.grid()
 
-            meminfo_cols =  meminfo_data.columns.str.startswith(f'{app}_')
+        #     meminfo_cols =  meminfo_data.columns.str.startswith(f'{app}_')
 
-            data = meminfo_data.loc[:, meminfo_cols]
+        #     data = meminfo_data.loc[:, meminfo_cols]
 
-            if data.shape[-1]:
+        #     if data.shape[-1]:
 
-                data = data.fillna(0)
+        #         data = data.fillna(0)
 
-                data = MinMaxScaler().fit_transform(data.to_numpy())
+        #         data = MinMaxScaler().fit_transform(data.to_numpy())
                 
-                index = dataset_reshaped_ordered.index.values
+        #         index = dataset_reshaped_ordered.index.values
 
-                ax.plot(dataset_reshaped_ordered.index.values, data)
+        #         ax.plot(dataset_reshaped_ordered.index.values, data)
 
-                anomaly_starts, anomaly_ends =\
-                    get_contiguous_runs(dataset_reshaped_ordered['label'].to_numpy().flatten()>=1)
+        #         anomaly_starts, anomaly_ends =\
+        #             get_contiguous_runs(dataset_reshaped_ordered['label'].to_numpy().flatten()>=1)
                     
-                for start, end in zip(anomaly_starts, anomaly_ends):
+        #         for start, end in zip(anomaly_starts, anomaly_ends):
 
-                    start = max(0, start)
-                    end = min(end, (len(index) - 1))
+        #             start = max(0, start)
+        #             end = min(end, (len(index) - 1))
 
-                    ax.axvspan(index[start], index[end], color='red', alpha=0.5)
+        #             ax.axvspan(index[start], index[end], color='red', alpha=0.5)
             
-        plt.savefig(f"plots/eclipse_{dataset_type.replace(' ', '_')}"\
-                                                    '_set_meminfo.png')
+        # plt.savefig(f"plots/eclipse_{dataset_type.replace(' ', '_')}"\
+        #                                             '_set_meminfo.png')
 
-    exit()
+        reduction_map =\
+            [val.rsplit('_', 1)[0] for val in\
+                dataset_reshaped_ordered.columns.values]
 
-    # Unlabeled train set
+        print(reduction_map)
 
-    # Reduce dataset
+        data_mean_all = []
+        data_median_all = []
 
-    app_data_train_unlabeled_all = []
+        columns_reduced = None
+        keys_last = None
 
-    columns_reduced_train_unlabeled = None
-    keys_last = None
+        for count, row_x_data in enumerate(tqdm(dataset_reshaped_ordered.to_numpy(),
+                                                desc=f'Generating {dataset_type} set')):
 
-    for count, row_x_data in enumerate(tqdm(train_set_unlabeled_x_df.to_numpy(),
-                                                desc='Generating unlabeled train set')):
+            buckets = defaultdict(list)
 
-        app_buckets_data = defaultdict(list)
+            for index, datapoint in enumerate(row_x_data):
+                buckets[reduction_map[index]].append(datapoint)
 
-        for index, datapoint in enumerate(row_x_data):
-            app_buckets_data[app_numbers_train[index]].append(datapoint)
+            data_mean = {}
+            data_median = {}
+            data_std = {}
 
-        app_data_mean = {}
-        app_data_median = {}
-        app_data_std = {}
+            for col_reduced, bucket in buckets.items():
+                data_mean[col_reduced] = np.nanmedian(bucket)
+                data_median[col_reduced] = np.nanmedian(bucket)
+                data_std[col_reduced] = np.nanstd(bucket)
 
-        for app, app_bucket in app_buckets_data.items():
-            app_data_mean[app] = np.nanmedian(app_bucket)
-            app_data_median[app] = np.nanmedian(app_bucket)
-            app_data_std[app] = np.nanstd(app_bucket)
+            data_mean = dict(sorted(data_mean.items()))
+            data_median = dict(sorted(data_median.items()))
+            data_std = dict(sorted(data_std.items()))
 
-        app_median_dcm_rates = dict(sorted(app_median_dcm_rates.items()))
-        app_dcm_rate_stdevs = dict(sorted(app_dcm_rate_stdevs.items()))
+            if keys_last != None:
+                assert data_median.keys() == keys_last,\
+                                'Bucket keys changed between slices'
 
-        if keys_last != None:
-            assert app_median_dcm_rates.keys() == keys_last,\
-                                                    'App bucket keys changed between slices'
+                assert data_median.keys() == data_std.keys(),\
+                                                'Bucket keys not identical'
 
-            assert app_median_dcm_rates.keys() == app_dcm_rate_stdevs.keys(),\
-                                                    'App bucket keys not identical'
+            keys_last = data_median.keys()
 
-        keys_last = app_median_dcm_rates.keys()
+            if type(columns_reduced) == type(None):
+                columns_reduced = create_channel_names(data_median.keys(),
+                                                                data_std.keys())
 
-        if type(columns_reduced_train_unlabeled) == type(None):
-            columns_reduced_train_unlabeled = create_channel_names(app_median_dcm_rates.keys(),
-                                                                    app_dcm_rate_stdevs.keys())
+            data_mean_np = np.concatenate((np.array(list(data_mean.values())),
+                                                    np.array(list(data_std.values()))))
 
-        app_data_np = np.concatenate((np.array(list(app_median_dcm_rates.values())),
-                                            np.array(list(app_dcm_rate_stdevs.values()))))
+            data_median_np = np.concatenate((np.array(list(data_median.values())),
+                                                    np.array(list(data_std.values()))))
 
-        app_data_train_unlabeled_all.append(app_data_np)
+            data_mean_all.append(data_mean_np)
+            data_median_all.append(data_median_np)
 
-    app_data_train_unlabeled_all_np = np.stack(app_data_train_unlabeled_all)
-    app_data_train_unlabeled_all_np = np.nan_to_num(app_data_train_unlabeled_all_np, nan=-1)
+        data_mean_all_np = np.stack(data_mean_all)
+        data_median_all_np = np.stack(data_median_all)
 
-    nan_amount_train_unlabeled = 100*pd.isna(app_data_train_unlabeled_all_np.flatten()).sum()/\
-                                                            app_data_train_unlabeled_all_np.size
+        data_mean_all_np = np.nan_to_num(data_mean_all_np, nan=-1)
+        data_median_all_np = np.nan_to_num(data_median_all_np, nan=-1)
 
-    print('NaN amount reduced train set: {:.3f} %'.format(nan_amount_train_unlabeled))
+        # print(data_mean_all_np)
+        # print(data_median_all_np)
 
-    # Save dataset
+        nan_amount_train_unlabeled =\
+                100*pd.isna(data_median_all_np.flatten()).sum()/\
+                                                data_median_all_np.size
 
-    train_set_unlabeled_x_df = pd.DataFrame(app_data_train_unlabeled_all_np,
-                                                        train_set_unlabeled_x_df.index,
-                                                        columns_reduced_train_unlabeled)
+        print(f'NaN amount: {nan_amount_train_unlabeled:.3f} %')
+        
+        data_mean_all_df = pd.DataFrame(data_mean_all_np,
+                                            dataset_reshaped_ordered.index,
+                                            columns_reduced)
 
-    train_set_unlabeled_x_df.to_hdf(f'{args.dataset_dir}/reduced_eclipse_'\
-                                            f'unlabeled_train_set.h5',
-                                        key='reduced_eclipse_'\
-                                                'unlabeled_train_set',
-                                        mode='w')
+        data_median_all_df['label'] = dataset_reshaped['label']
+        
+        data_median_all_df = pd.DataFrame(data_median_all_np,
+                                            dataset_reshaped_ordered.index,
+                                            columns_reduced)
 
-    if args.generate_videos:
+        dataset_label = f"reduced_eclipse_{dataset_type.replace(' ', '_')}_set"
 
-        four_cc = cv.VideoWriter_fourcc('m', 'p', '4', 'v')
+        data_mean_all_df.to_hdf(f'{args.dataset_dir}/{dataset_label}_mean.h5',
+                                                    key=dataset_label, mode='w')
+        
+        data_median_all_df.to_hdf(f'{args.dataset_dir}/{dataset_label}_median.h5',
+                                                        key=dataset_label, mode='w')
 
-        writer = cv.VideoWriter(f'{args.video_output_dir}/reduced_hlt_'\
-                                            f'train_set_{args.variant}.mp4',
-                                        four_cc, 60, (image_width, image_height))
+        if args.generate_videos:
 
-        for count in tqdm(range(len(app_data_train_unlabeled_all_np)),
-                            desc='Generating unlabeled train set animation'):
+            four_cc = cv.VideoWriter_fourcc('m', 'p', '4', 'v')
 
-            lower_bound = max(count - plot_window_size, 0)
-            upper_bound_axis = max(count, plot_window_size) + 10
+            writer = cv.VideoWriter(f'{args.video_output_dir}/{dataset_label}.mp4',
+                                            four_cc, 60, (image_width, image_height))
 
-            fig, ax = plt.subplots(figsize=(8, 4.5), dpi=240)
+            for count in tqdm(range(len(data_mean_all_np)),
+                                desc='Generating unlabeled train set animation'):
 
-            max_val_slice = np.max(app_data_train_unlabeled_all_np[lower_bound:count, :])\
-                                if len(app_data_train_unlabeled_all_np[lower_bound:count, :])\
-                            else 10
+                lower_bound = max(count - plot_window_size, 0)
+                upper_bound_axis = max(count, plot_window_size) + 10
 
-            max_val_slice = min(max_val_slice, 200)
+                fig, (ax_mean, ax_median) =\
+                        plt.subplots(2, 1, figsize=(8, 9), dpi=240)
 
-            ax.set_xlim(lower_bound, upper_bound_axis)
-            ax.set_ylim(-2, max_val_slice + 10)
+                max_val_slice_mean =\
+                    np.max(data_mean_all_np[lower_bound:count, :])\
+                            if len(data_mean_all_np[lower_bound:count, :])\
+                        else 10
+                
+                max_val_slice_median =\
+                    np.max(data_median_all_np[lower_bound:count, :])\
+                            if len(data_median_all_np[lower_bound:count, :])\
+                        else 10
 
-            ax.grid(True)
+                max_val_slice_mean = min(max_val_slice_mean, 100000)
+                max_val_slice_median = min(max_val_slice_mean, 1000000)
 
-            ax.set_title("Per-app Median DCM Rates")
-            ax.set_xlabel("Timestep")
-            ax.set_ylabel("DCM Rate")
+                ax_mean.set_xlim(lower_bound, upper_bound_axis)
+                ax_mean.set_ylim(-2, max_val_slice_mean + 10)
+                ax_median.set_xlim(lower_bound, upper_bound_axis)
+                ax_median.set_ylim(-2, max_val_slice_mean + 10)
 
-            ax.plot(np.arange(lower_bound, count),
-                                app_data_train_unlabeled_all_np[lower_bound:count, :])
+                ax_mean.grid(True)
+                ax_median.grid(True)
 
-            # plt.tight_layout()
+                ax_mean.set_title('Mean Data')
+                ax_mean.set_xlabel('Timestep')
+                ax_mean.set_ylabel('Mean Data')
 
-            frame = fig_to_numpy_array(fig)
+                ax_mean.set_title('Median Data')
+                ax_mean.set_xlabel('Timestep')
+                ax_mean.set_ylabel('Median Data')
 
-            writer.write(frame)
+                ax_mean.plot(np.arange(lower_bound, count),
+                                data_mean_all_np[lower_bound:count, :])
+                
+                ax_median.plot(np.arange(lower_bound, count),
+                                data_median_all_np[lower_bound:count, :])
 
-            plt.close()
+                frame = fig_to_numpy_array(fig)
 
-        writer.release()
+                writer.write(frame)
+
+                plt.close()
+
+            writer.release()
