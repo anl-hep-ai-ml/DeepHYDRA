@@ -12,6 +12,8 @@ import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 
+from sklearn.preprocessing import MinMaxScaler
+
 plt.rcParams.update({'font.size': 12})
 
 _implemented_augmentations_hlt = ['Scale',
@@ -98,6 +100,8 @@ _ordinal_cols_eclipse = ('exa_meminfo_commitlimit_6',
                             'sw4lite_vmstat_numa_interleave_6',
                             'sw4lite_vmstat_numa_miss_6',
                             'sw4lite_vmstat_slabs_scanned_6')
+
+
 
 
 def _get_runs_of_true(x):
@@ -842,16 +846,33 @@ class EclipseDataTimeseriesAugmentor():
     def _roll_data(self,
                     data: pd.DataFrame,
                     amount_mean: float = 0.,
-                    amount_std: float = 4096) -> list:
+                    amount_std: float = 1.) -> list:
 
         for app in self.applications:
+
+            print(app)
+
             cols = np.logical_or(data.columns.str.startswith(f'm_{app}_'),
                                     data.columns.str.startswith(f'std_{app}_'))
             
-            app_data = data.loc[:, cols]
+            app_data_np = data.loc[:, cols].to_numpy()
 
-            for col in range(app_data.shape[-1]):
-                print(len(app_data.iloc[:, col].unique()))
+            print(data)
+
+            roll_amount = self.rng.normal(amount_mean,
+                                            amount_std)
+
+            roll_amount = int(roll_amount*len(app_data_np))
+
+            print(roll_amount)
+
+            app_data_np = np.roll(app_data_np,
+                                        roll_amount,
+                                        axis=0)
+
+            data.loc[:, cols] = app_data_np
+
+            print(data)
 
         return data
 
@@ -860,29 +881,7 @@ class EclipseDataTimeseriesAugmentor():
                             data: pd.DataFrame,
                             label: pd.DataFrame) -> list:
 
-        window_ends =\
-                self.find_windows(data.to_numpy(),
-                                                downtime_period,
-                                                tolerance_abs)
-
-        segment_list_data = []
-        segment_list_label = []
-
-        window_start = 0
-
-        for window_end in window_ends:
-            segment_list_data.append(
-                data.iloc[window_start:window_end, :])
-            segment_list_label.append(
-                label.iloc[window_start:window_end, :])
-
-            window_start = window_end
-
-        pd.testing.assert_frame_equal(data,
-                                        pd.concat(segment_list_data))
-
-        return segment_list_data, segment_list_label
-
+        return data, label
 
 
     def _amplitude_phase_perturbation(self,
@@ -1022,6 +1021,7 @@ class EclipseDataTimeseriesAugmentor():
                                                 parameters[1])
 
                     segments_augmented.append(data_augmented)
+                    continue
 
                 # If the augmentation starts with 'Roll',
                 # but also contains other augmentations to
@@ -1040,13 +1040,16 @@ class EclipseDataTimeseriesAugmentor():
                     augmentation = '_'.join(augmentation.split('_')[1:])
                     parameters = parameters[2:]
 
-                segment_augmented_pd = data_rolled_pd.copy()
+                    segment_augmented_pd = data_rolled_pd
 
-                excluded_cols = data_rolled_pd.columns\
+                else:
+                    segment_augmented_pd = data_unmodified
+
+                excluded_cols = segment_augmented_pd.columns\
                                     .str.startswith(_ordinal_cols_eclipse)
 
                 data_to_augment_pd =\
-                    data_rolled_pd.loc[:, ~(excluded_cols)]
+                    segment_augmented_pd.loc[:, ~(excluded_cols)]
 
                 data_to_augment_np = data_to_augment_pd.to_numpy()
 
@@ -1091,12 +1094,44 @@ class EclipseDataTimeseriesAugmentor():
                                                     data_to_augment_pd.index,
                                                     columns=data_to_augment_pd.columns)
 
-                segment_augmented_pd[~excluded_cols] =\
-                                        data_augmented_pd
+                segment_augmented_pd.loc[:, ~excluded_cols] =\
+                                                data_augmented_pd
                     
                 segments_augmented.append(segment_augmented_pd)
 
         dataset_augmented = pd.concat(segments_augmented)
+
+        fig, axes = plt.subplots(4, 1, figsize=(10, 24), dpi=300)
+
+        fig.suptitle('Eclipse MemInfo Data')
+
+        meminfo_data =\
+            dataset_augmented.loc[:, dataset_augmented.columns.str.contains('meminfo')]
+
+        for ax, app in zip(axes, self.applications):
+
+            ax.set_title(app.upper())
+            
+            ax.set_xlabel('Timestamp')
+            ax.set_ylabel('Data')
+
+            ax.grid()
+
+            meminfo_cols =  meminfo_data.columns.str.startswith(f'm_{app}_')
+
+            data = meminfo_data.loc[:, meminfo_cols]
+
+            if data.shape[-1]:
+
+                data = data.fillna(0).to_numpy()
+
+                data = MinMaxScaler().fit_transform(data)
+                
+                index = dataset_augmented.index.values
+
+                ax.plot(index, data)
+            
+        plt.savefig('eclipse_augmentation_test.png')
 
         return dataset_augmented
 
@@ -1144,7 +1179,8 @@ class EclipseDataTimeseriesAugmentor():
                 # expected in the augmentations to apply 
                 # afterwards
 
-                elif augmentation.startswith('Roll'):
+                elif augmentation.startswith('Roll') and not\
+                                        augmentation == 'Roll':
                     data_rolled_pd, labels_rolled_pd =\
                         self._roll_data_labeled(data_unmodified,
                                                     parameters[0],
@@ -1155,7 +1191,13 @@ class EclipseDataTimeseriesAugmentor():
                     augmentation = '_'.join(augmentation.split('_')[1:])
                     parameters = parameters[2:]
 
-                data_segment_augmented_pd = data_rolled_pd.copy()
+                    data_segment_augmented_pd = data_rolled_pd
+
+                else:
+
+                    data_segment_augmented_pd = data_unmodified
+
+                    label_segments_augmented.append(label_unmodified)
 
                 excluded_cols = data_rolled_pd.columns\
                                     .str.startswith(_ordinal_cols_eclipse)
@@ -1206,8 +1248,8 @@ class EclipseDataTimeseriesAugmentor():
                                                     data_to_augment_pd.index,
                                                     columns=data_to_augment_pd.columns)
 
-                data_segment_augmented_pd[~excluded_cols] =\
-                                            data_augmented_pd
+                data_segment_augmented_pd.loc[:, ~excluded_cols] =\
+                                                    data_augmented_pd
                     
                 data_segments_augmented.append(data_segment_augmented_pd)
                 label_segments_augmented.append(label_segment_augmented_pd)
