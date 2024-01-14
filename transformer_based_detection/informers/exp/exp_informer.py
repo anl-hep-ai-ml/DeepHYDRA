@@ -22,6 +22,7 @@ from tqdm import tqdm
 
 from dataset_loaders.omni_anomaly_dataset import OmniAnomalyDataset
 from dataset_loaders.hlt_datasets import HLTDataset
+from dataset_loaders.eclipse_datasets import EclipseDataset
 from exp.exp_basic import ExpBasic
 from models.model import Informer
 from models.sad_like_loss import *
@@ -86,7 +87,8 @@ class ExpInformer(ExpBasic):
             'HLT_DCM_2022': HLTDataset,
             'HLT_PPD_2022': HLTDataset,
             'HLT_DCM_2023': HLTDataset,
-            'HLT_PPD_2023': HLTDataset,}
+            'HLT_PPD_2023': HLTDataset,
+            'ECLIPSE': EclipseDataset,}
 
         Data = data_dict[self.args.data]
 
@@ -133,6 +135,26 @@ class ExpInformer(ExpBasic):
             dataset = Data(source=source,
                             variant=variant,
                             mode=flag,
+                            size=[args.seq_len,
+                                    args.label_len,
+                                    args.pred_len],
+                            features=args.features,
+                            target=args.target,
+                            inverse=args.inverse,
+                            timeenc=timeenc,
+                            freq=freq,
+                            scaling_type='minmax',
+                            scaling_source='train_set_fit',
+                            applied_augmentations=\
+                                    self.args.augmentations,
+                            augmented_dataset_size_relative=\
+                                    self.args.augmented_dataset_size_relative,
+                            augmented_data_ratio=\
+                                    self.args.augmented_data_ratio)
+
+        elif Data == EclipseDataset:
+
+            dataset = Data(mode=flag,
                             size=[args.seq_len,
                                     args.label_len,
                                     args.pred_len],

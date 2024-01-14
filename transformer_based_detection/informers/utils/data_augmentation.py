@@ -14,12 +14,90 @@ from tqdm import tqdm
 
 plt.rcParams.update({'font.size': 12})
 
-_implemented_augmentations = ['Scale',
+_implemented_augmentations_hlt = ['Scale',
                                 'Dilate',
                                 'APP',
                                 'Scale_APP',
                                 'IAAFT',
                                 'Scale_IAAFT']
+
+_implemented_augmentations_eclipse = ['Identity',
+                                        'Scale',
+                                        'APP',
+                                        'Scale_APP',
+                                        'IAAFT',
+                                        'Scale_IAAFT',
+                                        'Roll',
+                                        'Roll_Scale',
+                                        'Roll_APP',
+                                        'Roll_Scale_APP',
+                                        'Roll_IAAFT',
+                                        'Roll_Scale_IAAFT']
+
+
+# These are the ordinal columns of the preprocessed
+# Eclipse dataset, and will thus be excluded from augmentation.
+
+_ordinal_cols_eclipse = ('exa_meminfo_commitlimit_6',
+                            'exa_meminfo_dirty_6',
+                            'exa_meminfo_hardwarecorrupted_6',
+                            'exa_meminfo_writeback_6',
+                            'exa_vmstat_drop_pagecache_6',
+                            'exa_vmstat_drop_slab_6',
+                            'exa_vmstat_nr_anon_transparent_hugepages_6',
+                            'exa_vmstat_nr_dirty_6',
+                            'exa_vmstat_nr_isolated_file_6',
+                            'exa_vmstat_nr_vmscan_immediate_reclaim_6',
+                            'exa_vmstat_nr_vmscan_write_6',
+                            'exa_vmstat_nr_writeback_6',
+                            'exa_vmstat_numa_foreign_6',
+                            'exa_vmstat_numa_miss_6',
+                            'exa_vmstat_slabs_scanned_6',
+                            'lammps_meminfo_commitlimit_6',
+                            'lammps_meminfo_dirty_6',
+                            'lammps_meminfo_hardwarecorrupted_6',
+                            'lammps_meminfo_writeback_6',
+                            'lammps_vmstat_drop_pagecache_6',
+                            'lammps_vmstat_drop_slab_6',
+                            'lammps_vmstat_nr_anon_transparent_hugepages_6',
+                            'lammps_vmstat_nr_dirty_6',
+                            'lammps_vmstat_nr_isolated_anon_6',
+                            'lammps_vmstat_nr_isolated_file_6',
+                            'lammps_vmstat_nr_vmscan_immediate_reclaim_6',
+                            'lammps_vmstat_nr_vmscan_write_6',
+                            'lammps_vmstat_nr_writeback_6',
+                            'sw4_meminfo_commitlimit_6',
+                            'sw4_meminfo_dirty_6',
+                            'sw4_meminfo_hardwarecorrupted_6',
+                            'sw4_meminfo_writeback_6',
+                            'sw4_vmstat_drop_pagecache_6',
+                            'sw4_vmstat_drop_slab_6',
+                            'sw4_vmstat_nr_anon_transparent_hugepages_6',
+                            'sw4_vmstat_nr_dirty_6',
+                            'sw4_vmstat_nr_isolated_anon_6',
+                            'sw4_vmstat_nr_isolated_file_6',
+                            'sw4_vmstat_nr_vmscan_immediate_reclaim_6',
+                            'sw4_vmstat_nr_vmscan_write_6',
+                            'sw4_vmstat_nr_writeback_6',
+                            'sw4_vmstat_numa_foreign_6',
+                            'sw4_vmstat_numa_miss_6',
+                            'sw4_vmstat_slabs_scanned_6',
+                            'sw4lite_meminfo_commitlimit_6',
+                            'sw4lite_meminfo_dirty_6',
+                            'sw4lite_meminfo_hardwarecorrupted_6',
+                            'sw4lite_meminfo_writeback_6',
+                            'sw4lite_vmstat_drop_pagecache_6',
+                            'sw4lite_vmstat_drop_slab_6',
+                            'sw4lite_vmstat_nr_anon_transparent_hugepages_6',
+                            'sw4lite_vmstat_nr_dirty_6',
+                            'sw4lite_vmstat_nr_isolated_anon_6',
+                            'sw4lite_vmstat_nr_isolated_file_6',
+                            'sw4lite_vmstat_nr_vmscan_write_6',
+                            'sw4lite_vmstat_nr_writeback_6',
+                            'sw4lite_vmstat_numa_foreign_6',
+                            'sw4lite_vmstat_numa_interleave_6',
+                            'sw4lite_vmstat_numa_miss_6',
+                            'sw4lite_vmstat_slabs_scanned_6')
 
 
 def _get_runs_of_true(x):
@@ -69,7 +147,7 @@ class HLTDataTimeseriesAugmentor():
         self.applied_augmentations = applied_augmentations
 
         for augmentation, parameters in self.applied_augmentations:
-            if augmentation not in _implemented_augmentations:
+            if augmentation not in _implemented_augmentations_hlt:
                 raise NotImplementedError(
                         f'Augmentation {augmentation} not implemented')
 
@@ -680,6 +758,459 @@ class HLTDataTimeseriesAugmentor():
                 label_segments_augmented.append(label_segment_augmented_pd)
 
             augmented_dataset_size += len(data_source_segment)
+
+        dataset_augmented = pd.concat(data_segments_augmented)
+        labels_augmented = pd.concat(label_segments_augmented)
+
+        return dataset_augmented, labels_augmented
+
+
+class EclipseDataTimeseriesAugmentor():
+
+    def __init__(self, applied_augmentations: list) -> None:
+
+        self.applications = ['exa', 'lammps', 'sw4', 'sw4lite']
+
+        self.applied_augmentations = applied_augmentations
+
+        for augmentation, parameters in self.applied_augmentations:
+            if augmentation not in _implemented_augmentations_eclipse:
+                raise NotImplementedError(
+                        f'Augmentation {augmentation} not implemented')
+
+            if augmentation == 'Scale':
+                if not isinstance(parameters, list):
+                    raise ValueError('Invalid argument for '
+                                        'scaling augmentation')
+
+                if len(parameters) != 2:
+                    raise ValueError('Invalid number of scaling '
+                                        'augmentation parameters')
+
+                if not (np.issubdtype(type(parameters[0]), np.number) and\
+                                np.issubdtype(type(parameters[1]), np.number)):
+                     raise ValueError('Scaling range values must be numbers')
+
+
+            elif augmentation == 'APP':
+                if not isinstance(parameters, list):
+                    raise ValueError('Invalid argument for '
+                                            'APP augmentation')
+
+                if len(parameters) != 3:
+                    raise ValueError('Invalid number of APP '
+                                        'augmentation parameters')
+
+                if np.issubdtype(type(parameters[0]), np.floating):
+                    if parameters[0] <= 0 or\
+                            parameters[0] > 1:
+                        raise ValueError('APP segment length ratio '
+                                            'must be in range (0, 1]')
+
+                else:
+                     raise ValueError('APP segment length ration '
+                                        'must be a floating point number')
+
+                if (np.issubdtype(type(parameters[1]), np.number) and\
+                                np.issubdtype(type(parameters[2]), np.number)):
+                    if parameters[1] < 0:
+                        raise ValueError('APP amplitude perturbation '
+                                            'factor must be greater than 0')
+                    if parameters[2] < 0:
+                        raise ValueError('APP phase perturbation '
+                                            'factor must be greater than 0')
+
+                else:
+                     raise ValueError('Amplitude and phase perturbation '
+                                                'amounts must be numbers')
+
+        self.rng = np.random.default_rng(seed=42)
+
+
+    def _adjust_index(self,
+                        index_previous: pd.DatetimeIndex,
+                        index_current: pd.DatetimeIndex) -> pd.DatetimeIndex:
+        
+        index_current = pd.Series(index_current)
+
+        index_current -= index_current[0] - index_previous[-1]
+        index_current += pd.Timedelta(1, unit='s')
+
+        return pd.DatetimeIndex(index_current)
+
+
+    def _roll_data(self,
+                    data: pd.DataFrame,
+                    amount_mean: float = 0.,
+                    amount_std: float = 4096) -> list:
+
+        for app in self.applications:
+            cols = np.logical_or(data.columns.str.startswith(f'm_{app}_'),
+                                    data.columns.str.startswith(f'std_{app}_'))
+            
+            app_data = data.loc[:, cols]
+
+            for col in range(app_data.shape[-1]):
+                print(len(app_data.iloc[:, col].unique()))
+
+        return data
+
+
+    def _roll_data_labeled(self,
+                            data: pd.DataFrame,
+                            label: pd.DataFrame) -> list:
+
+        window_ends =\
+                self.find_windows(data.to_numpy(),
+                                                downtime_period,
+                                                tolerance_abs)
+
+        segment_list_data = []
+        segment_list_label = []
+
+        window_start = 0
+
+        for window_end in window_ends:
+            segment_list_data.append(
+                data.iloc[window_start:window_end, :])
+            segment_list_label.append(
+                label.iloc[window_start:window_end, :])
+
+            window_start = window_end
+
+        pd.testing.assert_frame_equal(data,
+                                        pd.concat(segment_list_data))
+
+        return segment_list_data, segment_list_label
+
+
+
+    def _amplitude_phase_perturbation(self,
+                                        data: np.array,
+                                        segment_length_ratio: float = 0.1,
+                                        amp_perturbation_amount: float = 0.5,
+                                        phase_perturbation_amount: float = 0.1) -> np.array:
+
+        """
+        As described in "RobustTAD: Robust Time Series Anomaly 
+        Detection via Decomposition and Convolutional Neural Networks"
+        by Gao et al.
+        """
+
+        for column in range(data.shape[1]):
+
+            channel_data_f = fft(data[:, column])
+
+            amp_data = np.abs(channel_data_f)
+            phase_data = np.angle(channel_data_f)
+
+            segment_length =\
+                    max(math.floor(segment_length_ratio*\
+                                            len(amp_data)), 2)
+
+            stride = math.ceil(segment_length/2)
+
+            sliding_window_amp_data =\
+                np_st.sliding_window_view(amp_data,
+                                            segment_length,
+                                            writeable=True)[::stride, :]
+
+            sliding_window_phase_data =\
+                np_st.sliding_window_view(phase_data,
+                                            segment_length,
+                                            writeable=True)[::stride, :]
+
+            assert sliding_window_amp_data.shape ==\
+                            sliding_window_phase_data.shape
+
+            for window in range(len(sliding_window_amp_data)):
+
+                # Replace magnitude values in window with
+                # Gaussian noise with the same mean and
+                # variance as the original magnitude values
+
+                amp_data_window_mean =\
+                    np.mean(sliding_window_amp_data[window, :])
+
+                amp_data_window_std =\
+                    np.std(sliding_window_amp_data[window, :])
+
+                gaussian_noise_amp =\
+                        self.rng.normal(0, amp_data_window_std,
+                                            size=(segment_length,))
+
+                sliding_window_amp_data[window, :] +=\
+                                            amp_perturbation_amount*\
+                                            gaussian_noise_amp
+
+                # Perturb phase by adding Gaussian noise of
+                # the same standard deviation as the window
+
+                phase_data_window_std =\
+                    np.std(sliding_window_phase_data[window, :])
+
+                gaussian_noise_phase =\
+                        self.rng.normal(0, phase_data_window_std,
+                                            size=(segment_length,))
+
+                sliding_window_phase_data[window, :] +=\
+                                        phase_perturbation_amount*\
+                                        gaussian_noise_phase
+
+            e_i_phase = np.exp(phase_data*1j)
+
+            data[:, column] =\
+                np.maximum(0, ifft(amp_data*e_i_phase))
+
+        return data
+
+
+    def _iaaft(self,
+                data: np.array,
+                sliding_window_size: int = 32,
+                tolerance_percent: float = 5,
+                candidate_count: int = 10,
+                gradient_threshold: float = 2,
+                gradient_mask_patience: int = 10) -> np.array:
+
+        usable_processors = len(os.sched_getaffinity(0))
+        process_pool = Pool(usable_processors//2)
+
+        data_list_in = np.hsplit(data, data.shape[1])
+
+        _apply_iaaft_with_args =\
+                partial(_apply_iaaft,
+                            sliding_window_size=sliding_window_size,
+                            tolerance_percent=tolerance_percent,
+                            candidate_count=candidate_count,
+                            gradient_threshold=gradient_threshold,
+                            gradient_mask_patience=gradient_mask_patience)
+                            
+
+        data_list_out = process_pool.map(_apply_iaaft_with_args,
+                                                    data_list_in)
+
+        process_pool.close()
+
+        data = np.hstack(data_list_out)
+            
+        return data
+
+
+    def fit_transform(self,
+                        data: pd.DataFrame) -> pd.DataFrame:
+
+        segments_augmented = []
+
+        for augmentation, parameters in self.applied_augmentations:
+
+            data_unmodified = data.copy()
+
+            if len(segments_augmented) != 0:
+                    data_unmodified.index =\
+                        self._adjust_index(segments_augmented[-1].index,
+                                                    data_unmodified.index)
+
+            if augmentation == 'Identity':
+                segments_augmented.append(data_unmodified)
+
+            else:
+
+                if augmentation == 'Roll':
+                    data_augmented = self._roll_data(data_unmodified,
+                                                parameters[0],
+                                                parameters[1])
+
+                    segments_augmented.append(data_augmented)
+
+                # If the augmentation starts with 'Roll',
+                # but also contains other augmentations to
+                # apply to the dataset, apply the roll and
+                # then adapt the augmentation string and
+                # parameter tuple to conform with what is
+                # expected in the augmentations to apply 
+                # afterwards
+
+                elif augmentation.startswith('Roll'):
+                    data_rolled_pd =\
+                        self._roll_data(data_unmodified,
+                                            parameters[0],
+                                            parameters[1])
+
+                    augmentation = '_'.join(augmentation.split('_')[1:])
+                    parameters = parameters[2:]
+
+                segment_augmented_pd = data_rolled_pd.copy()
+
+                excluded_cols = data_rolled_pd.columns\
+                                    .str.startswith(_ordinal_cols_eclipse)
+
+                data_to_augment_pd =\
+                    data_rolled_pd.loc[:, ~(excluded_cols)]
+
+                data_to_augment_np = data_to_augment_pd.to_numpy()
+
+                if augmentation == 'Scale':
+                    scaling_factor =\
+                        self.rng.uniform(parameters[0], parameters[1])
+
+                    segment_augmented_np = data_to_augment_np*\
+                                                    scaling_factor
+
+                elif augmentation == 'APP':
+
+                    segment_length_ratio = parameters[0]
+                    amp_perturbation_amount = parameters[1]
+                    phase_perturbation_amount = parameters[2]
+
+                    segment_augmented_np =\
+                        self._amplitude_phase_perturbation(data_to_augment_np,
+                                                            segment_length_ratio,
+                                                            amp_perturbation_amount,
+                                                            phase_perturbation_amount)
+
+                elif augmentation == 'Scale_APP':
+
+                    scaling_factor =\
+                        self.rng.uniform(parameters[0], parameters[1])
+
+                    data_to_augment_np = data_to_augment_np*\
+                                                scaling_factor
+
+                    segment_length_ratio = parameters[2]
+                    amp_perturbation_amount = parameters[3]
+                    phase_perturbation_amount = parameters[4]
+
+                    segment_augmented_np =\
+                        self._amplitude_phase_perturbation(data_to_augment_np,
+                                                            segment_length_ratio,
+                                                            amp_perturbation_amount,
+                                                            phase_perturbation_amount)
+
+                data_augmented_pd = pd.DataFrame(segment_augmented_np,
+                                                    data_to_augment_pd.index,
+                                                    columns=data_to_augment_pd.columns)
+
+                segment_augmented_pd[~excluded_cols] =\
+                                        data_augmented_pd
+                    
+                segments_augmented.append(segment_augmented_pd)
+
+        dataset_augmented = pd.concat(segments_augmented)
+
+        return dataset_augmented
+
+
+    def fit_transform_labeled(self,
+                                data: pd.DataFrame,
+                                label: pd.DataFrame) -> pd.DataFrame:
+
+        data_segments_augmented = []
+        label_segments_augmented = []
+
+        for augmentation, parameters in self.applied_augmentations:
+
+            data_unmodified = data.copy()
+            label_unmodified = label.copy()
+
+            if len(data_segments_augmented) != 0:
+                    data_unmodified.index =\
+                        self._adjust_index(data_segments_augmented[-1].index,
+                                                        data_unmodified.index)
+                    label_unmodified.index =\
+                        self._adjust_index(label_segments_augmented[-1].index,
+                                                        label_unmodified.index)
+
+            if augmentation == 'Identity':
+                data_segments_augmented.append(data_unmodified)
+                label_segments_augmented.append(label_unmodified)
+
+            else:
+
+                if augmentation == 'Roll':
+                    data_augmented, labels_augmented =\
+                            self._roll_data_labeled(data_unmodified,
+                                                    parameters[0],
+                                                    parameters[1])
+
+                    data_segments_augmented.append(data_augmented)
+                    label_segments_augmented.append(label_augmented)
+
+                # If the augmentation starts with 'Roll',
+                # but also contains other augmentations to
+                # apply to the dataset, apply the roll and
+                # then adapt the augmentation string and
+                # parameter tuple to conform with what is
+                # expected in the augmentations to apply 
+                # afterwards
+
+                elif augmentation.startswith('Roll'):
+                    data_rolled_pd, labels_rolled_pd =\
+                        self._roll_data_labeled(data_unmodified,
+                                                    parameters[0],
+                                                    parameters[1])
+
+                    label_segments_augmented.append(labels_rolled_pd)
+
+                    augmentation = '_'.join(augmentation.split('_')[1:])
+                    parameters = parameters[2:]
+
+                data_segment_augmented_pd = data_rolled_pd.copy()
+
+                excluded_cols = data_rolled_pd.columns\
+                                    .str.startswith(_ordinal_cols_eclipse)
+
+                data_to_augment_pd =\
+                    data_rolled_pd.loc[:, ~(excluded_cols)]
+
+                data_to_augment_np = data_to_augment_pd.to_numpy()
+
+                if augmentation == 'Scale':
+                    scaling_factor =\
+                        self.rng.uniform(parameters[0], parameters[1])
+
+                    segment_augmented_np = data_to_augment_np*\
+                                                    scaling_factor
+
+                elif augmentation == 'APP':
+
+                    segment_length_ratio = parameters[0]
+                    amp_perturbation_amount = parameters[1]
+                    phase_perturbation_amount = parameters[2]
+
+                    segment_augmented_np =\
+                        self._amplitude_phase_perturbation(data_to_augment_np,
+                                                            segment_length_ratio,
+                                                            amp_perturbation_amount,
+                                                            phase_perturbation_amount)
+
+                elif augmentation == 'Scale_APP':
+
+                    scaling_factor =\
+                        self.rng.uniform(parameters[0], parameters[1])
+
+                    data_to_augment_np = data_to_augment_np*\
+                                                scaling_factor
+
+                    segment_length_ratio = parameters[2]
+                    amp_perturbation_amount = parameters[3]
+                    phase_perturbation_amount = parameters[4]
+
+                    segment_augmented_np =\
+                        self._amplitude_phase_perturbation(data_to_augment_np,
+                                                            segment_length_ratio,
+                                                            amp_perturbation_amount,
+                                                            phase_perturbation_amount)
+
+                data_augmented_pd = pd.DataFrame(segment_augmented_np,
+                                                    data_to_augment_pd.index,
+                                                    columns=data_to_augment_pd.columns)
+
+                data_segment_augmented_pd[~excluded_cols] =\
+                                            data_augmented_pd
+                    
+                data_segments_augmented.append(data_segment_augmented_pd)
+                label_segments_augmented.append(label_segment_augmented_pd)
 
         dataset_augmented = pd.concat(data_segments_augmented)
         labels_augmented = pd.concat(label_segments_augmented)

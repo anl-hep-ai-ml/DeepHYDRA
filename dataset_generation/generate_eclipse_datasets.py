@@ -10,6 +10,7 @@ import pandas as pd
 import prince
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import OrdinalEncoder
 import cv2 as cv
 import matplotlib.pyplot as plt
 from tqdm import tqdm
@@ -26,6 +27,72 @@ font_scale = 1
 font_color = (255,255,255)
 thickness = 1
 line_type = 2
+
+
+# We convert these values to ordinal values,
+# as they have less then 16 unique values over
+# all the datasets
+
+ordinal_cols = ('exa_meminfo_commitlimit_6',
+                        'exa_meminfo_dirty_6',
+                        'exa_meminfo_hardwarecorrupted_6',
+                        'exa_meminfo_writeback_6',
+                        'exa_vmstat_drop_pagecache_6',
+                        'exa_vmstat_drop_slab_6',
+                        'exa_vmstat_nr_anon_transparent_hugepages_6',
+                        'exa_vmstat_nr_dirty_6',
+                        'exa_vmstat_nr_isolated_file_6',
+                        'exa_vmstat_nr_vmscan_immediate_reclaim_6',
+                        'exa_vmstat_nr_vmscan_write_6',
+                        'exa_vmstat_nr_writeback_6',
+                        'exa_vmstat_numa_foreign_6',
+                        'exa_vmstat_numa_miss_6',
+                        'exa_vmstat_slabs_scanned_6',
+                        'lammps_meminfo_commitlimit_6',
+                        'lammps_meminfo_dirty_6',
+                        'lammps_meminfo_hardwarecorrupted_6',
+                        'lammps_meminfo_writeback_6',
+                        'lammps_vmstat_drop_pagecache_6',
+                        'lammps_vmstat_drop_slab_6',
+                        'lammps_vmstat_nr_anon_transparent_hugepages_6',
+                        'lammps_vmstat_nr_dirty_6',
+                        'lammps_vmstat_nr_isolated_anon_6',
+                        'lammps_vmstat_nr_isolated_file_6',
+                        'lammps_vmstat_nr_vmscan_immediate_reclaim_6',
+                        'lammps_vmstat_nr_vmscan_write_6',
+                        'lammps_vmstat_nr_writeback_6',
+                        'sw4_meminfo_commitlimit_6',
+                        'sw4_meminfo_dirty_6',
+                        'sw4_meminfo_hardwarecorrupted_6',
+                        'sw4_meminfo_writeback_6',
+                        'sw4_vmstat_drop_pagecache_6',
+                        'sw4_vmstat_drop_slab_6',
+                        'sw4_vmstat_nr_anon_transparent_hugepages_6',
+                        'sw4_vmstat_nr_dirty_6',
+                        'sw4_vmstat_nr_isolated_anon_6',
+                        'sw4_vmstat_nr_isolated_file_6',
+                        'sw4_vmstat_nr_vmscan_immediate_reclaim_6',
+                        'sw4_vmstat_nr_vmscan_write_6',
+                        'sw4_vmstat_nr_writeback_6',
+                        'sw4_vmstat_numa_foreign_6',
+                        'sw4_vmstat_numa_miss_6',
+                        'sw4_vmstat_slabs_scanned_6',
+                        'sw4lite_meminfo_commitlimit_6',
+                        'sw4lite_meminfo_dirty_6',
+                        'sw4lite_meminfo_hardwarecorrupted_6',
+                        'sw4lite_meminfo_writeback_6',
+                        'sw4lite_vmstat_drop_pagecache_6',
+                        'sw4lite_vmstat_drop_slab_6',
+                        'sw4lite_vmstat_nr_anon_transparent_hugepages_6',
+                        'sw4lite_vmstat_nr_dirty_6',
+                        'sw4lite_vmstat_nr_isolated_anon_6',
+                        'sw4lite_vmstat_nr_isolated_file_6',
+                        'sw4lite_vmstat_nr_vmscan_write_6',
+                        'sw4lite_vmstat_nr_writeback_6',
+                        'sw4lite_vmstat_numa_foreign_6',
+                        'sw4lite_vmstat_numa_interleave_6',
+                        'sw4lite_vmstat_numa_miss_6',
+                        'sw4lite_vmstat_slabs_scanned_6')
 
 
 def get_contiguous_runs(x):
@@ -139,10 +206,22 @@ def rename_columns(columns: pd.Index,
             constituents = str(element).split('::')
             name = f'{constituents[1].lower()}_{constituents[0].lower()}'
             name = name.replace('(', '_').replace(')', '_')
+            name = name.removesuffix('_')
         else:
             name = element
 
         return f'{app_name}_{name}_{id_}'
+
+    return pd.Index(columns.map(_renaming_func))
+
+
+def rename_label_columns(columns: pd.Index):
+    
+    columns = pd.Series(columns)
+
+    def _renaming_func(element):
+        constituents = str(element).split('_')
+        return f'{constituents[1]}_{constituents[0]}_{constituents[2]}'
 
     return pd.Index(columns.map(_renaming_func))
 
@@ -444,14 +523,6 @@ if __name__ == '__main__':
 
             test_subsets_in[id_].append(per_instance_data)
 
-    # test_set_reshaped_df = pd.concat(test_subsets_in, axis=1)
-
-    # print(test_set_reshaped_df)
-
-    # nan_amount = np.mean(np.sum(pd.isna(test_set_reshaped_df.to_numpy()), 1)/\
-    #                                                     test_set_reshaped_df.shape[1])
-
-    # print(f'Mean sparsity reshaped train set: {100*nan_amount:.3f} %')
 
     # Compose unlabeled train, labeled train, test,
     # unlabeled val, and labeled val datasets from
@@ -472,16 +543,6 @@ if __name__ == '__main__':
 
     for id_, data in train_subsets.items():
         for element in data:
-            # data_train, data_test = train_test_split(element, test_size=0.3)
-            # data_test, data_val = train_test_split(data_test, test_size=0.667)
-            # data_train_labeled, _ = train_test_split(data_train, test_size=0.2)
-            # data_val_labeled, _ = train_test_split(data_val, test_size=0.2)
-
-            # unlabeled_train_subsets[id_].append(data_train)
-            # labeled_train_subsets[id_].append(data_train_labeled)
-            # test_subsets_out[id_].append(data_test)
-            # unlabeled_val_subsets[id_].append(data_val)
-            # labeled_val_subsets[id_].append(data_val_labeled)
 
             output_category = rng.choice(choices, p=p_train)
 
@@ -514,12 +575,6 @@ if __name__ == '__main__':
 
     for id_, data in test_subsets_in.items():
         for element in data:
-            # data_test, data_train_labeled = train_test_split(element, test_size=0.1)
-            # data_test, data_val_labeled = train_test_split(data_test, test_size=0.1)
-
-            # labeled_train_subsets[id_].append(data_train_labeled)
-            # test_subsets_out[id_].append(data_test)
-            # labeled_val_subsets[id_].append(data_val_labeled)
 
             output_category = rng.choice(choices, p=p_test)
 
@@ -532,32 +587,7 @@ if __name__ == '__main__':
             else:
                 output_subsets['labeled val'][id_].append(element)
 
-    # for dataset_type, dataset in output_subsets.items():
-
-    #     print(f'{dataset_type}:')
-
-    #     timestamp_counter = defaultdict(int)
-
-    #     for id_, data in dataset.items():
-    #         for element in data:
-    #             for ts in element.index:
-    #                 timestamp_counter[ts] += 1
-
-    #     overlaps = np.array(list(timestamp_counter.values())) - 1
-    #     timestamps = list(timestamp_counter.keys())
-
-    #     overlap_starts, overlap_ends  =\
-    #             get_contiguous_runs(overlaps)
-        
-    #     for start, end in zip(overlap_starts,
-    #                                 overlap_ends):
-            
-    #         end = min(end, (len(overlaps) - 1))
-
-    #         print('Found overlapping region between '\
-    #                 f'{timestamps[start]} and {timestamps[end]}')
-
-    output_datasets = {}
+    # values_unique_all = defaultdict(list)
 
     for dataset_type, dataset in output_subsets.items():
 
@@ -578,8 +608,6 @@ if __name__ == '__main__':
 
         print(f'Length: {len(dataset_reshaped)}')
 
-        # print(dataset_reshaped)
-
         nan_amount = np.mean(np.sum(pd.isna(dataset_reshaped.to_numpy()), 1)/\
                                                         dataset_reshaped.shape[1])
 
@@ -591,11 +619,18 @@ if __name__ == '__main__':
         dataset_reshaped[label_columns] =\
             dataset_reshaped[label_columns].fillna(0).astype(np.uint8)
 
+        labels_individual = dataset_reshaped[label_columns]
+
+        labels_individual.columns =\
+            rename_label_columns(labels_individual.columns)
+
         dataset_reshaped['label'] =\
             dataset_reshaped[label_columns]\
                 .agg(lambda row: reduce(lambda x, y: x|y, row.tolist()), axis=1)
         
         dataset_reshaped.drop(label_columns, axis=1, inplace=True)
+
+        # Print anomaly ratio
 
         anomaly_count =\
             np.count_nonzero(dataset_reshaped['label'].to_numpy().flatten()>=1)
@@ -607,6 +642,72 @@ if __name__ == '__main__':
         dataset_reshaped_ordered =\
             dataset_reshaped.loc[:, ~(dataset_reshaped.columns == 'label')].sort_index(axis=1)
 
+        # for app in ['exa', 'lammps', 'sw4', 'sw4lite']:
+
+        #     values_unique = []
+
+        #     cols = dataset_reshaped_ordered.columns.str.startswith(f'{app}_')
+            
+        #     app_data = dataset_reshaped_ordered.loc[:, cols]
+
+        #     for col in range(app_data.shape[-1]):
+        #         label_local =\
+        #             '_'.join(str(app_data.iloc[:, col].name).split('_')[:-1])
+
+        #         values_unique_all[label_local].append(app_data.iloc[:, col].unique())
+
+        # continue
+
+        # Convert columns with less than 16 unique values
+        # to ordinal representation
+
+        ordinal_locs = dataset_reshaped_ordered\
+                        .columns.str.startswith(ordinal_cols)
+
+        # print(dataset_reshaped_ordered.columns[ordinal_locs])
+
+        # exit()
+
+        ordinal_data_df =\
+            dataset_reshaped_ordered.loc[:, ordinal_locs]
+
+        encoder = OrdinalEncoder()
+
+        ordinal_data_np = encoder.fit_transform(ordinal_data_df)
+
+        # ordinal_data_df = pd.DataFrame(ordinal_data_np,
+        #                                 index=ordinal_data_df.index,
+        #                                 columns=ordinal_data_df.columns)
+
+        # for col in range(ordinal_data_df.shape[-1]):
+        #     unique_vals = np.unique(ordinal_data_df.iloc[:, col])
+        #     print(f'{ordinal_data_df.columns[col]}: {len(unique_vals)}')
+
+        dataset_reshaped_ordered.loc[:, ordinal_locs] =\
+                                            ordinal_data_np
+
+        # print(ordinal_data)
+        # print(encoder.categories_)
+
+        # We also need the test set in unreduced form
+
+        if dataset_type == 'test':
+
+            # Add the labels back
+
+            dataset_reshaped_ordered['label'] =\
+                            dataset_reshaped['label']
+
+            dataset_reshaped_ordered[label_columns] =\
+                                        labels_individual
+
+            dataset_label =\
+                f"unreduced_eclipse_{dataset_type.replace(' ', '_')}_set"
+
+            # dataset_reshaped_ordered.to_hdf(
+            #             f'{args.dataset_dir}/{dataset_label}.h5',
+            #             key=dataset_label, mode='w')
+            
         anomaly_ratio_cumulative =\
             np.cumsum(dataset_reshaped['label']\
                 .to_numpy().flatten()>=1)/len(dataset_reshaped)
@@ -628,6 +729,8 @@ if __name__ == '__main__':
             plt.tight_layout()
             plt.savefig(f"plots/eclipse_{dataset_type.replace(' ', '_')}"\
                                                     '_set_anomaly_cumsum.png')
+
+        # Plot meminfo data as a representation for the dataset
 
         apps = ['exa', 'lammps', 'sw4', 'sw4lite']
 
@@ -676,6 +779,8 @@ if __name__ == '__main__':
             
         plt.savefig(f"plots/eclipse_{dataset_type.replace(' ', '_')}"\
                                                     '_set_meminfo.png')
+
+        # Reduce dataset
 
         reduction_map =\
             [val.rsplit('_', 1)[0] for val in\
@@ -736,9 +841,6 @@ if __name__ == '__main__':
         data_mean_all_np = np.nan_to_num(data_mean_all_np, nan=-1)
         data_median_all_np = np.nan_to_num(data_median_all_np, nan=-1)
 
-        print(data_mean_all_np.shape)
-        print(data_median_all_np.shape)
-
         nan_amount_train_unlabeled =\
                 100*pd.isna(data_median_all_np.flatten()).sum()/\
                                                 data_median_all_np.size
@@ -751,19 +853,23 @@ if __name__ == '__main__':
 
         data_mean_all_df['label'] = dataset_reshaped['label']
         
+        data_mean_all_df[label_columns] = labels_individual
+
         data_median_all_df = pd.DataFrame(data_median_all_np,
                                             dataset_reshaped_ordered.index,
                                             columns_reduced)
 
         data_median_all_df['label'] = dataset_reshaped['label']
 
+        data_median_all_df[label_columns] = labels_individual
+
         dataset_label = f"reduced_eclipse_{dataset_type.replace(' ', '_')}_set"
 
-        data_mean_all_df.to_hdf(f'{args.dataset_dir}/{dataset_label}_mean.h5',
-                                                    key=dataset_label, mode='w')
+        # data_mean_all_df.to_hdf(f'{args.dataset_dir}/{dataset_label}_mean.h5',
+        #                                             key=dataset_label, mode='w')
         
-        data_median_all_df.to_hdf(f'{args.dataset_dir}/{dataset_label}_median.h5',
-                                                        key=dataset_label, mode='w')
+        # data_median_all_df.to_hdf(f'{args.dataset_dir}/{dataset_label}_median.h5',
+        #                                                 key=dataset_label, mode='w')
 
         if args.generate_videos:
 
@@ -823,3 +929,23 @@ if __name__ == '__main__':
                 plt.close()
 
             writer.release()
+
+    # columns = []
+
+    # for name, values_unique_per_channel in values_unique_all.items():
+    #     values = np.concatenate(values_unique_per_channel)
+
+    #     values_unique = np.unique(values)
+
+    #     if len(values_unique) < 16:
+    #         columns.append(name)
+
+    # print(columns)
+
+    # columns_all = ['_'.join(val.split('_')[1:]) for val in columns]
+
+    # from collections import Counter
+
+    # counts = Counter(columns_all)
+
+    # print(counts)

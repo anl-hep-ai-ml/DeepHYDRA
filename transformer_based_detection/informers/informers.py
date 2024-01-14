@@ -14,8 +14,9 @@ if __name__ == '__main__':
 
     parser.add_argument('--data', type=str, required=True, choices=\
                                     ['HLT_DCM_2018', 'HLT_DCM_2022', 'HLT_DCM_2023', 
-                                        'HLT_PPD_2018', 'HLT_PPD_2022', 'HLT_PPD_2023','SMD'],
-                                                                    default='HLT', help='dataset')
+                                        'HLT_PPD_2018', 'HLT_PPD_2022', 'HLT_PPD_2023',
+                                        'ECLIPSE', 'SMD'],
+                                    default='HLT', help='dataset')
     parser.add_argument('--seed', type=float, default=42, help='Random seed')
     
     parser.add_argument('--features', type=str, default='M', help='forecasting task, options:[M, S, MS]; M:multivariate predict multivariate, S:univariate predict univariate, MS:multivariate predict univariate')
