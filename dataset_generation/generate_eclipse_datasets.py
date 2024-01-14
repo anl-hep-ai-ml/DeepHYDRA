@@ -490,12 +490,23 @@ if __name__ == '__main__':
 
                 if rng.choice(2, p=[0.1, 0.9]):
                     output_subsets['labeled train'][id_].append(element)
+                else:
+                    # Add some data from the train set to the val
+                    # sets to ensure that they include LAMMPS data
+                    output_subsets['unlabeled val'][id_].append(element)
+                    output_subsets['labeled val'][id_].append(element)
 
             elif output_category == 'test':
                 output_subsets['test'][id_].append(element)
 
             else:
                 output_subsets['unlabeled val'][id_].append(element)
+
+                # We also add unlabeled val subsets to the
+                # test set as it is otherwise heavily skewed
+                # towards anomalous data
+
+                output_subsets['test'][id_].append(element)
 
                 if rng.choice(2, p=[0.1, 0.9]):
                     output_subsets['labeled val'][id_].append(element)
@@ -596,81 +607,79 @@ if __name__ == '__main__':
         dataset_reshaped_ordered =\
             dataset_reshaped.loc[:, ~(dataset_reshaped.columns == 'label')].sort_index(axis=1)
 
-        # anomaly_ratio_cumulative =\
-        #     np.cumsum(dataset_reshaped['label']\
-        #         .to_numpy().flatten()>=1)/len(dataset_reshaped)
+        anomaly_ratio_cumulative =\
+            np.cumsum(dataset_reshaped['label']\
+                .to_numpy().flatten()>=1)/len(dataset_reshaped)
         
-        # if dataset_type == 'test' or dataset_type.startswith('labeled'):
-        #     fig, ax = plt.subplots(figsize=(10, 6), dpi=300)
+        if dataset_type == 'test' or dataset_type.startswith('labeled'):
+            fig, ax = plt.subplots(figsize=(10, 6), dpi=300)
 
-        #     ax.set_title(f'Eclipse {dataset_type.title()} '\
-        #                         'Set Cumulative Anomaly Ratio')
+            ax.set_title(f'Eclipse {dataset_type.title()} '\
+                                'Set Cumulative Anomaly Ratio')
             
-        #     ax.set_xlabel('Timestamp')
-        #     ax.set_ylabel('Cumulative Anomaly Ratio')
+            ax.set_xlabel('Timestamp')
+            ax.set_ylabel('Cumulative Anomaly Ratio')
 
-        #     ax.grid()
+            ax.grid()
 
-        #     ax.plot(dataset_reshaped.index,
-        #                 anomaly_ratio_cumulative)
+            ax.plot(dataset_reshaped.index,
+                        anomaly_ratio_cumulative)
             
-        #     plt.tight_layout()
-        #     plt.savefig(f"plots/eclipse_{dataset_type.replace(' ', '_')}"\
-        #                                             '_set_anomaly_cumsum.png')
+            plt.tight_layout()
+            plt.savefig(f"plots/eclipse_{dataset_type.replace(' ', '_')}"\
+                                                    '_set_anomaly_cumsum.png')
 
-        # apps = ['exa', 'lammps', 'sw4', 'sw4lite']
+        apps = ['exa', 'lammps', 'sw4', 'sw4lite']
 
-        # plt.rcParams['figure.constrained_layout.use'] = True
+        plt.rcParams['figure.constrained_layout.use'] = True
 
-        # fig, axes = plt.subplots(4, 1, figsize=(10, 24), dpi=300)
+        fig, axes = plt.subplots(4, 1, figsize=(10, 24), dpi=300)
 
-        # fig.suptitle(f'Eclipse {dataset_type.title()} '\
-        #                                 'Set: MemInfo Data')
+        fig.suptitle(f'Eclipse {dataset_type.title()} '\
+                                        'Set: MemInfo Data')
 
-        # meminfo_data =\
-        #     dataset_reshaped_ordered.loc[:, dataset_reshaped_ordered.columns.str.contains('meminfo')]
+        meminfo_data =\
+            dataset_reshaped_ordered.loc[:, dataset_reshaped_ordered.columns.str.contains('meminfo')]
 
-        # for ax, app in zip(axes, apps):
+        for ax, app in zip(axes, apps):
 
-        #     ax.set_title(app.upper())
+            ax.set_title(app.upper())
             
-        #     ax.set_xlabel('Timestamp')
-        #     ax.set_ylabel('Data')
+            ax.set_xlabel('Timestamp')
+            ax.set_ylabel('Data')
 
-        #     ax.grid()
+            ax.grid()
 
-        #     meminfo_cols =  meminfo_data.columns.str.startswith(f'{app}_')
+            meminfo_cols =  meminfo_data.columns.str.startswith(f'{app}_')
 
-        #     data = meminfo_data.loc[:, meminfo_cols]
+            data = meminfo_data.loc[:, meminfo_cols]
 
-        #     if data.shape[-1]:
+            if data.shape[-1]:
 
-        #         data = data.fillna(0)
+                data = data.fillna(0)
 
-        #         data = MinMaxScaler().fit_transform(data.to_numpy())
+                data = MinMaxScaler().fit_transform(data.to_numpy())
                 
-        #         index = dataset_reshaped_ordered.index.values
+                index = dataset_reshaped_ordered.index.values
 
-        #         ax.plot(dataset_reshaped_ordered.index.values, data)
+                ax.plot(dataset_reshaped_ordered.index.values, data)
 
-        #         anomaly_starts, anomaly_ends =\
-        #             get_contiguous_runs(dataset_reshaped_ordered['label'].to_numpy().flatten()>=1)
+                anomaly_starts, anomaly_ends =\
+                    get_contiguous_runs(dataset_reshaped['label'].to_numpy().flatten()>=1)
                     
-        #         for start, end in zip(anomaly_starts, anomaly_ends):
+                for start, end in zip(anomaly_starts, anomaly_ends):
 
-        #             start = max(0, start)
-        #             end = min(end, (len(index) - 1))
+                    start = max(0, start)
+                    end = min(end, (len(index) - 1))
 
-        #             ax.axvspan(index[start], index[end], color='red', alpha=0.5)
+                    ax.axvspan(index[start], index[end], color='red', alpha=0.5)
             
-        # plt.savefig(f"plots/eclipse_{dataset_type.replace(' ', '_')}"\
-        #                                             '_set_meminfo.png')
+        plt.savefig(f"plots/eclipse_{dataset_type.replace(' ', '_')}"\
+                                                    '_set_meminfo.png')
 
         reduction_map =\
             [val.rsplit('_', 1)[0] for val in\
                 dataset_reshaped_ordered.columns.values]
-
-        print(reduction_map)
 
         data_mean_all = []
         data_median_all = []
@@ -727,8 +736,8 @@ if __name__ == '__main__':
         data_mean_all_np = np.nan_to_num(data_mean_all_np, nan=-1)
         data_median_all_np = np.nan_to_num(data_median_all_np, nan=-1)
 
-        # print(data_mean_all_np)
-        # print(data_median_all_np)
+        print(data_mean_all_np.shape)
+        print(data_median_all_np.shape)
 
         nan_amount_train_unlabeled =\
                 100*pd.isna(data_median_all_np.flatten()).sum()/\
@@ -740,11 +749,13 @@ if __name__ == '__main__':
                                             dataset_reshaped_ordered.index,
                                             columns_reduced)
 
-        data_median_all_df['label'] = dataset_reshaped['label']
+        data_mean_all_df['label'] = dataset_reshaped['label']
         
         data_median_all_df = pd.DataFrame(data_median_all_np,
                                             dataset_reshaped_ordered.index,
                                             columns_reduced)
+
+        data_median_all_df['label'] = dataset_reshaped['label']
 
         dataset_label = f"reduced_eclipse_{dataset_type.replace(' ', '_')}_set"
 
