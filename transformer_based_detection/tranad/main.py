@@ -301,7 +301,7 @@ def backprop(epoch,
                 y_preds.append(y_pred)
             y_pred = torch.stack(y_preds)
             MSE = l(y_pred, data)
-            return MSE.detach().numpy(), y_pred.detach().numpy()
+            return MSE.detach().cpu().numpy(), y_pred.detach().cpu().numpy()
 
 
     elif 'USAD' in model.name:
@@ -770,7 +770,7 @@ if __name__ == '__main__':
 
     testD = testD.cpu()
     testO = testO.cpu()
-    labels = labels.cpu()
+    # labels = labels.cpu()
 
     ### Plot curves
 
@@ -784,7 +784,7 @@ if __name__ == '__main__':
 
     testD = testD.to(device)
     testO = testO.to(device)
-    labels = labels.to(device)
+    # labels = labels.to(device)
 
     df = pd.DataFrame()
     lossT, _ = backprop(0, model, trainD.to(device), trainO.to(device), optimizer, scheduler, training=False)
@@ -822,11 +822,11 @@ if __name__ == '__main__':
                                             f'predictions/{args.model.lower()}_'\
                                             f'{augment_label}seed_{int(args.seed)}.npy')
 
-        parameter_dict = {"window_size": model.n_window}
+        # parameter_dict = {"window_size": model.n_window}
 
-        with open(f'checkpoints/{args.model}_{args.dataset}_{augmentation_string}_seed_{int(args.seed)}/model_parameters.json', 'w') as parameter_dict_file:
-            json.dump(parameter_dict,
-                        parameter_dict_file)
+        # with open(f'checkpoints/{args.model}_{args.dataset}_{augmentation_string}_seed_{int(args.seed)}/model_parameters.json', 'w') as parameter_dict_file:
+        #     json.dump(parameter_dict,
+        #                 parameter_dict_file)
 
     else:
         metrics_to_save = [int(args.seed),

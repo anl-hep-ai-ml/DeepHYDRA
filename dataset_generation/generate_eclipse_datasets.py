@@ -854,6 +854,8 @@ if __name__ == '__main__':
         data_mean_all_df['label'] = dataset_reshaped['label']
         
         data_mean_all_df[label_columns] = labels_individual
+        
+        print(list(data_mean_all_df.columns))
 
         data_median_all_df = pd.DataFrame(data_median_all_np,
                                             dataset_reshaped_ordered.index,
@@ -865,11 +867,11 @@ if __name__ == '__main__':
 
         dataset_label = f"reduced_eclipse_{dataset_type.replace(' ', '_')}_set"
 
-        # data_mean_all_df.to_hdf(f'{args.dataset_dir}/{dataset_label}_mean.h5',
-        #                                             key=dataset_label, mode='w')
+        data_mean_all_df.to_hdf(f'{args.dataset_dir}/{dataset_label}_mean.h5',
+                                                    key=dataset_label, mode='w')
         
-        # data_median_all_df.to_hdf(f'{args.dataset_dir}/{dataset_label}_median.h5',
-        #                                                 key=dataset_label, mode='w')
+        data_median_all_df.to_hdf(f'{args.dataset_dir}/{dataset_label}_median.h5',
+                                                        key=dataset_label, mode='w')
 
         if args.generate_videos:
 

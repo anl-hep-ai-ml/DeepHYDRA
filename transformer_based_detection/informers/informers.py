@@ -137,7 +137,8 @@ if __name__ == '__main__':
 
     l2_distances_all_train = np.mean((preds_all_train[:, :] - trues_all_train[:, :])**2, 1)
 
-    variant = int(args.data.split('_')[-1])
+    if 'HLT' in args.data:
+        variant = int(args.data.split('_')[-1])
 
     if 'HLT_DCM' in args.data:
         subfolder = f'reduced_detection_dcm_{variant}'

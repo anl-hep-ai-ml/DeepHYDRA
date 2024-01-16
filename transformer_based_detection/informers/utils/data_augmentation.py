@@ -2,7 +2,7 @@ from concurrent.futures import process
 import os
 import math
 from multiprocessing import Pool
-from functools import partial
+from functools import partial, reduce
 
 import numpy as np
 import numpy.lib.stride_tricks as np_st
@@ -850,21 +850,21 @@ class EclipseDataTimeseriesAugmentor():
 
         for app in self.applications:
 
-            print(app)
+            # print(app)
 
             cols = np.logical_or(data.columns.str.startswith(f'm_{app}_'),
                                     data.columns.str.startswith(f'std_{app}_'))
             
             app_data_np = data.loc[:, cols].to_numpy()
 
-            print(data)
+            # print(data)
 
             roll_amount = self.rng.normal(amount_mean,
                                             amount_std)
 
             roll_amount = int(roll_amount*len(app_data_np))
 
-            print(roll_amount)
+            # print(roll_amount)
 
             app_data_np = np.roll(app_data_np,
                                         roll_amount,
@@ -872,16 +872,71 @@ class EclipseDataTimeseriesAugmentor():
 
             data.loc[:, cols] = app_data_np
 
-            print(data)
+            # print(data)
 
         return data
 
 
     def _roll_data_labeled(self,
                             data: pd.DataFrame,
-                            label: pd.DataFrame) -> list:
+                            label: pd.DataFrame,
+                            amount_mean: float = 0.,
+                            amount_std: float = 1.) -> list:
+
+        for app in self.applications:
+
+            # print(app)
+
+            cols_data = np.logical_or(data.columns.str.startswith(f'm_{app}_'),
+                                        data.columns.str.startswith(f'std_{app}_'))
+
+            cols_label = label.columns.str.contains(app)
+
+            # print(cols_label)
+            
+            app_data_np = data.loc[:, cols_data].to_numpy()
+            label_np = label.loc[:, cols_label].to_numpy()
+
+            # print(label)
+
+            roll_amount = self.rng.normal(amount_mean,
+                                            amount_std)
+
+            roll_amount = int(roll_amount*len(app_data_np))
+
+            # print(roll_amount)
+
+            app_data_np = np.roll(app_data_np,
+                                        roll_amount,
+                                        axis=0)
+            
+            label_np = np.roll(label_np,
+                                roll_amount,
+                                axis=0)
+
+            data.loc[:, cols_data] = app_data_np
+            label.loc[:, cols_label] = label_np
+
+            # print(label)
 
         return data, label
+
+
+    def _reduce_labels(self, label: pd.DataFrame):
+        columns_individual_labels = (label.columns != 'label')
+
+        # print(columns_individual_labels)
+
+        label.loc[:, columns_individual_labels] =\
+            label.loc[:, columns_individual_labels].fillna(0).astype(np.uint8)
+
+        label['label'] =\
+            label.loc[:, columns_individual_labels]\
+                .agg(lambda row: np.any(row).astype(np.uint8), axis=1)
+        
+        label = label.drop(label.columns[columns_individual_labels], axis=1)
+
+        return label
 
 
     def _amplitude_phase_perturbation(self,
@@ -1131,7 +1186,7 @@ class EclipseDataTimeseriesAugmentor():
 
                 ax.plot(index, data)
             
-        plt.savefig('eclipse_augmentation_test.png')
+        plt.savefig('eclipse_augmentation_test_unlabeled.png')
 
         return dataset_augmented
 
@@ -1158,18 +1213,28 @@ class EclipseDataTimeseriesAugmentor():
 
             if augmentation == 'Identity':
                 data_segments_augmented.append(data_unmodified)
+
+                label_unmodified =\
+                    self._reduce_labels(label_unmodified)
+
                 label_segments_augmented.append(label_unmodified)
 
             else:
 
                 if augmentation == 'Roll':
-                    data_augmented, labels_augmented =\
+                    data_augmented, label_augmented =\
                             self._roll_data_labeled(data_unmodified,
+                                                    label_unmodified,
                                                     parameters[0],
                                                     parameters[1])
 
+                    label_augmented =\
+                        self._reduce_labels(label_augmented)
+
                     data_segments_augmented.append(data_augmented)
                     label_segments_augmented.append(label_augmented)
+
+                    continue
 
                 # If the augmentation starts with 'Roll',
                 # but also contains other augmentations to
@@ -1181,12 +1246,17 @@ class EclipseDataTimeseriesAugmentor():
 
                 elif augmentation.startswith('Roll') and not\
                                         augmentation == 'Roll':
-                    data_rolled_pd, labels_rolled_pd =\
+                    data_rolled_pd, label_rolled_pd =\
                         self._roll_data_labeled(data_unmodified,
+                                                    label_unmodified,
                                                     parameters[0],
                                                     parameters[1])
 
-                    label_segments_augmented.append(labels_rolled_pd)
+                    label_rolled_pd =\
+                        self._reduce_labels(label_rolled_pd)
+
+                    label_segments_augmented.append(label_rolled_pd)
+
 
                     augmentation = '_'.join(augmentation.split('_')[1:])
                     parameters = parameters[2:]
@@ -1199,11 +1269,11 @@ class EclipseDataTimeseriesAugmentor():
 
                     label_segments_augmented.append(label_unmodified)
 
-                excluded_cols = data_rolled_pd.columns\
+                excluded_cols = data_segment_augmented_pd.columns\
                                     .str.startswith(_ordinal_cols_eclipse)
 
                 data_to_augment_pd =\
-                    data_rolled_pd.loc[:, ~(excluded_cols)]
+                    data_segment_augmented_pd.loc[:, ~(excluded_cols)]
 
                 data_to_augment_np = data_to_augment_pd.to_numpy()
 
@@ -1252,9 +1322,50 @@ class EclipseDataTimeseriesAugmentor():
                                                     data_augmented_pd
                     
                 data_segments_augmented.append(data_segment_augmented_pd)
-                label_segments_augmented.append(label_segment_augmented_pd)
 
         dataset_augmented = pd.concat(data_segments_augmented)
         labels_augmented = pd.concat(label_segments_augmented)
+
+        fig, axes = plt.subplots(4, 1, figsize=(10, 24), dpi=300)
+
+        fig.suptitle('Eclipse MemInfo Data')
+
+        meminfo_data =\
+            dataset_augmented.loc[:, dataset_augmented.columns.str.contains('meminfo')]
+
+        for ax, app in zip(axes, self.applications):
+
+            ax.set_title(app.upper())
+            
+            ax.set_xlabel('Timestamp')
+            ax.set_ylabel('Data')
+
+            ax.grid()
+
+            meminfo_cols =  meminfo_data.columns.str.startswith(f'm_{app}_')
+
+            data = meminfo_data.loc[:, meminfo_cols]
+
+            if data.shape[-1]:
+
+                data = data.fillna(0).to_numpy()
+
+                data = MinMaxScaler().fit_transform(data)
+                
+                index = dataset_augmented.index.values
+
+                ax.plot(index, data)
+
+                anomaly_starts, anomaly_ends =\
+                    _get_runs_of_true(labels_augmented.to_numpy().flatten())
+                    
+                for start, end in zip(anomaly_starts, anomaly_ends):
+
+                    start = max(0, start)
+                    end = min(end, (len(index) - 1))
+
+                    ax.axvspan(index[start], index[end], color='red', alpha=0.5)
+            
+        plt.savefig('eclipse_augmentation_test_labeled.png')
 
         return dataset_augmented, labels_augmented

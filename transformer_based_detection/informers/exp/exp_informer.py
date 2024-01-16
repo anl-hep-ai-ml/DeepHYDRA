@@ -41,7 +41,7 @@ from torch_profiling_utils.fvcorewriter import FVCoreWriter
 def log_gradients_in_model(model, summary_writer, step):
     for tag, value in model.named_parameters():
         if value.grad is not None:
-            summary_writer.add_histogram(tag, value.cpu(), sbep)
+            summary_writer.add_histogram(tag, value.cpu(), step)
             summary_writer.add_histogram(tag + "/grad", value.grad.cpu(), step)
 
 
@@ -576,21 +576,21 @@ class ExpInformer(ExpBasic):
         #                                                 f'data/by_operator/{output_filename}.json',
         #                                             'by_operator')
 
-        torchinfo_writer = TorchinfoWriter(self.model,
-                                            input_data=(batch_x,
-                                                            batch_x_mark,
-                                                            dec_inp,
-                                                            batch_y_mark),
-                                            verbose=0)
+        # torchinfo_writer = TorchinfoWriter(self.model,
+        #                                     input_data=(batch_x,
+        #                                                     batch_x_mark,
+        #                                                     dec_inp,
+        #                                                     batch_y_mark),
+        #                                     verbose=0)
 
-        torchinfo_writer.construct_model_tree()
+        # torchinfo_writer.construct_model_tree()
 
-        torchinfo_writer.show_model_tree(attr_list=['Parameters', 'MACs'])
+        # torchinfo_writer.show_model_tree(attr_list=['Parameters', 'MACs'])
 
-        torchinfo_writer.get_dataframe().to_pickle(
-            f'../../evaluation/parameter_analysis/{output_filename}.pkl')
+        # torchinfo_writer.get_dataframe().to_pickle(
+        #     f'../../evaluation/parameter_analysis/{output_filename}.pkl')
 
-        exit()
+        # exit()
 
         if self.args.use_amp:
             with torch.cuda.amp.autocast():
