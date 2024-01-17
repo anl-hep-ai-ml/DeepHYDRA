@@ -5,10 +5,10 @@ import json
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
+import matplotlib.lines as mlines
 import seaborn as sns
 
-plt.rcParams['figure.constrained_layout.use'] = True
+# plt.rcParams['figure.constrained_layout.use'] = True
 
 
 def legend_without_duplicate_labels(ax, loc):
@@ -57,16 +57,6 @@ if __name__ == '__main__':
     # These colors are specifically chosen to improve
     # accessibility for readers with colorblindness
 
-    data_reduced = pd.concat((sizes_reduced,
-                                flops_reduced,
-                                auc_roc_reduced), axis=1)
-    
-    data_reduced.drop('Reduction', inplace=True)
-    
-    data_unreduced = pd.concat((sizes_unreduced,
-                                    flops_unreduced,
-                                    auc_roc_unreduced), axis=1)
-
     colors = {  '1L-Method 3 (Reduced)': '#D81B60',
                 '1L-Method 3 (Unreduced)': '#D81B60',
                 '1L-Method 4 (Reduced)': '#1E88E5',
@@ -91,56 +81,133 @@ if __name__ == '__main__':
                 'T-DBSCAN/USAD': '#C43F42',
                 'OmniAnomaly (Reduced)': '#1164B3',
                 'OmniAnomaly (Unreduced)': '#1164B3',
-                'T-DBSCAN/OmniAnomaly': '##1164B3',}
+                'T-DBSCAN/OmniAnomaly': '#1164B3',}
     
-    fig, ax = plt.subplots(figsize=(8, 5), dpi=300)
+    markers = {  '1L-Method 3 (Reduced)': 'o',
+                '1L-Method 3 (Unreduced)': 'o',
+                '1L-Method 4 (Reduced)': 'o',
+                '1L-Method 4 (Unreduced)': 'o',
+                'MERLIN (Reduced)': 'o',
+                'MERLIN (Unreduced)': 'o',
+                'T-DBSCAN': 'o',
+                'Informer-MSE (Reduced)': '>',
+                'Informer-MSE (Unreduced)': '>',
+                'STRADA-MSE': 'D',
+                'Informer-SMSE (Reduced)': '>',
+                'Informer-SMSE (Unreduced)': '>',
+                'STRADA-SMSE': 'D',
+                'TranAD (Reduced)': '>',
+                'TranAD (Unreduced)': '>',
+                'STRADA-TranAD': 'D',
+                'DAGMM (Reduced)': '>',
+                'DAGMM (Unreduced)': '>',
+                'T-DBSCAN/DAGMM': 'D',
+                'USAD (Reduced)': '>',
+                'USAD (Unreduced)': '>',
+                'T-DBSCAN/USAD': 'D',
+                'OmniAnomaly (Reduced)': '>',
+                'OmniAnomaly (Unreduced)': '>',
+                'T-DBSCAN/OmniAnomaly': 'D',}
 
-    ax.set_xscale('log')
-    ax.set_xlim(1, 5e16)
+    data_reduced = pd.concat((sizes_reduced,
+                                flops_reduced,
+                                auc_roc_reduced), axis=1)
+    
+    data_reduced.drop('Reduction', inplace=True)
+    data_reduced['Color'] = [colors[name] for name in data_reduced.index]
+    data_reduced['Marker'] = [markers[name] for name in data_reduced.index]
 
-    ax.set_title('')
-    ax.set_xlabel('')
-    ax.set_ylabel('Model')
+    data_reduced.index = [name.split(' (')[0] for name in data_reduced.index]
+    
+    data_unreduced = pd.concat((sizes_unreduced,
+                                    flops_unreduced,
+                                    auc_roc_unreduced), axis=1)
 
-    for model_name, colors in colors.items():
+    data_unreduced['Color'] = [colors[name] for name in data_unreduced.index]
+    data_unreduced['Marker'] = [markers[name] for name in data_unreduced.index]
 
-        if model_name != 'MERLIN':
+    data_unreduced.index = [name.split(' (')[0] for name in data_unreduced.index]
 
-            results = {k: v for k, v in sorted(results.items(), key=lambda item: item[1])}
+    print(data_reduced)
+    print(data_unreduced)
+    
+    fig, axes = plt.subplots(2, 2, figsize=(8, 6), dpi=300)
 
-            left = 0
+    axes = (('FLOPs', 'Reduced', axes[0][0]),
+            ('Size', 'Reduced', axes[0][1]),
+            ('FLOPs', 'Unreduced', axes[1][0]),
+            ('Size', 'Unreduced', axes[1][1]),)
 
-            for operator, flops in results.items():
+    for count, (metric_type, dataset_type, ax) in enumerate(axes):
 
-                label, color = get_label_and_color(operator)
+        data = data_reduced if dataset_type == 'Reduced'\
+                                        else data_unreduced
 
-                ax.barh(model_name,
-                                flops,
-                                color=color,
-                                height=0.8,
-                                left=left,
-                                label=label)
+        ax.set_ylim(80, 100)
 
-                left += flops
+        ax.set_xscale('log')
+        ax.set_ylabel('AUC-ROC [%]')
 
+        ax.grid(zorder=0)
+
+        ax.set_title(f'{metric_type} and AUC-ROC {dataset_type} Test Set')
+
+        if metric_type == 'FLOPs':
+            ax.set_xlabel('MFLOPs')
         else:
-            results = {k: v for k, v in sorted(results.items(), key=lambda item: item[1])}
+            ax.set_xlabel(metric_type)
 
-            left = 0
+        if (count % 2) != 0:
+            ax.set_ylabel(None) 
 
-            for operator, flops in results.items():
+        for element in data.itertuples():
 
-                ax.barh(model_name,
-                                flops,
-                                color='#000000',
-                                fill=False,
-                                hatch='/',
-                                height=0.8,
-                                left=left,
-                                label='ESTIMATED')
+            metric = element.Size if metric_type == 'Size' else element.FLOPs
 
-                left += flops
+            scatter = ax.scatter(metric,
+                                    element._3,
+                                    32,
+                                    element.Color,
+                                    element.Marker,
+                                    edgecolors='k',
+                                    zorder=3)
 
-    legend_without_duplicate_labels(ax, 'upper right')
 
-    plt.savefig(f'plots/computational_intensity_comparison_by_operator.png')
+    marker_types = {'Non-ML-Based': 'o',
+                        'ML-Based': '>',
+                        'Hybrid ML/T-DBSCAN (STRADA)': 'D'}
+    
+    marker_legends = [mlines.Line2D([0], [0], color='white',\
+                                                    marker=v,\
+                                                    linestyle='none',\
+                                                    markersize=7,\
+                                                    markeredgecolor='k',\
+                                                    label=k) for k, v in marker_types.items()]
+    
+    color_types = {  '1L-Method 3': '#D81B60',
+                        '1L-Method 4': '#1E88E5',
+                        'MERLIN': '#FFC107',
+                        'T-DBSCAN': '#000000',
+                        'Informer-MSE': '#1CB2C5',
+                        'Informer-SMSE': '#6F8098',
+                        'TranAD': '#D4FC14',
+                        'DAGMM': '#004D40',
+                        'USAD': '#C43F42',
+                        'OmniAnomaly': '#1164B3',}
+    
+    color_legends = [mlines.Line2D([0], [0], color=v,\
+                                                marker='s',\
+                                                linestyle='none',\
+                                                markersize=15,\
+                                                markeredgecolor='k',\
+                                                label=k) for k, v in color_types.items()]
+
+
+    # legend_1 = plt.legend(color_legends, loc=1)
+    fig.legend(handles=marker_legends, title='Categories', loc='lower left', bbox_to_anchor=(0.025, 0.025), ncol=1)
+    fig.legend(handles=color_legends, title='Methods', loc='lower right', bbox_to_anchor=(0.975, -0.0085), ncol=3)
+    # fig.add_artist(legend_1)
+
+    plt.tight_layout(rect=[0, 0.163, 1, 1])
+
+    plt.savefig(f'plots/scatterplots_size_and_flops_over_auc_roc.png')
