@@ -18,7 +18,8 @@ base_data_anomaly_ends = [264,
                             465,
                             4277]
 
-output_dir = '../../../evaluation/combined_detection_2023/predictions/'
+# output_dir = '../../../evaluation/combined_detection_2023/predictions/'
+output_dir = '../../../evaluation/combined_detection_2018/predictions/'
 
 def _save_numpy_array(array: np.array,
                         filename: str):
@@ -143,7 +144,7 @@ class BenchmarkAnomalyRegistry(AnomalyRegistry):
                     seed: int) -> None:
 
         true_pd = pd.read_hdf(self.label_dir +\
-                                    f'/unreduced_hlt_test_set_{variant}_y.h5')
+                                    f'/unreduced_hlt_test_dcm_set_{variant}_y.h5')
 
         true_pd.index = _remove_timestamp_jumps(
                             pd.DatetimeIndex(true_pd.index)).strftime('%Y-%m-%d %H:%M:%S')
@@ -172,7 +173,7 @@ class BenchmarkAnomalyRegistry(AnomalyRegistry):
                 
         pred_clustering_np = pred_pd.to_numpy().astype(np.uint8).flatten()
         
-        _save_numpy_array(pred_clustering_np, f'{output_dir}/clustering.npy')
+        # _save_numpy_array(pred_clustering_np, f'{output_dir}/clustering.npy')
 
         if model_name == 'Informer-MSE':
             pred_transformer_np = np.pad(pred_transformer_np, (16, 1))
@@ -182,4 +183,8 @@ class BenchmarkAnomalyRegistry(AnomalyRegistry):
             _save_numpy_array(pred_transformer_np, f'{output_dir}/l2_dist_smse_seed_{seed}.npy')
         elif model_name == 'TranAD':
             pred_transformer_np = np.pad(pred_transformer_np, (9, 0))
-            _save_numpy_array(pred_transformer_np, f'{output_dir}/tranad_seed_{seed}.npy')
+            _save_numpy_array(pred_transformer_np, f'{output_dir}/{model_name.lower()}_seed_{seed}.npy')
+        elif model_name in ['USAD', 'DAGMM', 'OmniAnomaly']:
+            pred_transformer_np = np.pad(pred_transformer_np, (4, 0))
+            _save_numpy_array(pred_transformer_np, f'{output_dir}/{model_name.lower()}_seed_{seed}.npy')
+            

@@ -25,9 +25,10 @@ device='cuda:0'
 
 
 def _save_model_attributes(model,
-                            data):
+                            data,
+                            dataset_name):
 
-    output_filename = f'{model.name.lower()}_hlt_dcm_2018'
+    output_filename = f'{model.name.lower()}_{dataset_name.lower()}'
 
     fvcore_writer = FVCoreWriter(model, data)
 
@@ -85,9 +86,6 @@ def load_dataset(dataset):
 
     loader = []
 
-    data_source = dataset.split('_')[1]
-    variant = int(dataset.split('_')[-1])
-
     if 'HLT' not in dataset:
 
         folder = '../../datasets/smd'
@@ -101,6 +99,9 @@ def load_dataset(dataset):
             loader.append(np.load(os.path.join(folder, f'{file}.npy')))
 
     else:
+
+            data_source = dataset.split('_')[1]
+            variant = int(dataset.split('_')[-1])
 
             train_set = HLTDataset(data_source, variant,
                                             'train', False,
@@ -189,7 +190,8 @@ def backprop(epoch,
                 optimizer,
                 scheduler,
                 training=True,
-                summary_writer=None):
+                summary_writer=None,
+                dataset_name=None):
 
     l = nn.MSELoss(reduction = 'mean' if training else 'none')
     feats = dataO.shape[1]
@@ -214,7 +216,7 @@ def backprop(epoch,
             for d in data:
                  #d = d.to(device)
 
-                # _save_model_attributes(model, d)
+                # _save_model_attributes(model, d, dataset_name)
                 # exit()
 
                 _, x_hat, z, gamma = model(d)
@@ -279,7 +281,7 @@ def backprop(epoch,
                 d = d.to(device)
 
                 # if i:
-                #     _save_model_attributes(model, (d, hidden))
+                #     _save_model_attributes(model, (d, hidden), dataset_name)
                 #     exit()
 
                 y_pred, mu, logvar, hidden = model(d, hidden if i else None)
@@ -314,7 +316,7 @@ def backprop(epoch,
         if training:
             for d in data:
 
-                # _save_model_attributes(model, d)
+                # _save_model_attributes(model, d, dataset_name)
                 # exit()                
 
                 ae1s, ae2s, ae2ae1s = model(d)
@@ -571,7 +573,7 @@ def backprop(epoch,
 
                 elem = window[-1, :, :].view(1, local_bs, feats)
 
-                # _save_model_attributes(model, d)
+                # _save_model_attributes(model, d, dataset_name)
                 # exit()
 
                 z = model(window, elem)
@@ -742,7 +744,8 @@ if __name__ == '__main__':
                                     optimizer,
                                     scheduler,
                                     True,
-                                    summary_writer)
+                                    summary_writer,
+                                    args.dataset)
 
             torch.cuda.empty_cache()
 

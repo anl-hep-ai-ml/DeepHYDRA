@@ -382,17 +382,29 @@ def print_results(label: np.array,
         load_numpy_array(f'predictions/l2_dist_smse_seed_{seed}.npy')
 
     preds_dagmm_train =\
-        load_numpy_array('predictions/dagmm_train_seed_42.npy')
+        load_numpy_array(f'predictions/dagmm_train_seed_{seed}.npy')
     preds_dagmm =\
-        load_numpy_array('predictions/dagmm_seed_42.npy')
+        load_numpy_array(f'predictions/dagmm_seed_{seed}.npy')
+    preds_dagmm_train_no_augment =\
+        load_numpy_array(f'predictions/dagmm_train_no_augment_seed_{seed}.npy')
+    preds_dagmm_no_augment =\
+        load_numpy_array(f'predictions/dagmm_no_augment_seed_{seed}.npy')
     preds_usad_train =\
-        load_numpy_array('predictions/usad_train_seed_42.npy')
+        load_numpy_array(f'predictions/usad_train_seed_{seed}.npy')
     preds_usad =\
-        load_numpy_array('predictions/usad_seed_42.npy')
+        load_numpy_array(f'predictions/usad_seed_{seed}.npy')
+    preds_usad_train_no_augment =\
+        load_numpy_array(f'predictions/usad_train_no_augment_seed_{seed}.npy')
+    preds_usad_no_augment =\
+        load_numpy_array(f'predictions/usad_no_augment_seed_{seed}.npy')
     preds_omni_anomaly_train =\
-        load_numpy_array('predictions/omnianomaly_train_seed_7.npy')
+        load_numpy_array(f'predictions/omnianomaly_train_seed_{seed}.npy')
     preds_omni_anomaly =\
-        load_numpy_array('predictions/omnianomaly_seed_7.npy')
+        load_numpy_array(f'predictions/omnianomaly_seed_{seed}.npy')
+    preds_omni_anomaly_train_no_augment =\
+        load_numpy_array(f'predictions/omnianomaly_train_no_augment_seed_{seed}.npy')
+    preds_omni_anomaly_no_augment =\
+        load_numpy_array(f'predictions/omnianomaly_no_augment_seed_{seed}.npy')
 
     spot_train_size = int(len(preds_l2_dist_mse)*0.1)
 
@@ -455,30 +467,52 @@ def print_results(label: np.array,
     #                     preds_l2_dist_smse,
     #                     label[offset:len(preds_l2_dist_smse) + offset], 0.008, 0.8, to_csv)
 
+    print('DAGMM - No Augmentation:')
+
+    preds_dagmm =\
+        get_scores_dagmm('dagmm_no_augment', seed,
+                            preds_dagmm_train_no_augment[:spot_train_size],
+                            preds_dagmm_no_augment,
+                            label, 0.001, 0.8, 128, to_csv)
+
     print('DAGMM:')
 
     preds_dagmm =\
-        get_scores_dagmm('dagmm', 42,
+        get_scores_dagmm('dagmm', seed,
                             preds_dagmm_train[:spot_train_size],
                             preds_dagmm,
                             label, 0.001, 0.8, 20.5, to_csv)
 
+    print('USAD - No Augmentation:')
+
+    preds_usad =\
+        get_scores_dagmm('usad_no_augment', seed,
+                            preds_usad_train_no_augment[:spot_train_size],
+                            preds_usad_no_augment,
+                            label, 0.001, 0.8, 33.5, to_csv)
+
     print('USAD:')
 
     preds_usad =\
-        get_scores_dagmm('usad', 42,
+        get_scores_dagmm('usad', seed,
                             preds_usad_train[:spot_train_size],
                             preds_usad,
                             label, 0.001, 0.8, 33.5, to_csv)
 
-    # print('OmniAnomaly:')
+    print('OmniAnomaly - No Augmentation:')
 
-    # get_scores_dagmm('omni_anomaly', 42,
-    #                         preds_omni_anomaly_train[:spot_train_size],
-    #                         preds_omni_anomaly,
-    #                         label, 0.001, 0.8, 0.51, to_csv)
+    get_scores_dagmm('omni_anomaly_no_augment', seed,
+                            preds_omni_anomaly_train_no_augment[:spot_train_size],
+                            preds_omni_anomaly_no_augment,
+                            label, 0.001, 0.8, 0.51, to_csv)
     
+    print('OmniAnomaly:')
 
+    get_scores_dagmm('omni_anomaly', seed,
+                            preds_omni_anomaly_train[:spot_train_size],
+                            preds_omni_anomaly,
+                            label, 0.001, 0.8, 0.51, to_csv)
+    
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Reduced HLT Dataset Evaluation')

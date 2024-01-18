@@ -63,6 +63,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='T-DBSCAN/TranAD Offline HLT Anomaly Detection')
 
+    parser.add_argument('--model', type=str, default='TranAD', choices=['TranAD', 'DAGMM', 'OmniAnomaly', 'USAD'])
     parser.add_argument('--checkpoint-dir', type=str, default='../../../transformer_based_detection/'
                                                                         'tranad/checkpoints/TranAD_HLT')
     parser.add_argument('--data-dir', type=str, default='../../../datasets/hlt/')
@@ -81,8 +82,8 @@ if __name__ == '__main__':
 
     time_now_string = dt.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
 
-    log_filename = f'{args.log_dir}/strada_tranad_'\
-                    f'benchmark_log_{time_now_string}.log'
+    log_filename = f'{args.log_dir}/strada_{args.model.lower()}_'\
+                                 f'benchmark_log_{time_now_string}.log'
 
     logging_format = '[%(asctime)s] %(levelname)s: %(name)s: %(message)s'
 
@@ -97,7 +98,7 @@ if __name__ == '__main__':
                                     datefmt='%Y-%m-%d %H:%M:%S')
 
     hlt_data_pd = pd.read_hdf(args.data_dir +\
-                                    f'/unreduced_hlt_test_set_{args.variant}_x.h5')
+                                    f'/unreduced_hlt_dcm_test_set_{args.variant}_x.h5')
     
     # This removes a few actual anomalous dropouts in the last run.
     # These are very easy to detect, so we remove them to not
@@ -110,9 +111,10 @@ if __name__ == '__main__':
     hlt_data_pd.index = _remove_timestamp_jumps(
                             pd.DatetimeIndex(hlt_data_pd.index))
 
-    median_std_reducer = MedianStdReducer()
+    median_std_reducer = MedianStdReducer('2018')
     
     tranad_runner = TranADRunner(args.checkpoint_dir,
+                                    model=args.model,
                                     variant=args.variant)
 
     tpu_labels = list(hlt_data_pd.columns.values)
@@ -123,7 +125,13 @@ if __name__ == '__main__':
                                 args.dbscan_min_samples,
                                 args.dbscan_duration_threshold)
 
-    reduced_data_buffer = ReducedDataBuffer(size=10)
+    reduced_data_buffer_sizes = {'TranAD': 10,
+                                    'DAGMM': 5,
+                                    'USAD': 5,
+                                    'OmniAnomaly': 1,}
+
+
+    reduced_data_buffer = ReducedDataBuffer(size=reduced_data_buffer_sizes[args.model])
     reduced_data_buffer.set_buffer_filled_callback(tranad_runner.detect)
 
     timestamps = list(hlt_data_pd.index)
@@ -157,11 +165,11 @@ if __name__ == '__main__':
 
     predictions = tranad_runner.get_predictions()
 
-    with open(args.checkpoint_dir +\
-                '/model_parameters.json', 'r') as parameter_dict_file:
-        parameter_dict = json.load(parameter_dict_file)
+    # with open(args.checkpoint_dir +\
+    #             '/model_parameters.json', 'r') as parameter_dict_file:
+    #     parameter_dict = json.load(parameter_dict_file)
 
-        benchmark_anomaly_registry.evaluate(predictions,
-                                                    'TranAD',
-                                                    args.variant,
-                                                    args.seed)
+    benchmark_anomaly_registry.evaluate(predictions,
+                                                args.model,
+                                                args.variant,
+                                                args.seed)
