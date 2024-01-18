@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
+from matplotlib.markers import MarkerStyle
 import seaborn as sns
 
 # plt.rcParams['figure.constrained_layout.use'] = True
@@ -22,7 +23,7 @@ if __name__ == '__main__':
     parameters = pd.read_csv('data/parameters.csv', index_col=0)
     activations = pd.read_csv('data/activations.csv', index_col=0)
     flops = pd.read_csv('data/flops.csv', index_col=0)
-    auc_roc = pd.read_csv('data/auc_roc.csv', sep='\t', index_col=0)
+    auc_roc = pd.read_csv('data/auc_roc.csv', index_col=0)
 
     unreduced_data_regex = r'\(Un|STRADA|T-DBSCAN'
 
@@ -61,8 +62,10 @@ if __name__ == '__main__':
                 '1L-Method 3 (Unreduced)': '#D81B60',
                 '1L-Method 4 (Reduced)': '#1E88E5',
                 '1L-Method 4 (Unreduced)': '#1E88E5',
-                'MERLIN (Reduced)': '#FFC107',
-                'MERLIN (Unreduced)': '#FFC107',
+                'MERLIN-S (Reduced)': '#FFC107',
+                'MERLIN-S (Unreduced)': '#FFC107',
+                'MERLIN-P (Reduced)': '#663399',
+                'MERLIN-P (Unreduced)': '#663399',
                 'T-DBSCAN': '#000000',
                 'Informer-MSE (Reduced)': '#1CB2C5',
                 'Informer-MSE (Unreduced)': '#1CB2C5',
@@ -87,8 +90,10 @@ if __name__ == '__main__':
                 '1L-Method 3 (Unreduced)': 'o',
                 '1L-Method 4 (Reduced)': 'o',
                 '1L-Method 4 (Unreduced)': 'o',
-                'MERLIN (Reduced)': 'o',
-                'MERLIN (Unreduced)': 'o',
+                'MERLIN-S (Reduced)': 'o',
+                'MERLIN-S (Unreduced)': 'o',
+                'MERLIN-P (Reduced)': 'o',
+                'MERLIN-P (Unreduced)': 'o',
                 'T-DBSCAN': 'o',
                 'Informer-MSE (Reduced)': '>',
                 'Informer-MSE (Unreduced)': '>',
@@ -130,7 +135,7 @@ if __name__ == '__main__':
 
     print(data_reduced)
     print(data_unreduced)
-    
+
     fig, axes = plt.subplots(2, 2, figsize=(8, 6), dpi=300)
 
     axes = (('FLOPs', 'Reduced', axes[0][0]),
@@ -155,27 +160,38 @@ if __name__ == '__main__':
         if metric_type == 'FLOPs':
             ax.set_xlabel('MFLOPs')
         else:
-            ax.set_xlabel(metric_type)
+            ax.set_xlabel('Parameters + Activations')
 
         if (count % 2) != 0:
             ax.set_ylabel(None) 
 
         for element in data.itertuples():
 
-            metric = element.Size if metric_type == 'Size' else element.FLOPs
+            metric = element.Size if metric_type == 'Size' else element.FLOPs/1e6
+
+            if metric_type == 'FLOPs':
+                if element.Index == 'MERLIN-S':
+                    fill_style = 'left'
+                elif element.Index == 'MERLIN-P':
+                    fill_style = 'right'
+                else:
+                    fill_style = 'full'
 
             scatter = ax.scatter(metric,
                                     element._3,
-                                    32,
+                                    60,
                                     element.Color,
-                                    element.Marker,
+                                    MarkerStyle(element.Marker,
+                                                    fillstyle=fill_style),
                                     edgecolors='k',
                                     zorder=3)
+            
+            ax.minorticks_off()
 
 
     marker_types = {'Non-ML-Based': 'o',
                         'ML-Based': '>',
-                        'Hybrid ML/T-DBSCAN (STRADA)': 'D'}
+                        'Hybrid T-DBSCAN/ML (STRADA)': 'D'}
     
     marker_legends = [mlines.Line2D([0], [0], color='white',\
                                                     marker=v,\
@@ -186,7 +202,8 @@ if __name__ == '__main__':
     
     color_types = {  '1L-Method 3': '#D81B60',
                         '1L-Method 4': '#1E88E5',
-                        'MERLIN': '#FFC107',
+                        'MERLIN-S': '#FFC107',
+                        'MERLIN-P': '#663399',
                         'T-DBSCAN': '#000000',
                         'Informer-MSE': '#1CB2C5',
                         'Informer-SMSE': '#6F8098',

@@ -14,11 +14,14 @@ import pandas as pd
 # patch_sklearn(verbose=False)
 
 from sklearnex.cluster import DBSCAN
+# from sklearn.cluster import DBSCAN
 
 from .baseclusteringdetector import BaseClusteringDetector
 from utils.anomalyclassification import AnomalyType
 from utils.variables import nan_fill_value
 from utils.tqdmloggingdecorator import tqdmloggingdecorator
+
+# from sklearn2pmml.util import deep_sizeof
 
 
 class DBScanAnomalyDetector(BaseClusteringDetector):
@@ -60,6 +63,20 @@ class DBScanAnomalyDetector(BaseClusteringDetector):
 
         self.datapoints_processed = 0
 
+        self.memory_sizes = []
+
+
+    def write_memory_size(self):
+        memory_sizes = np.array(self.memory_sizes).T
+
+        print(memory_sizes)
+
+        memory_sizes = pd.DataFrame(memory_sizes,
+                                        columns=['Memory'])
+
+        memory_sizes.to_csv('memory_dbscan.csv')
+
+
     @tqdmloggingdecorator
     def process(self,
                     timestep,
@@ -79,6 +96,10 @@ class DBScanAnomalyDetector(BaseClusteringDetector):
         cluster_predictions =\
             self.dbscan_clustering.fit_predict(
                         np.array(list(zip(rack_labels_filtered, data_filtered))))
+
+        # memory_size = deep_sizeof(self.dbscan_clustering, with_overhead=True, verbose=True)
+
+        # self.memory_sizes.append(memory_size)
 
         for machine_index, datapoint in enumerate(data_filtered):
 

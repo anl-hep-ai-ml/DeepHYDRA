@@ -153,47 +153,48 @@ if __name__ == '__main__':
     with logging_redirect_tqdm():
         for count, (timestamp, data) in enumerate(tzip(timestamps, hlt_data_np)):
 
-            if count == 400:
-                break
+            # if count == 4096:
+            #     dbscan_anomaly_detector.write_memory_size()
+            #     break
 
             try:
-                pylikwid.markerinit()
-                pylikwid.markerthreadinit()
+                # pylikwid.markerinit()
+                # pylikwid.markerthreadinit()
 
-                pylikwid.markerstartregion("DBSCAN")
+                # pylikwid.markerstartregion("DBSCAN")
 
                 dbscan_anomaly_detector.process(timestamp, data)
 
-                pylikwid.markerstopregion("DBSCAN")
+                # pylikwid.markerstopregion("DBSCAN")
 
-                nr_events, eventlist, time, count = pylikwid.markergetregion("DBSCAN")
+                # nr_events, eventlist, time, count = pylikwid.markergetregion("DBSCAN")
 
                 # for i, e in enumerate(eventlist):
                 #     print(i, e)
 
-                flops_dbscan.append(eventlist[3])
+                # flops_dbscan.append(eventlist[3])
 
-                pylikwid.markerclose()
+                # pylikwid.markerclose()
 
-                pylikwid.markerinit()
-                pylikwid.markerthreadinit()
+                # pylikwid.markerinit()
+                # pylikwid.markerthreadinit()
 
-                pylikwid.markerstartregion("reduction")
+                # pylikwid.markerstartregion("reduction")
 
                 output_slice =\
                     median_std_reducer.reduce_numpy(tpu_labels,
                                                         timestamp,
                                                         data)
                                     
-                pylikwid.markerstopregion("reduction")
+                # pylikwid.markerstopregion("reduction")
 
-                nr_events, eventlist, time, count = pylikwid.markergetregion("reduction")
+                # nr_events, eventlist, time, count = pylikwid.markergetregion("reduction")
 
-                flops_reduction.append(eventlist[3])
+                # flops_reduction.append(eventlist[3])
 
                 # for i, e in enumerate(eventlist):
                 #     print(i, e)
-                pylikwid.markerclose()
+                # pylikwid.markerclose()
                 
             except NonCriticalPredictionException:
                 break
@@ -224,13 +225,13 @@ if __name__ == '__main__':
 #                                                                         cmap='plasma')
 
 
-    flops = pd.DataFrame(np.column_stack((flops_dbscan, flops_reduction)).astype(np.uint64),
-                                                            columns=['DBSCAN', 'Reduction'])
+    # flops = pd.DataFrame(np.column_stack((flops_dbscan, flops_reduction)).astype(np.uint64),
+    #                                                         columns=['DBSCAN', 'Reduction'])
 
-    flops.to_csv('flops.csv')
+    # flops.to_csv('flops.csv')
 
-    print(flops_dbscan)
-    print(flops_reduction)
+    # print(flops_dbscan)
+    # print(flops_reduction)
 
     # preds = informer_runner.get_predictions()
 
