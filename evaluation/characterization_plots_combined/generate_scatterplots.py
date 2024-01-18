@@ -32,7 +32,7 @@ if __name__ == '__main__':
 
     sizes_hlt.rename('Size', inplace=True)
 
-    flops_strada_reduction =  flops_hlt.loc['Reduction'] + flops_hlt.loc['T-DBSCAN']
+    flops_strada_reduction = flops_hlt.loc['Reduction'] + flops_hlt.loc['T-DBSCAN']
 
     flops_hlt.loc['Informer-MSE (Unreduced)'] = flops_hlt.loc['Informer-MSE (Reduced)'] + flops_hlt.loc['Reduction']
     flops_hlt.loc['Informer-SMSE (Unreduced)'] = flops_hlt.loc['Informer-SMSE (Reduced)'] + flops_hlt.loc['Reduction']
@@ -58,9 +58,9 @@ if __name__ == '__main__':
     auc_roc_unreduced_hlt = auc_roc_hlt.loc[(auc_roc_hlt.index.str.contains(unreduced_data_regex))]
     mcc_unreduced_hlt = mcc_hlt.loc[(mcc_hlt.index.str.contains(unreduced_data_regex))]
 
-    parameters_smd = pd.read_csv('data/parameters_hlt_sms.csv', index_col=0)
+    parameters_smd = pd.read_csv('data/parameters_smd.csv', index_col=0)
     activations_smd = pd.read_csv('data/activations_smd.csv', index_col=0)
-    flops_smd = pd.read_csv('data/flops_hlt_smd.csv', index_col=0)
+    flops_smd = pd.read_csv('data/flops_smd.csv', index_col=0)
     auc_roc_smd = pd.read_csv('data/auc_roc_smd.csv', index_col=0)
     mcc_smd = pd.read_csv('data/mcc_smd.csv', index_col=0)
 
@@ -144,19 +144,18 @@ if __name__ == '__main__':
 
     data_unreduced_hlt.index = [name.split(' (')[0] for name in data_unreduced_hlt.index]
 
-    sizes_smd = parameters_hlt['Parameters'].add(activations_hlt['Activations'], fill_value=0)
+    sizes_smd = parameters_smd['Parameters'].add(activations_smd['Activations'], fill_value=0)
+
+    sizes_smd.rename('Size', inplace=True)
 
     data_smd = pd.concat((sizes_smd,
                             flops_smd,
                             auc_roc_smd,
                             mcc_smd), axis=1)
 
-    # print(data_reduced_hlt)
-    # print(data_unreduced_hlt)
-
+    print(data_reduced_hlt)
+    print(data_unreduced_hlt)
     print(data_smd)
-
-    exit()
 
     fig, axes = plt.subplots(2, 2, figsize=(8, 6), dpi=300)
 
