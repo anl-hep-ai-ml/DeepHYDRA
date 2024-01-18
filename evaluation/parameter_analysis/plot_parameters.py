@@ -11,7 +11,7 @@ plt.rcParams['figure.constrained_layout.use'] = True
 
 flop_display_lower_threshold_percent = 0.001
 
-data_dir = 'data/'
+data_dir = 'data/smd/'
 
 def group_small_flop_counts(results: dict,
                                 flops_sum):
@@ -94,13 +94,13 @@ if __name__ == '__main__':
         else:
             model_name = model_name.capitalize()
         
-        dataset_name =\
-            f'{model_params[1].upper()}_'\
-            f'{model_params[2].upper()}_'\
-            f'{model_params[3]}'
+        # dataset_name =\
+        #     f'{model_params[1].upper()}_'\
+        #     f'{model_params[2].upper()}_'\
+        #     f'{model_params[3]}'
 
-        if len(model_params) > 4:
-            model_name = f'{model_name}-{model_params[4].upper()}'
+        if len(model_params) > 2:
+            model_name = f'{model_name}-{model_params[2].upper()}'
 
         results_all[model_name] = int(results['Parameters'][0])
 
@@ -109,5 +109,8 @@ if __name__ == '__main__':
                             index=results_all.keys(),
                             columns=['Parameters'])
 
+    # results_all_pd.to_csv(
+    #     '../characterization_plots_combined/data/parameters_hlt_dcm_2018.csv')
+
     results_all_pd.to_csv(
-        '../characterization_plots_combined/data/parameters.csv')
+        '../characterization_plots_combined/data/parameters_smd.csv')

@@ -220,9 +220,6 @@ class DAGMM(nn.Module):
 
     def forward(self, x):
         ## Encode Decoder
-
-        print(x.shape)
-
         x = x.view(1, -1)
         z_c = self.encoder(x)
         x_hat = self.decoder(z_c)

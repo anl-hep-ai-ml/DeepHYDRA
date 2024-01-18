@@ -20,40 +20,49 @@ def legend_without_duplicate_labels(ax, loc):
 
 if __name__ == '__main__':
 
-    parameters = pd.read_csv('data/parameters.csv', index_col=0)
-    activations = pd.read_csv('data/activations.csv', index_col=0)
-    flops = pd.read_csv('data/flops.csv', index_col=0)
-    auc_roc = pd.read_csv('data/auc_roc.csv', index_col=0)
+    parameters_hlt = pd.read_csv('data/parameters_hlt_dcm_2018.csv', index_col=0)
+    activations_hlt = pd.read_csv('data/activations_hlt_dcm_2018.csv', index_col=0)
+    flops_hlt = pd.read_csv('data/flops_hlt_dcm_2018.csv', index_col=0)
+    auc_roc_hlt = pd.read_csv('data/auc_roc_hlt_dcm_2018.csv', index_col=0)
+    mcc_hlt = pd.read_csv('data/mcc_hlt_dcm_2018.csv', index_col=0)
 
     unreduced_data_regex = r'\(Un|STRADA|T-DBSCAN'
 
-    sizes = parameters['Parameters'].add(activations['Activations'], fill_value=0)
+    sizes_hlt = parameters_hlt['Parameters'].add(activations_hlt['Activations'], fill_value=0)
 
-    sizes.rename('Size', inplace=True)
+    sizes_hlt.rename('Size', inplace=True)
 
-    flops_strada_reduction =  flops.loc['Reduction'] + flops.loc['T-DBSCAN']
+    flops_strada_reduction =  flops_hlt.loc['Reduction'] + flops_hlt.loc['T-DBSCAN']
 
-    flops.loc['Informer-MSE (Unreduced)'] = flops.loc['Informer-MSE (Reduced)'] + flops.loc['Reduction']
-    flops.loc['Informer-SMSE (Unreduced)'] = flops.loc['Informer-SMSE (Reduced)'] + flops.loc['Reduction']
-    flops.loc['TranAD (Unreduced)'] = flops.loc['TranAD (Reduced)'] + flops.loc['Reduction']
-    flops.loc['DAGMM (Unreduced)'] = flops.loc['DAGMM (Reduced)'] + flops.loc['Reduction']
-    flops.loc['USAD (Unreduced)'] = flops.loc['USAD (Reduced)'] + flops.loc['Reduction']
-    flops.loc['OmniAnomaly (Unreduced)'] = flops.loc['OmniAnomaly (Reduced)'] + flops.loc['Reduction']
+    flops_hlt.loc['Informer-MSE (Unreduced)'] = flops_hlt.loc['Informer-MSE (Reduced)'] + flops_hlt.loc['Reduction']
+    flops_hlt.loc['Informer-SMSE (Unreduced)'] = flops_hlt.loc['Informer-SMSE (Reduced)'] + flops_hlt.loc['Reduction']
+    flops_hlt.loc['TranAD (Unreduced)'] = flops_hlt.loc['TranAD (Reduced)'] + flops_hlt.loc['Reduction']
+    flops_hlt.loc['DAGMM (Unreduced)'] = flops_hlt.loc['DAGMM (Reduced)'] + flops_hlt.loc['Reduction']
+    flops_hlt.loc['USAD (Unreduced)'] = flops_hlt.loc['USAD (Reduced)'] + flops_hlt.loc['Reduction']
+    flops_hlt.loc['OmniAnomaly (Unreduced)'] = flops_hlt.loc['OmniAnomaly (Reduced)'] + flops_hlt.loc['Reduction']
 
-    flops.loc['STRADA-MSE'] = flops.loc['Informer-MSE (Reduced)'] + flops_strada_reduction
-    flops.loc['STRADA-SMSE'] = flops.loc['Informer-SMSE (Reduced)'] + flops_strada_reduction
-    flops.loc['STRADA-TranAD'] = flops.loc['TranAD (Reduced)'] + flops_strada_reduction
-    flops.loc['T-DBSCAN/DAGMM'] = flops.loc['DAGMM (Reduced)'] + flops_strada_reduction
-    flops.loc['T-DBSCAN/USAD'] = flops.loc['USAD (Reduced)'] + flops_strada_reduction
-    flops.loc['T-DBSCAN/OmniAnomaly'] = flops.loc['OmniAnomaly (Reduced)'] + flops_strada_reduction
+    flops_hlt.loc['STRADA-MSE'] = flops_hlt.loc['Informer-MSE (Reduced)'] + flops_strada_reduction
+    flops_hlt.loc['STRADA-SMSE'] = flops_hlt.loc['Informer-SMSE (Reduced)'] + flops_strada_reduction
+    flops_hlt.loc['STRADA-TranAD'] = flops_hlt.loc['TranAD (Reduced)'] + flops_strada_reduction
+    flops_hlt.loc['T-DBSCAN/DAGMM'] = flops_hlt.loc['DAGMM (Reduced)'] + flops_strada_reduction
+    flops_hlt.loc['T-DBSCAN/USAD'] = flops_hlt.loc['USAD (Reduced)'] + flops_strada_reduction
+    flops_hlt.loc['T-DBSCAN/OmniAnomaly'] = flops_hlt.loc['OmniAnomaly (Reduced)'] + flops_strada_reduction
 
-    sizes_reduced = sizes.loc[~(sizes.index.str.contains(unreduced_data_regex))]
-    flops_reduced = flops.loc[~(flops.index.str.contains(unreduced_data_regex))]
-    auc_roc_reduced = auc_roc.loc[~(auc_roc.index.str.contains(unreduced_data_regex))]
+    sizes_reduced_hlt = sizes_hlt.loc[~(sizes_hlt.index.str.contains(unreduced_data_regex))]
+    flops_reduced_hlt = flops_hlt.loc[~(flops_hlt.index.str.contains(unreduced_data_regex))]
+    auc_roc_reduced_hlt = auc_roc_hlt.loc[~(auc_roc_hlt.index.str.contains(unreduced_data_regex))]
+    mcc_reduced_hlt = mcc_hlt.loc[~(mcc_hlt.index.str.contains(unreduced_data_regex))]
 
-    sizes_unreduced = sizes.loc[(sizes.index.str.contains(unreduced_data_regex))]
-    flops_unreduced = flops.loc[(flops.index.str.contains(unreduced_data_regex))]
-    auc_roc_unreduced = auc_roc.loc[(auc_roc.index.str.contains(unreduced_data_regex))]
+    sizes_unreduced_hlt = sizes_hlt.loc[(sizes_hlt.index.str.contains(unreduced_data_regex))]
+    flops_unreduced_hlt = flops_hlt.loc[(flops_hlt.index.str.contains(unreduced_data_regex))]
+    auc_roc_unreduced_hlt = auc_roc_hlt.loc[(auc_roc_hlt.index.str.contains(unreduced_data_regex))]
+    mcc_unreduced_hlt = mcc_hlt.loc[(mcc_hlt.index.str.contains(unreduced_data_regex))]
+
+    parameters_smd = pd.read_csv('data/parameters_hlt_sms.csv', index_col=0)
+    activations_smd = pd.read_csv('data/activations_smd.csv', index_col=0)
+    flops_smd = pd.read_csv('data/flops_hlt_smd.csv', index_col=0)
+    auc_roc_smd = pd.read_csv('data/auc_roc_smd.csv', index_col=0)
+    mcc_smd = pd.read_csv('data/mcc_smd.csv', index_col=0)
 
     # These colors are specifically chosen to improve
     # accessibility for readers with colorblindness
@@ -114,27 +123,40 @@ if __name__ == '__main__':
                 'OmniAnomaly (Unreduced)': '>',
                 'T-DBSCAN/OmniAnomaly': 'D',}
 
-    data_reduced = pd.concat((sizes_reduced,
-                                flops_reduced,
-                                auc_roc_reduced), axis=1)
+    data_reduced_hlt = pd.concat((sizes_reduced_hlt,
+                                flops_reduced_hlt,
+                                auc_roc_reduced_hlt,
+                                mcc_reduced_hlt), axis=1)
     
-    data_reduced.drop('Reduction', inplace=True)
-    data_reduced['Color'] = [colors[name] for name in data_reduced.index]
-    data_reduced['Marker'] = [markers[name] for name in data_reduced.index]
+    data_reduced_hlt.drop('Reduction', inplace=True)
+    data_reduced_hlt['Color'] = [colors[name] for name in data_reduced_hlt.index]
+    data_reduced_hlt['Marker'] = [markers[name] for name in data_reduced_hlt.index]
 
-    data_reduced.index = [name.split(' (')[0] for name in data_reduced.index]
+    data_reduced_hlt.index = [name.split(' (')[0] for name in data_reduced_hlt.index]
     
-    data_unreduced = pd.concat((sizes_unreduced,
-                                    flops_unreduced,
-                                    auc_roc_unreduced), axis=1)
+    data_unreduced_hlt = pd.concat((sizes_unreduced_hlt,
+                                    flops_unreduced_hlt,
+                                    auc_roc_unreduced_hlt,
+                                    mcc_unreduced_hlt), axis=1)
 
-    data_unreduced['Color'] = [colors[name] for name in data_unreduced.index]
-    data_unreduced['Marker'] = [markers[name] for name in data_unreduced.index]
+    data_unreduced_hlt['Color'] = [colors[name] for name in data_unreduced_hlt.index]
+    data_unreduced_hlt['Marker'] = [markers[name] for name in data_unreduced_hlt.index]
 
-    data_unreduced.index = [name.split(' (')[0] for name in data_unreduced.index]
+    data_unreduced_hlt.index = [name.split(' (')[0] for name in data_unreduced_hlt.index]
 
-    print(data_reduced)
-    print(data_unreduced)
+    sizes_smd = parameters_hlt['Parameters'].add(activations_hlt['Activations'], fill_value=0)
+
+    data_smd = pd.concat((sizes_smd,
+                            flops_smd,
+                            auc_roc_smd,
+                            mcc_smd), axis=1)
+
+    # print(data_reduced_hlt)
+    # print(data_unreduced_hlt)
+
+    print(data_smd)
+
+    exit()
 
     fig, axes = plt.subplots(2, 2, figsize=(8, 6), dpi=300)
 
@@ -145,17 +167,18 @@ if __name__ == '__main__':
 
     for count, (metric_type, dataset_type, ax) in enumerate(axes):
 
-        data = data_reduced if dataset_type == 'Reduced'\
-                                        else data_unreduced
+        data = data_reduced_hlt if dataset_type == 'Reduced'\
+                                        else data_unreduced_hlt
 
         ax.set_ylim(80, 100)
 
         ax.set_xscale('log')
-        ax.set_ylabel('AUC-ROC [%]')
+        ax.set_ylabel('MCC [%]')
 
         ax.grid(zorder=0)
 
-        ax.set_title(f'{metric_type} and AUC-ROC {dataset_type} Test Set')
+        # ax.set_title(f'{metric_type} and AUC-ROC {dataset_type} Test Set')
+        ax.set_title(f'{metric_type} and MCC {dataset_type} Test Set')
 
         if metric_type == 'FLOPs':
             ax.set_xlabel('MFLOPs')
@@ -178,7 +201,7 @@ if __name__ == '__main__':
                     fill_style = 'full'
 
             scatter = ax.scatter(metric,
-                                    element._3,
+                                    element._4,
                                     60,
                                     element.Color,
                                     MarkerStyle(element.Marker,
@@ -227,4 +250,5 @@ if __name__ == '__main__':
 
     plt.tight_layout(rect=[0, 0.163, 1, 1])
 
-    plt.savefig(f'plots/scatterplots_size_and_flops_over_auc_roc.png')
+    # plt.savefig(f'plots/scatterplots_size_and_flops_over_auc_roc.png')
+    plt.savefig(f'plots/scatterplots_size_and_flops_over_mcc.png')

@@ -210,14 +210,12 @@ def backprop(epoch,
 
         data = data.to(device)
 
-        print(data.shape)
-
         if training:
             for d in data:
-                 #d = d.to(device)
+                d = d.to(device)
 
-                # _save_model_attributes(model, d, dataset_name)
-                # exit()
+                _save_model_attributes(model, d, dataset_name)
+                exit()
 
                 _, x_hat, z, gamma = model(d)
                 l1, l2 = l(x_hat, d), l(gamma, d)
@@ -280,9 +278,9 @@ def backprop(epoch,
             for i, d in enumerate(data):
                 d = d.to(device)
 
-                # if i:
-                #     _save_model_attributes(model, (d, hidden), dataset_name)
-                #     exit()
+                if i:
+                    _save_model_attributes(model, (d, hidden), dataset_name)
+                    exit()
 
                 y_pred, mu, logvar, hidden = model(d, hidden if i else None)
                 MSE = l(y_pred, d)
@@ -316,8 +314,8 @@ def backprop(epoch,
         if training:
             for d in data:
 
-                # _save_model_attributes(model, d, dataset_name)
-                # exit()                
+                _save_model_attributes(model, d, dataset_name)
+                exit()                
 
                 ae1s, ae2s, ae2ae1s = model(d)
                 l1 = (1 / n) * l(ae1s, d) + (1 - 1/n) * l(ae2ae1s, d)
@@ -355,10 +353,10 @@ def backprop(epoch,
         if training:
             for i, d in enumerate(tqdm(data)):
 
-                # d = d.to(device)
+                d = d.to(device)
 
-                # _save_model_attributes(model, d)
-                # exit()
+                _save_model_attributes(model, d, dataset_name)
+                exit()
 
                 if 'MTAD_GAT' in model.name: 
                     x, h = model(d, h if i else None)
@@ -573,8 +571,8 @@ def backprop(epoch,
 
                 elem = window[-1, :, :].view(1, local_bs, feats)
 
-                # _save_model_attributes(model, d, dataset_name)
-                # exit()
+                _save_model_attributes(model, (window, elem), dataset_name)
+                exit()
 
                 z = model(window, elem)
 

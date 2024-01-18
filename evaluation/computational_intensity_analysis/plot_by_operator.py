@@ -10,7 +10,7 @@ import matplotlib.dates as mdates
 
 plt.rcParams['figure.constrained_layout.use'] = True
 
-data_dir = 'data/by_operator/'
+data_dir = 'data/smd/by_operator/'
 
 flop_display_lower_threshold_percent = 0.001
 
@@ -80,6 +80,9 @@ if __name__ == '__main__':
     results_all = {}
     
     for file in os.listdir(data_dir):
+
+        print(file)
+
         with open(os.path.join(data_dir, file), 'r') as input_file:
             results = json.load(input_file)
 
@@ -96,13 +99,13 @@ if __name__ == '__main__':
         else:
             model_name = model_name.capitalize()
         
-        dataset_name =\
-            f'{model_params[1].upper()}_'\
-            f'{model_params[2].upper()}_'\
-            f'{model_params[3]}'
+        # dataset_name =\
+        #     f'{model_params[1].upper()}_'\
+        #     f'{model_params[2].upper()}_'\
+        #     f'{model_params[3]}'
 
-        if len(model_params) > 4:
-            model_name = f'{model_name}-{model_params[4].upper()}'
+        if len(model_params) > 2:
+            model_name = f'{model_name}-{model_params[2].upper()}'
 
         results_all[model_name] = results
 
@@ -117,10 +120,13 @@ if __name__ == '__main__':
 
         results_all_pd.loc[model_name, 'FLOPs'] = flops_summed
 
-    print(results_all_pd)
+    # print(results_all_pd)
+
+    # results_all_pd.to_csv(
+    #     '../characterization_plots_combined/data/flops_hlt_dcm_2018.csv')
 
     results_all_pd.to_csv(
-        '../characterization_plots_combined/data/flops.csv')
+        '../characterization_plots_combined/data/flops_smd.csv')
     
     # fig, ax = plt.subplots(figsize=(8, 5), dpi=300)
 

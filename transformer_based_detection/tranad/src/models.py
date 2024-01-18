@@ -525,8 +525,8 @@ class TranAD(nn.Module):
         super(TranAD, self).__init__()
         self.name = 'TranAD'
         self.lr = lr
-        # self.batch = 128
-        self.batch = 1
+        self.batch = 128
+        # self.batch = 1
         self.n_feats = feats
 
         self.n_window = 10

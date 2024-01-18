@@ -469,7 +469,7 @@ def print_results(label: np.array,
 
     print('DAGMM - No Augmentation:')
 
-    preds_dagmm =\
+    preds_dagmm_no_augment =\
         get_scores_dagmm('dagmm_no_augment', seed,
                             preds_dagmm_train_no_augment[:spot_train_size],
                             preds_dagmm_no_augment,
@@ -485,7 +485,7 @@ def print_results(label: np.array,
 
     print('USAD - No Augmentation:')
 
-    preds_usad =\
+    preds_usad_no_augment =\
         get_scores_dagmm('usad_no_augment', seed,
                             preds_usad_train_no_augment[:spot_train_size],
                             preds_usad_no_augment,
@@ -493,7 +493,7 @@ def print_results(label: np.array,
 
     print('USAD:')
 
-    preds_usad =\
+    preds_usad_no_augment =\
         get_scores_dagmm('usad', seed,
                             preds_usad_train[:spot_train_size],
                             preds_usad,
@@ -501,17 +501,19 @@ def print_results(label: np.array,
 
     print('OmniAnomaly - No Augmentation:')
 
-    get_scores_dagmm('omni_anomaly_no_augment', seed,
+    preds_omni_anomaly_no_augment =\
+            get_scores_dagmm('omni_anomaly_no_augment', seed,
                             preds_omni_anomaly_train_no_augment[:spot_train_size],
                             preds_omni_anomaly_no_augment,
                             label, 0.001, 0.8, 0.51, to_csv)
     
     print('OmniAnomaly:')
 
-    get_scores_dagmm('omni_anomaly', seed,
-                            preds_omni_anomaly_train[:spot_train_size],
-                            preds_omni_anomaly,
-                            label, 0.001, 0.8, 0.51, to_csv)
+    preds_omni_anomaly =\
+        get_scores_dagmm('omni_anomaly', seed,
+                                preds_omni_anomaly_train[:spot_train_size],
+                                preds_omni_anomaly,
+                                label, 0.001, 0.8, 0.51, to_csv)
     
 if __name__ == '__main__':
 
