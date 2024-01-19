@@ -346,10 +346,80 @@ def get_scores_tranad(model_name,
         save_to_csv(model_name,
                         seed,
                         auroc,
-                        f1,
-                        mcc,
+                        f1, mcc,
                         precision,
                         recall)
+
+    return pred, preds_adjusted_by_category
+
+
+def get_scores_dagmm(model_name,
+                            seed,
+                            pred_train,
+                            pred_test,
+                            true,
+                            q=1e-3,
+                            level=0.02,
+                            thresh_tweak_factor=20,
+                            to_csv=False):
+    """
+    Run POT method on given score.
+    Args:
+        init_score (np.ndarray): The data to get init threshold.
+            it should be the anomaly score of train set.
+        score (np.ndarray): The data to run POT method.
+            it should be the anomaly score of test set.
+        label:
+        q (float): Detection level (risk)
+        level (float): Probability associated with the initial threshold t
+    Returns:
+        dict: pot result dict
+    """
+
+    lms = 0.99995
+    while True:
+        try:
+            s = SPOT(q)  # SPOT object
+            s.fit(pred_train, pred_test)  # data import
+            s.initialize(level=lms, min_extrema=False, verbose=False)  # initialization step
+        except: lms = lms * 0.999
+        else: break
+    ret = s.run(dynamic=False)  # run
+    # print(len(ret['alarms']))
+    # print(len(ret['thresholds']))
+    pot_th = np.mean(ret['thresholds'])*thresh_tweak_factor
+    # pot_th = np.percentile(score, 100 * lm[0])
+    # np.percentile(score, 100 * lm[0])
+
+    pred = pred_test > pot_th
+
+    preds_adjusted_by_category =\
+        metric_comparison_by_categories(pred, true)
+
+    pred = adjust_predicts(pred, true, 0.1)
+
+    precision,\
+        recall,\
+        f1, _ = precision_recall_fscore_support(true, pred,
+                                                    average='binary')
+
+    mcc = matthews_corrcoef(true, pred)
+
+    auroc = roc_auc_score(true, pred)
+
+    print(f'AUROC: {auroc:.3f}\t'
+            f'F1: {f1:.3f}\t'
+            f'MCC: {mcc:.3f}\t'
+            f'Precision: {precision:.3f}\t'
+            f'Recall: {recall:.3f}')
+    
+    if to_csv:
+        save_to_csv(model_name,
+                            seed,
+                            auroc,
+                            f1, mcc,
+                            precision,
+                            recall)
 
     return pred, preds_adjusted_by_category
 
@@ -446,10 +516,10 @@ def print_results(label: np.array,
 
     preds_clustering =\
         load_numpy_array('predictions/clustering.npy')
-    preds_tranad =\
-        load_numpy_array(f'predictions/tranad_seed_{seed}.npy')
     preds_tranad_train =\
         load_numpy_array(f'predictions/tranad_train_no_augment_seed_{seed}.npy')
+    preds_tranad =\
+        load_numpy_array(f'predictions/tranad_seed_{seed}.npy')
     preds_l2_dist_train_mse =\
         load_numpy_array(f'predictions/l2_dist_train_mse_seed_{seed}.npy')
     preds_l2_dist_mse =\
@@ -458,6 +528,20 @@ def print_results(label: np.array,
         load_numpy_array(f'predictions/l2_dist_train_smse_seed_{seed}.npy')
     preds_l2_dist_smse =\
         load_numpy_array(f'predictions/l2_dist_smse_seed_{seed}.npy')
+
+    preds_usad_train =\
+        load_numpy_array(f'predictions/dagmm_train_seed_{seed}.npy')    
+    preds_usad =\
+        load_numpy_array(f'predictions/dagmm_seed_{seed}.npy')
+    preds_omni_anomaly_train =\
+        load_numpy_array(f'predictions/omnianomaly_train_seed_{seed}.npy')
+    preds_omni_anomaly =\
+        load_numpy_array(f'predictions/omnianomaly_seed_{seed}.npy')
+    preds_dagmm_train =\
+        load_numpy_array(f'predictions/dagmm_train_seed_{seed}.npy')
+    preds_dagmm =\
+        load_numpy_array(f'predictions/dagmm_seed{seed}.npy')
+    
 
     spot_train_size = int(len(preds_l2_dist_mse)*0.1)
 
@@ -498,12 +582,12 @@ def print_results(label: np.array,
         preds_tranad_by_category =\
             get_scores_tranad('tranad',
                                     seed,
-                                    preds_tranad_train,
+                                    preds_tranad_train[:spot_train_size],
                                     preds_tranad,
                                     label, 0.01, 0.02,
                                     to_csv)
     
-    print('STRADA-TranAD:')
+    print('DeepHYDRA-TranAD:')
 
     preds_strada_tranad =\
         np.logical_or(preds_clustering,
@@ -529,7 +613,7 @@ def print_results(label: np.array,
                                                 label, 0.0025,
                                                 0.8, to_csv)
 
-    print('STRADA-MSE:')
+    print('DeepHYDRA-MSE:')
 
     preds_strada_mse =\
         np.logical_or(preds_clustering,
@@ -555,7 +639,7 @@ def print_results(label: np.array,
                                                 label, 0.008,
                                                 0.8, to_csv)
     
-    print('STRADA-SMSE:')
+    print('DeepHYDRA-SMSE:')
 
     preds_strada_smse =\
         np.logical_or(preds_clustering,
@@ -570,6 +654,86 @@ def print_results(label: np.array,
     get_scores_thresholded_by_category(preds_clustering,
                                         preds_l2_dist_smse_by_category,
                                         label)
+    
+    print('DAGMM:')
+
+    preds_dagmm,\
+        preds_dagmm_by_category =\
+            get_scores_tranad('dagmm', seed,
+                                preds_dagmm_train[:spot_train_size],
+                                preds_dagmm,
+                                label, 0.008,
+                                0.8, to_csv)
+    
+    print('DeepHYDRA-DAGMM:')
+
+    preds_strada_dagmm =\
+        np.logical_or(preds_clustering,
+                        preds_dagmm_by_category)
+
+    get_scores_thresholded('strada_dagmm',
+                                    seed,
+                                    preds_strada_dagmm,
+                                    label,
+                                    to_csv)
+
+    get_scores_thresholded_by_category(preds_clustering,
+                                        preds_l2_dist_smse_by_category,
+                                        label)
+    
+    print('OmniAnomaly:')
+
+    preds_omni_anomaly,\
+        preds_omni_anomaly_by_category =\
+                    get_scores_tranad('omnianomaly',
+                                        seed,
+                                        preds_omni_anomaly_train[:spot_train_size],
+                                        preds_omni_anomaly,
+                                        label, 0.01, 0.02,
+                                        to_csv)
+    
+    print('DeepHYDRA-OmniAnomaly:')
+
+    preds_strada_omni_anomaly =\
+        np.logical_or(preds_clustering,
+                            preds_omni_anomaly)
+    
+    get_scores_thresholded('strada_omnianomaly',
+                                            seed,
+                                            preds_strada_omni_anomaly,
+                                            label,
+                                            to_csv)
+
+    get_scores_thresholded_by_category(preds_clustering,
+                                        preds_omni_anomaly_by_category,
+                                        label)
+    
+    print('USAD:')
+
+    preds_usad,\
+        preds_usad_by_category =\
+                get_scores_tranad('usad',
+                                    seed,
+                                    preds_usad_train[:spot_train_size],
+                                    preds_usad,
+                                    label, 0.01, 0.02,
+                                    to_csv)
+    
+    print('DeepHYDRA-USAD:')
+
+    preds_strada_usad =\
+        np.logical_or(preds_clustering,
+                            preds_usad)
+    
+    get_scores_thresholded('strada_usad',
+                                    seed,
+                                    preds_strada_usad,
+                                    label,
+                                    to_csv)
+
+    get_scores_thresholded_by_category(preds_clustering,
+                                        preds_usad_by_category,
+                                        label)
 
 
 if __name__ == '__main__':
@@ -583,7 +747,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     labels_pd = pd.read_hdf(args.data_dir +\
-                            '/unreduced_hlt_test_set_y.h5')
+                            '/unreduced_hlt_dcm_test_set_2018_y.h5')
 
     labels_np = labels_pd.to_numpy()
 
