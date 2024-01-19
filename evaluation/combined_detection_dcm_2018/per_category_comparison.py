@@ -96,7 +96,7 @@ if __name__ == '__main__':
             ["Intra-Subgroup", 0.99, 0.68, 0.71, 0.51, 1],
         ],
         "DAGMM": [
-            ["Anomaly Type", "AUC-ROC", "F1", "MCC", "Precision", "Recall"],
+            ["Anomaly Type", "AUC-ROC", "F1", "MCC", "Prec", "Recall"],
             ["Point Global", 0.612, 0.244, 0.241, 0.262, 0.229],
             ["Point Contextual", 0.553, 0.124, 0.121, 0.143, 0.109],
             ["Persistent Global", 0.998, 0.952, 0.951, 0.908, 1.000],
@@ -106,7 +106,7 @@ if __name__ == '__main__':
             ["Intra Rack", 0.554, 0.172, 0.197, 0.375, 0.112],
         ],
         "DeepHYDRA-DAGMM": [
-            ["Anomaly Type", "AUC-ROC", "F1", "MCC", "Precision", "Recall"],
+            ["Anomaly Type", "AUC-ROC", "F1", "MCC", "Prec", "Recall"],
             ["Point Global", 0.626, 0.258, 0.254, 0.259, 0.257],
             ["Point Contextual", 0.582, 0.175, 0.171, 0.183, 0.168],
             ["Persistent Global", 0.998, 0.945, 0.945, 0.896, 1.000],
@@ -116,7 +116,7 @@ if __name__ == '__main__':
             ["Intra Rack", 0.996, 0.902, 0.904, 0.824, 0.996],
         ],
         "OmniAnomaly": [
-            ["Anomaly Type", "AUC-ROC", "F1", "MCC", "Precision", "Recall"],
+            ["Anomaly Type", "AUC-ROC", "F1", "MCC", "Prec", "Recall"],
             ["Point Global", 0.620, 0.068, 0.091, 0.039, 0.279],
             ["Point Contextual", 0.553, 0.035, 0.040, 0.020, 0.146],
             ["Persistent Global", 0.980, 0.647, 0.677, 0.478, 1.000],
@@ -126,7 +126,7 @@ if __name__ == '__main__':
             ["Intra Rack", 0.678, 0.232, 0.233, 0.164, 0.395],
         ],
         "DeepHYDRA-OmniAnomaly": [
-            ["Anomaly Type", "AUC-ROC", "F1", "MCC", "Precision", "Recall"],
+            ["Anomaly Type", "AUC-ROC", "F1", "MCC", "Prec", "Recall"],
             ["Point Global", 0.616, 0.067, 0.089, 0.038, 0.271],
             ["Point Contextual", 0.576, 0.046, 0.057, 0.026, 0.190],
             ["Persistent Global", 0.981, 0.650, 0.680, 0.481, 1.000],
@@ -135,8 +135,8 @@ if __name__ == '__main__':
             ["Collective Trend", 0.981, 0.583, 0.629, 0.411, 1.000],
             ["Intra Rack", 0.979, 0.501, 0.566, 0.335, 0.996]
         ],
-        "USAD" = [
-            ["Anomaly Type", "AUC-ROC", "F1", "MCC", "Precision", "Recall"],
+        "USAD": [
+            ["Anomaly Type", "AUC-ROC", "F1", "MCC", "Prec", "Recall"],
             ["Point Global", 0.656, 0.220, 0.226, 0.167, 0.321],
             ["Point Contextual", 0.565, 0.100, 0.098, 0.078, 0.139],
             ["Persistent Global", 0.995, 0.888, 0.890, 0.799, 1.000],
@@ -145,8 +145,8 @@ if __name__ == '__main__':
             ["Collective Trend", 0.995, 0.856, 0.861, 0.749, 1.000],
             ["Intra Rack", 0.553, 0.147, 0.140, 0.200, 0.116],
         ],
-        "DeepHYDRA-USAD" = [
-            ["Anomaly Type", "AUC-ROC", "F1", "MCC", "Precision", "Recall"],
+        "DeepHYDRA-USAD": [
+            ["Anomaly Type", "AUC-ROC", "F1", "MCC", "Prec", "Recall"],
             ["Point Global", 0.670, 0.230, 0.239, 0.171, 0.350],
             ["Point Contextual", 0.590, 0.130, 0.130, 0.099, 0.190],
             ["Persistent Global", 0.995, 0.882, 0.884, 0.789, 1.000],
@@ -327,7 +327,7 @@ if __name__ == '__main__':
 
     plt.rcParams['figure.constrained_layout.use'] = True
 
-    fig, ax = plt.subplots(figsize=(6.5, 3), dpi=300)
+    fig, ax = plt.subplots(figsize=(6.5, 5), dpi=300)
 
     ax.xaxis.set_major_formatter(mtick.PercentFormatter(1.0))
 
