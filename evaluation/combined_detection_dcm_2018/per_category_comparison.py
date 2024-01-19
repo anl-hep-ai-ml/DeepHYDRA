@@ -45,7 +45,7 @@ if __name__ == '__main__':
             ["Collective Trend", 0.95, 0.65, 0.67, 0.51, 0.91],
             ["Intra-Subgroup", 0.62, 0.21, 0.19, 0.17, 0.26],
         ],
-        "STRADA-TranAD": [
+        "DeepHYDRA-TranAD": [
             ["Anomaly Type", "AUC-ROC", "F1", "MCC", "Prec", "Recall"],
             ["Point Global", 0.73, 0.2, 0.24, 0.13, 0.48],
             ["Point Contextual", 0.61, 0.10, 0.12, 0.07, 0.24],
@@ -85,7 +85,7 @@ if __name__ == '__main__':
             ["Collective Trend", 0.99, 0.75, 0.77, 0.6, 1],
             ["Intra-Subgroup", 0.69, 0.34, 0.33, 0.3, 0.4],
         ],
-        "STRADA-SMSE": [
+        "DeepHYDRA-SMSE": [
             ["Anomaly Type", "AUC-ROC", "F1", "MCC", "Prec", "Recall"],
             ["Point Global", 0.73, 0.2, 0.24, 0.13, 0.48],
             ["Point Contextual", 0.61, 0.1, 0.12, 0.07, 0.24],
@@ -105,7 +105,7 @@ if __name__ == '__main__':
             ["Collective Trend", , , , , ],
             ["Intra-Subgroup", , , , , ],
         ],
-        "T-DBSCAN/USAD": [
+        "DeepHYDRA-USAD": [
             ["Anomaly Type", "AUC-ROC", "F1", "MCC", "Prec", "Recall"],
             ["Point Global", , , , , ],
             ["Point Contextual", , , , , ],
@@ -125,7 +125,7 @@ if __name__ == '__main__':
             ["Collective Trend", , , , , ],
             ["Intra-Subgroup", , , , , ],
         ],
-        "T-DBSCAN/OmniAnomaly": [
+        "DeepHYDRA-OmniAnomaly": [
             ["Anomaly Type", "AUC-ROC", "F1", "MCC", "Prec", "Recall"],
             ["Point Global", , , , , ],
             ["Point Contextual", , , , , ],
@@ -145,7 +145,7 @@ if __name__ == '__main__':
             ["Collective Trend", , , , , ],
             ["Intra-Subgroup", , , , , ],
         ],
-        "T-DBSCAN/DAGMM": [
+        "DeepHYDRA-DAGMM": [
             ["Anomaly Type", "AUC-ROC", "F1", "MCC", "Prec", "Recall"],
             ["Point Global", , , , , ],
             ["Point Contextual", , , , , ],
@@ -169,7 +169,7 @@ if __name__ == '__main__':
                                 index=tranad_np[1:, 0],
                                 columns=tranad_np[0, 1:])
     
-    strada_tranad_np = np.array(tables['STRADA-TranAD'])
+    strada_tranad_np = np.array(tables['DeepHYDRA-TranAD'])
 
     strada_tranad_df = pd.DataFrame(strada_tranad_np[1:, 1:].astype(np.float64),
                                         index=strada_tranad_np[1:, 0],
@@ -181,12 +181,11 @@ if __name__ == '__main__':
                                     index=informer_mse_np[1:, 0],
                                     columns=informer_mse_np[0, 1:])
     
-    strada_mse_np = np.array(tables['STRADA-MSE'])
+    strada_mse_np = np.array(tables['DeepHYDRA-MSE'])
 
     strada_mse_df = pd.DataFrame(strada_mse_np[1:, 1:].astype(np.float64),
                                     index=strada_mse_np[1:, 0],
                                     columns=strada_mse_np[0, 1:])
-    
     
     informer_smse_np = np.array(tables['Informer-SMSE'])
 
@@ -194,20 +193,64 @@ if __name__ == '__main__':
                                         index=informer_smse_np[1:, 0],
                                         columns=informer_smse_np[0, 1:])
     
-    strada_smse_np = np.array(tables['STRADA-SMSE'])
+    strada_smse_np = np.array(tables['DeepHYDRA-SMSE'])
 
     strada_smse_df = pd.DataFrame(strada_smse_np[1:, 1:].astype(np.float64),
                                     index=strada_smse_np[1:, 0],
                                     columns=strada_smse_np[0, 1:])
     
+    omni_anomaly_np = np.array(tables['OmniAnomaly'])
+
+    omni_anomaly_df = pd.DataFrame(omni_anomaly_np[1:, 1:].astype(np.float64),
+                                                    index=omni_anomaly_np[1:, 0],
+                                                    columns=omni_anomaly_np[0, 1:])
+    
+    strada_omni_anomaly_np = np.array(tables['DeepHYDRA-OmniAnomaly'])
+
+    strada_omni_anomaly_df = pd.DataFrame(strada_omni_anomaly_np[1:, 1:].astype(np.float64),
+                                                            index=strada_omni_anomaly_np[1:, 0],
+                                                            columns=strada_omni_anomaly_np[0, 1:])
+    
+    dagmm_np = np.array(tables['DAGMM'])
+
+    dagmm_df = pd.DataFrame(dagmm_np[1:, 1:].astype(np.float64),
+                                index=dagmm_np[1:, 0],
+                                columns=dagmm_np[0, 1:])
+    
+    strada_dagmm_np = np.array(tables['DeepHYDRA-DAGMM'])
+
+    strada_dagmm_df = pd.DataFrame(strada_dagmm_np[1:, 1:].astype(np.float64),
+                                                    index=strada_dagmm_np[1:, 0],
+                                                    columns=strada_dagmm_np[0, 1:])
+    
+    usad_np = np.array(tables['USAD'])
+
+    usad_df = pd.DataFrame(usad_np[1:, 1:].astype(np.float64),
+                                index=usad_np[1:, 0],
+                                columns=usad_np[0, 1:])
+    
+    strada_usad_np = np.array(tables['DeepHYDRA-USAD'])
+
+    strada_usad_df = pd.DataFrame(strada_tranad_np[1:, 1:].astype(np.float64),
+                                        index=strada_usad_np[1:, 0],
+                                        columns=strada_usad_np[0, 1:])
+    
     results_combined = pd.concat({'T-DBSCAN': t_dbscan_df,
                                     'TranAD': tranad_df,
-                                    'STRADA-TranAD': strada_tranad_df,
+                                    'DeepHYDRA-TranAD': strada_tranad_df,
                                     'Informer-MSE': informer_mse_df,
-                                    'STRADA-MSE': strada_mse_df,
+                                    'DeepHYDRA-MSE': strada_mse_df,
                                     'Informer-SMSE': informer_smse_df,
-                                    'STRADA-SMSE': strada_smse_df},
+                                    'DeepHYDRA-SMSE': strada_smse_df,
+                                    'OmniAnomaly': omni_anomaly_df,
+                                    'DeepHYDRA-OmniAnomaly': strada_omni_anomaly_df,
+                                    'DAGMM': dagmm_df,
+                                    'DeepHYDRA-DAGMM': strada_dagmm_df,
+                                    'USAD': usad_df,
+                                    'DeepHYDRA-USAD': strada_usad_df},
                                     names=['Model', 'Anomaly Type'])
+
+
     
     SMALL_SIZE = 13
     MEDIUM_SIZE = 13

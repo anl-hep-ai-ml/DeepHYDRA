@@ -213,7 +213,7 @@ if __name__ == '__main__':
 
     marker_types = {'Non-ML-Based': 'o',
                         'ML-Based': '>',
-                        'Hybrid T-DBSCAN/ML (STRADA)': 'D'}
+                        'Hybrid T-DBSCAN/ML (DeepHYDRA)': 'D'}
     
     marker_legends = [mlines.Line2D([0], [0], color='white',\
                                                     marker=v,\
