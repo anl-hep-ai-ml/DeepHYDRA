@@ -169,12 +169,23 @@ if __name__ == '__main__':
         data = data_reduced_hlt if dataset_type == 'Reduced'\
                                         else data_unreduced_hlt
 
-        ax.set_ylim(80, 100)
+
+        if dataset_type == 'Unreduced':
+            ax.set_ylim(70, 100)
+        else:
+            ax.set_ylim(75, 100)
+            # if metric_type == 'FLOPs':
+            #     ax.set_xlim(1e-3, 5e3)
+            # else:
+            #     ax.set_xlim(1e3, 5e9)
 
         ax.set_xscale('log')
         ax.set_ylabel('MCC [%]')
 
         ax.grid(zorder=0)
+
+        if dataset_type == 'Reduced':
+            dataset_type = 'Pre-Reduced'
 
         # ax.set_title(f'{metric_type} and AUC-ROC {dataset_type} Test Set')
         ax.set_title(f'{metric_type} and MCC {dataset_type} Test Set')
@@ -200,8 +211,8 @@ if __name__ == '__main__':
                     fill_style = 'full'
 
             scatter = ax.scatter(metric,
-                                    element._4,
-                                    60,
+                                    element.MCC,
+                                    55,
                                     element.Color,
                                     MarkerStyle(element.Marker,
                                                     fillstyle=fill_style),
@@ -213,7 +224,7 @@ if __name__ == '__main__':
 
     marker_types = {'Non-ML-Based': 'o',
                         'ML-Based': '>',
-                        'Hybrid T-DBSCAN/ML (DeepHYDRA)': 'D'}
+                        'DeepHYDRA': 'D'}
     
     marker_legends = [mlines.Line2D([0], [0], color='white',\
                                                     marker=v,\
@@ -243,8 +254,8 @@ if __name__ == '__main__':
 
 
     # legend_1 = plt.legend(color_legends, loc=1)
-    fig.legend(handles=marker_legends, title='Categories', loc='lower left', bbox_to_anchor=(0.025, 0.025), ncol=1)
-    fig.legend(handles=color_legends, title='Methods', loc='lower right', bbox_to_anchor=(0.975, -0.0085), ncol=3)
+    fig.legend(handles=marker_legends, title='Categories', loc='lower left', bbox_to_anchor=(0.1, 0.025), ncol=1)
+    fig.legend(handles=color_legends, title='Methods', loc='lower right', bbox_to_anchor=(0.9, -0.0085), ncol=3)
     # fig.add_artist(legend_1)
 
     plt.tight_layout(rect=[0, 0.163, 1, 1])

@@ -692,9 +692,9 @@ def print_results(label: np.array,
     #                                     preds_dagmm_by_category,
     #                                     label)
     
-    print('OmniAnomaly:')
+    # print('OmniAnomaly:')
 
-    preds_omni_anomaly = preds_omni_anomaly[4:]
+    # preds_omni_anomaly = preds_omni_anomaly[4:]
 
     # preds_omni_anomaly,\
     #     preds_omni_anomaly_by_category =\
@@ -705,41 +705,41 @@ def print_results(label: np.array,
     #                                     label, 0.0001, 0.8,
     #                                     to_csv)
     
-    preds_omni_anomaly,\
-        preds_omni_anomaly_by_category =\
-                    get_scores_dagmm('omnianomaly',
-                                        seed,
-                                        preds_omni_anomaly_train[:spot_train_size],
-                                        preds_omni_anomaly,
-                                        label, 0.0001, 0.8, 1.3,
-                                        to_csv)
+    # preds_omni_anomaly,\
+    #     preds_omni_anomaly_by_category =\
+    #                 get_scores_dagmm('omnianomaly',
+    #                                     seed,
+    #                                     preds_omni_anomaly_train[:spot_train_size],
+    #                                     preds_omni_anomaly,
+    #                                     label, 0.0001, 0.8, 1.3,
+    #                                     to_csv)
     
-    print('DeepHYDRA-OmniAnomaly:')
+    # print('DeepHYDRA-OmniAnomaly:')
 
-    preds_strada_omni_anomaly =\
-        np.logical_or(preds_clustering,
-                            preds_omni_anomaly)
+    # preds_strada_omni_anomaly =\
+    #     np.logical_or(preds_clustering,
+    #                         preds_omni_anomaly)
     
-    get_scores_thresholded('strada_omnianomaly',
-                                            seed,
-                                            preds_strada_omni_anomaly,
-                                            label,
-                                            to_csv)
+    # get_scores_thresholded('strada_omnianomaly',
+    #                                         seed,
+    #                                         preds_strada_omni_anomaly,
+    #                                         label,
+    #                                         to_csv)
 
-    get_scores_thresholded_by_category(preds_clustering,
-                                        preds_omni_anomaly_by_category,
-                                        label)
+    # get_scores_thresholded_by_category(preds_clustering,
+    #                                     preds_omni_anomaly_by_category,
+    #                                     label)
     
-    # print('USAD:')
+    print('USAD:')
 
-    # preds_usad,\
-    #     preds_usad_by_category =\
-    #             get_scores_dagmm('usad',
-    #                                 seed,
-    #                                 preds_usad_train[:spot_train_size],
-    #                                 preds_usad,
-    #                                 label, 0.01, 0.02, 18,
-    #                                 to_csv)
+    preds_usad,\
+        preds_usad_by_category =\
+                get_scores_dagmm('usad',
+                                    seed,
+                                    preds_usad_train[:spot_train_size],
+                                    preds_usad,
+                                    label, 0.01, 0.02, 18,
+                                    to_csv)
     
     # preds_usad,\
     #     preds_usad_by_category =\
@@ -750,21 +750,21 @@ def print_results(label: np.array,
     #                         label, 0.0001, 0.8,
     #                         to_csv)
 
-    # print('DeepHYDRA-USAD:')
+    print('DeepHYDRA-USAD:')
 
-    # preds_strada_usad =\
-    #     np.logical_or(preds_clustering,
-    #                         preds_usad)
+    preds_strada_usad =\
+        np.logical_or(preds_clustering,
+                            preds_usad)
     
-    # get_scores_thresholded('strada_usad',
-    #                                 seed,
-    #                                 preds_strada_usad,
-    #                                 label,
-    #                                 to_csv)
+    get_scores_thresholded('strada_usad',
+                                    seed,
+                                    preds_strada_usad,
+                                    label,
+                                    to_csv)
 
-    # get_scores_thresholded_by_category(preds_clustering,
-    #                                     preds_usad_by_category,
-    #                                     label)
+    get_scores_thresholded_by_category(preds_clustering,
+                                        preds_usad_by_category,
+                                        label)
 
 
 if __name__ == '__main__':
