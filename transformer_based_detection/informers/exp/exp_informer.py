@@ -532,7 +532,9 @@ class ExpInformer(ExpBasic):
 
         # FLOP and activation count retrieval
 
-        output_filename = f'informer_{self.args.data}_'\
+        output_dir = self.args.data.lower()
+
+        output_filename = f'informer_{self.args.data.lower()}_'\
                                 f'{self.args.loss.lower()}_'\
                                 f'sl_{self.args.seq_len}_'\
                                 f'll_{self.args.label_len}_'\
@@ -555,42 +557,40 @@ class ExpInformer(ExpBasic):
                                                     dec_inp,
                                                     batch_y_mark))
 
-        print(fvcore_writer.get_flop_dict('by_module'))
-        print(fvcore_writer.get_flop_dict('by_operator'))
-        print(fvcore_writer.get_activation_dict('by_module'))
-        print(fvcore_writer.get_activation_dict('by_operator'))
+        # print(fvcore_writer.get_flop_dict('by_module'))
+        # print(fvcore_writer.get_flop_dict('by_operator'))
+        # print(fvcore_writer.get_activation_dict('by_module'))
+        # print(fvcore_writer.get_activation_dict('by_operator'))
 
-        fvcore_writer.write_flops_to_json('../../evaluation/computational_intensity_analysis/'
-                                                        f'data/by_module/{output_filename}.json',
-                                            'by_module')
+        # fvcore_writer.write_flops_to_json('../../evaluation/computational_intensity_analysis/'
+        #                                         f'data/by_module/{output_dir}/{output_filename}.json',
+        #                                     'by_module')
 
-        fvcore_writer.write_flops_to_json('../../evaluation/computational_intensity_analysis/'
-                                                        f'data/by_operator/{output_filename}.json',
-                                            'by_operator')
+        # fvcore_writer.write_flops_to_json('../../evaluation/computational_intensity_analysis/'
+        #                                         f'data/by_operator/{output_dir}/{output_filename}.json',
+        #                                     'by_operator')
 
-        fvcore_writer.write_activations_to_json('../../evaluation/activation_analysis/'
-                                                        f'data/by_module/{output_filename}.json',
-                                                    'by_module')
+        # fvcore_writer.write_activations_to_json('../../evaluation/activation_analysis/'
+        #                                                 f'data/by_module/{output_dir}/{output_filename}.json',
+        #                                             'by_module')
 
-        fvcore_writer.write_activations_to_json('../../evaluation/activation_analysis/'
-                                                        f'data/by_operator/{output_filename}.json',
-                                                    'by_operator')
+        # fvcore_writer.write_activations_to_json('../../evaluation/activation_analysis/'
+        #                                                 f'data/by_operator/{output_dir}/{output_filename}.json',
+        #                                             'by_operator')
 
-        torchinfo_writer = TorchinfoWriter(self.model,
-                                            input_data=(batch_x,
-                                                            batch_x_mark,
-                                                            dec_inp,
-                                                            batch_y_mark),
-                                            verbose=0)
+        # torchinfo_writer = TorchinfoWriter(self.model,
+        #                                     input_data=(batch_x,
+        #                                                     batch_x_mark,
+        #                                                     dec_inp,
+        #                                                     batch_y_mark),
+        #                                     verbose=0)
 
-        torchinfo_writer.construct_model_tree()
+        # torchinfo_writer.construct_model_tree()
 
-        torchinfo_writer.show_model_tree(attr_list=['Parameters', 'MACs'])
+        # torchinfo_writer.show_model_tree(attr_list=['Parameters', 'MACs'])
 
-        torchinfo_writer.get_dataframe().to_pickle(
-            f'../../evaluation/parameter_analysis/{output_filename}.pkl')
-
-        exit()
+        # torchinfo_writer.get_dataframe().to_pickle(
+        #     f'../../evaluation/parameter_analysis/data/{output_dir}/{output_filename}.pkl')
 
         if self.args.use_amp:
             with torch.cuda.amp.autocast():
