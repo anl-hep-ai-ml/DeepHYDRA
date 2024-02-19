@@ -4,8 +4,12 @@ import sys
 
 import numpy as np
 import pandas as pd
+import matplotlib as mpl
 import matplotlib.pyplot as plt
+
 from tqdm import tqdm
+
+mpl.rcParams['hatch.linewidth'] = 9.0
 
 sys.path.append('.')
 
@@ -271,7 +275,7 @@ def plot_results(data: np.array,
 
     # Fix alignment
 
-    pbar = tqdm(total=7, desc='Preprocessing')
+    # pbar = tqdm(total=7, desc='Preprocessing')
 
     preds_l2_dist_mse =\
         np.pad(preds_l2_dist_mse[1:], (0, 1),
@@ -296,84 +300,84 @@ def plot_results(data: np.array,
         adjust_predicts(preds_clustering,
                                 label, 0.1)
     
-    pbar.update(1)
+    # pbar.update(1)
 
-    preds_tranad =\
-        get_thresholded_tranad(preds_tranad_train,
-                            preds_tranad, label, 0.01)
+    # preds_tranad =\
+    #     get_thresholded_tranad(preds_tranad_train,
+    #                         preds_tranad, label, 0.01)
 
     
 
-    preds_strada_tranad = np.logical_or(preds_clustering,
-                                                preds_tranad)
+    # preds_strada_tranad = np.logical_or(preds_clustering,
+    #                                             preds_tranad)
 
-    pbar.update(1)
+    # pbar.update(1)
 
-    preds_l2_dist_mse =\
-        get_thresholded(preds_l2_dist_train_mse[:spot_train_size],
-                                                preds_l2_dist_mse, label, 0.0025)
+    # preds_l2_dist_mse =\
+    #     get_thresholded(preds_l2_dist_train_mse[:spot_train_size],
+    #                                             preds_l2_dist_mse, label, 0.0025)
 
-    preds_strada_mse = np.logical_or(preds_clustering,
-                                        preds_l2_dist_mse)
+    # preds_strada_mse = np.logical_or(preds_clustering,
+    #                                     preds_l2_dist_mse)
 
-    pbar.update(1)
+    # pbar.update(1)
 
-    preds_l2_dist_smse =\
-        get_thresholded(preds_l2_dist_train_smse[:spot_train_size],
-                                                preds_l2_dist_smse, label, 0.008)
+    # preds_l2_dist_smse =\
+    #     get_thresholded(preds_l2_dist_train_smse[:spot_train_size],
+    #                                             preds_l2_dist_smse, label, 0.008)
     
-    preds_strada_smse = np.logical_or(preds_clustering,
-                                        preds_l2_dist_smse)
+    # preds_strada_smse = np.logical_or(preds_clustering,
+    #                                     preds_l2_dist_smse)
 
-    pbar.update(1)
+    # pbar.update(1)
 
-    preds_dagmm = get_thresholded_dagmm(preds_dagmm_train[:spot_train_size],
-                                preds_dagmm,
-                                label, 0.008,
-                                0.8, 60)
+    # preds_dagmm = get_thresholded_dagmm(preds_dagmm_train[:spot_train_size],
+    #                             preds_dagmm,
+    #                             label, 0.008,
+    #                             0.8, 60)
     
-    preds_strada_dagmm =\
-        np.logical_or(preds_clustering,
-                            preds_dagmm)
+    # preds_strada_dagmm =\
+    #     np.logical_or(preds_clustering,
+    #                         preds_dagmm)
 
-    pbar.update(1)
+    # pbar.update(1)
 
-    preds_omni_anomaly = preds_omni_anomaly[4:]
+    # preds_omni_anomaly = preds_omni_anomaly[4:]
 
-    preds_omni_anomaly = get_thresholded_dagmm(preds_omni_anomaly_train[:spot_train_size],
-                                        preds_omni_anomaly,
-                                        label, 0.0001, 0.8, 1.3)
+    # preds_omni_anomaly = get_thresholded_dagmm(preds_omni_anomaly_train[:spot_train_size],
+    #                                     preds_omni_anomaly,
+    #                                     label, 0.0001, 0.8, 1.3)
 
-    preds_strada_omni_anomaly =\
-        np.logical_or(preds_clustering,
-                            preds_omni_anomaly)
+    # preds_strada_omni_anomaly =\
+    #     np.logical_or(preds_clustering,
+    #                         preds_omni_anomaly)
 
-    pbar.update(1)
+    # pbar.update(1)
 
-    preds_usad = get_thresholded_dagmm(preds_usad_train[:spot_train_size],
-                                            preds_usad,
-                                            label, 0.01, 0.02, 18,)
+    # preds_usad = get_thresholded_dagmm(preds_usad_train[:spot_train_size],
+    #                                         preds_usad,
+    #                                         label, 0.01, 0.02, 18,)
 
-    preds_strada_usad =\
-        np.logical_or(preds_clustering,
-                                preds_usad)
+    # preds_strada_usad =\
+    #     np.logical_or(preds_clustering,
+    #                             preds_usad)
 
-    pbar.close()
+    # pbar.close()
 
-    save_numpy_array(preds_tranad, 'predictions_thresholded/preds_tranad.npy')
-    save_numpy_array(preds_strada_tranad, 'predictions_thresholded/preds_strada_tranad.npy')
-    save_numpy_array(preds_l2_dist_mse, 'predictions_thresholded/preds_l2_dist_mse.npy')
-    save_numpy_array(preds_strada_mse, 'predictions_thresholded/preds_strada_mse.npy')
-    save_numpy_array(preds_l2_dist_smse, 'predictions_thresholded/preds_l2_dist_smse.npy')
-    save_numpy_array(preds_strada_smse, 'predictions_thresholded/preds_strada_smse.npy')
-    save_numpy_array(preds_omni_anomaly, 'predictions_thresholded/preds_omni_anomaly.npy')
-    save_numpy_array(preds_strada_omni_anomaly, 'predictions_thresholded/preds_strada_omni_anomaly.npy')
-    save_numpy_array(preds_dagmm, 'predictions_thresholded/preds_dagmm.npy')
-    save_numpy_array(preds_strada_dagmm, 'predictions_thresholded/preds_strada_dagmm.npy')
-    save_numpy_array(preds_usad, 'predictions_thresholded/preds_usad.npy')
-    save_numpy_array(preds_strada_usad, 'predictions_thresholded/preds_strada_usad.npy')
+    # save_numpy_array(preds_tranad, 'predictions_thresholded/preds_tranad.npy')
+    # save_numpy_array(preds_strada_tranad, 'predictions_thresholded/preds_strada_tranad.npy')
+    # save_numpy_array(preds_l2_dist_mse, 'predictions_thresholded/preds_l2_dist_mse.npy')
+    # save_numpy_array(preds_strada_mse, 'predictions_thresholded/preds_strada_mse.npy')
+    # save_numpy_array(preds_l2_dist_smse, 'predictions_thresholded/preds_l2_dist_smse.npy')
+    # save_numpy_array(preds_strada_smse, 'predictions_thresholded/preds_strada_smse.npy')
+    # save_numpy_array(preds_omni_anomaly, 'predictions_thresholded/preds_omni_anomaly.npy')
+    # save_numpy_array(preds_strada_omni_anomaly, 'predictions_thresholded/preds_strada_omni_anomaly.npy')
+    # save_numpy_array(preds_dagmm, 'predictions_thresholded/preds_dagmm.npy')
+    # save_numpy_array(preds_strada_dagmm, 'predictions_thresholded/preds_strada_dagmm.npy')
+    # save_numpy_array(preds_usad, 'predictions_thresholded/preds_usad.npy')
+    # save_numpy_array(preds_strada_usad, 'predictions_thresholded/preds_strada_usad.npy')
 
-    exit()
+    # exit()
 
     preds_tranad = load_numpy_array('predictions_thresholded/preds_tranad.npy')
     preds_strada_tranad = load_numpy_array(f'predictions_thresholded/preds_strada_tranad.npy')
@@ -411,7 +415,7 @@ def plot_results(data: np.array,
     colors = {  '1L-Method 3': '#D81B60',
                 '1L-Method 4': '#1E88E5',
                 'MERLIN': '#FFC107',
-                'T-DBSCAN': '#004D40',
+                'T-DBSCAN': '#000000', # '#004D40'
                 'OmniAnomaly': '#D4FC14',
                 'DeepHYDRA-OmniAnomaly': '#D4FC14',
                 'DAGMM': '#6F8098',
@@ -425,22 +429,22 @@ def plot_results(data: np.array,
                 'TranAD': '#1164B3',
                 'DeepHYDRA-TranAD': '#1164B3'}
 
-    positions = {   '1L-Method 3': 0,
-                    '1L-Method 4': 1,
-                    'MERLIN': 2,
-                    'T-DBSCAN': 3,
-                    'OmniAnomaly': 4,
-                    'DeepHYDRA-OmniAnomaly': 5,
-                    'DAGMM': 6,
-                    'DeepHYDRA-DAGMM': 7,
-                    'USAD': 8,
-                    'DeepHYDRA-USAD': 9,
-                    'Informer-MSE': 10,
-                    'DeepHYDRA-MSE': 11,
-                    'Informer-SMSE': 12,
-                    'DeepHYDRA-SMSE': 13,
-                    'TranAD': 14,
-                    'DeepHYDRA-TranAD': 15}
+    positions = {   '1L-Method 3': 15,
+                    '1L-Method 4': 14,
+                    'MERLIN': 13,
+                    'T-DBSCAN': 12,
+                    'OmniAnomaly': 11,
+                    'DeepHYDRA-OmniAnomaly': 10,
+                    'DAGMM': 9,
+                    'DeepHYDRA-DAGMM': 8,
+                    'USAD': 7,
+                    'DeepHYDRA-USAD':6,
+                    'Informer-MSE': 5,
+                    'DeepHYDRA-MSE': 4,
+                    'Informer-SMSE': 3,
+                    'DeepHYDRA-SMSE': 2,
+                    'TranAD': 1,
+                    'DeepHYDRA-TranAD': 0}
     
     SMALL_SIZE = 13
     MEDIUM_SIZE = 13
@@ -464,7 +468,8 @@ def plot_results(data: np.array,
     for index, (xlim_lower, xlim_upper) in enumerate(tqdm(xlims,
                                                     desc='Plotting')):
 
-        fig, (ax_data, ax_pred) = plt.subplots(2, 1, figsize=(10, 8), dpi=300)
+        fig, (ax_data, ax_pred) = plt.subplots(2, 1, figsize=(8, 7),
+                                    gridspec_kw={'height_ratios': [1, 2]}, dpi=300)
 
         ax_data.set_title('Event Rate')
         ax_data.set_xlabel('Time [h]')
@@ -526,7 +531,7 @@ def plot_results(data: np.array,
                                     left=x[start],
                                     color=colors[method],
                                     edgecolor='k',
-                                    hatch='\\',
+                                    hatch='/',
                                     linewidth=0.7,
                                     label=method,
                                     height=0.85)
