@@ -1244,8 +1244,7 @@ class EclipseDataTimeseriesAugmentor():
                 # expected in the augmentations to apply 
                 # afterwards
 
-                elif augmentation.startswith('Roll') and not\
-                                        augmentation == 'Roll':
+                elif augmentation.startswith('Roll'):
                     data_rolled_pd, label_rolled_pd =\
                         self._roll_data_labeled(data_unmodified,
                                                     label_unmodified,

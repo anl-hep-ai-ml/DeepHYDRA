@@ -530,32 +530,32 @@ class ExpInformer(ExpBasic):
 
         # Encoder - decoder
 
-        # FLOP and activation count retrieval
+        # # FLOP and activation count retrieval
 
-        output_dir = self.args.data.lower()
+        # output_dir = self.args.data.lower()
 
-        output_filename = f'informer_{self.args.data.lower()}_'\
-                                f'{self.args.loss.lower()}_'\
-                                f'sl_{self.args.seq_len}_'\
-                                f'll_{self.args.label_len}_'\
-                                f'pl_{self.args.pred_len}_'\
-                                f'ein_{self.args.enc_in}_'\
-                                f'din_{self.args.dec_in}_'\
-                                f'cout_{self.args.c_out}_'\
-                                f'dm_{self.args.d_model}_'\
-                                f'nh_{self.args.n_heads}_'\
-                                f'el_{self.args.e_layers}_'\
-                                f'dl_{self.args.d_layers}_'\
-                                f'dff_{self.args.d_ff}_'\
-                                f'f_{self.args.factor}_'\
-                                f'attn_{self.args.attn}_'\
-                                f'emb_{self.args.embed}_'\
-                                f'act_{self.args.activation.lower()}'
+        # output_filename = f'informer_{self.args.data.lower()}_'\
+        #                         f'{self.args.loss.lower()}_'\
+        #                         f'sl_{self.args.seq_len}_'\
+        #                         f'll_{self.args.label_len}_'\
+        #                         f'pl_{self.args.pred_len}_'\
+        #                         f'ein_{self.args.enc_in}_'\
+        #                         f'din_{self.args.dec_in}_'\
+        #                         f'cout_{self.args.c_out}_'\
+        #                         f'dm_{self.args.d_model}_'\
+        #                         f'nh_{self.args.n_heads}_'\
+        #                         f'el_{self.args.e_layers}_'\
+        #                         f'dl_{self.args.d_layers}_'\
+        #                         f'dff_{self.args.d_ff}_'\
+        #                         f'f_{self.args.factor}_'\
+        #                         f'attn_{self.args.attn}_'\
+        #                         f'emb_{self.args.embed}_'\
+        #                         f'act_{self.args.activation.lower()}'
 
-        fvcore_writer = FVCoreWriter(self.model, (batch_x,
-                                                    batch_x_mark,
-                                                    dec_inp,
-                                                    batch_y_mark))
+        # fvcore_writer = FVCoreWriter(self.model, (batch_x,
+        #                                             batch_x_mark,
+        #                                             dec_inp,
+        #                                             batch_y_mark))
 
         # print(fvcore_writer.get_flop_dict('by_module'))
         # print(fvcore_writer.get_flop_dict('by_operator'))
@@ -588,6 +588,8 @@ class ExpInformer(ExpBasic):
         # torchinfo_writer.construct_model_tree()
 
         # torchinfo_writer.show_model_tree(attr_list=['Parameters', 'MACs'])
+
+        # exit()
 
         # torchinfo_writer.get_dataframe().to_pickle(
         #     f'../../evaluation/parameter_analysis/data/{output_dir}/{output_filename}.pkl')
