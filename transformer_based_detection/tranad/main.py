@@ -13,6 +13,7 @@ from src.utils import *
 from src.diagnosis import *
 from src.merlin import *
 from src.dataset_loader_hlt_datasets import HLTDataset
+from src.dataset_loader_eclipse_datasets import EclipseDataset
 from torch.utils.data import Dataset, DataLoader, TensorDataset
 import torch.nn as nn
 from torch.utils.tensorboard import SummaryWriter
@@ -86,7 +87,77 @@ def load_dataset(dataset):
 
     loader = []
 
-    if 'HLT' not in dataset:
+    if 'HLT' in dataset:
+
+        data_source = dataset.split('_')[1]
+        variant = int(dataset.split('_')[-1])
+
+        train_set = HLTDataset(data_source, variant,
+                                        'train', False,
+                                        'minmax', 'train_set_fit',
+                                        applied_augmentations=\
+                                                args.augmentations,
+                                        augmented_dataset_size_relative=\
+                                                args.augmented_dataset_size_relative,
+                                        augmented_data_ratio=\
+                                                args.augmented_data_ratio)
+
+        folder = f'./checkpoints/{args.model}_{args.dataset}_{augmentation_string}_seed_{int(args.seed)}/'
+
+        os.makedirs(folder, exist_ok=True)
+        train_set.pickle_scaler(f'{folder}/scaler.pkl')
+
+        loader.append(train_set.get_data())
+
+        test_set = HLTDataset(data_source, variant,
+                                        'test', False,
+                                        'minmax', 'train_set_fit',
+                                        applied_augmentations=\
+                                                args.augmentations,
+                                        augmented_dataset_size_relative=\
+                                                args.augmented_dataset_size_relative,
+                                        augmented_data_ratio=\
+                                                args.augmented_data_ratio)
+
+        loader.append(test_set.get_data())
+        loader.append(test_set.get_labels())
+
+    elif dataset == 'ECLIPSE':
+
+        train_set = EclipseDataset('train', False,
+                                        'minmax', 'train_set_fit',
+                                        applied_augmentations=\
+                                                args.augmentations,
+                                        augmented_dataset_size_relative=\
+                                                args.augmented_dataset_size_relative,
+                                        augmented_data_ratio=\
+                                                args.augmented_data_ratio)
+
+        folder = f'./checkpoints/{args.model}_{args.dataset}_{augmentation_string}_seed_{int(args.seed)}/'
+
+        os.makedirs(folder, exist_ok=True)
+        train_set.pickle_scaler(f'{folder}/scaler.pkl')
+
+        loader.append(train_set.get_data())
+
+        test_set = EclipseDataset('test', False,
+                                    'minmax', 'train_set_fit',
+                                    applied_augmentations=\
+                                            args.augmentations,
+                                    augmented_dataset_size_relative=\
+                                            args.augmented_dataset_size_relative,
+                                    augmented_data_ratio=\
+                                            args.augmented_data_ratio)
+        
+        print(test_set.get_labels())
+
+        exit()
+
+        loader.append(test_set.get_data())
+        loader.append(test_set.get_labels())
+
+
+    else:
 
         folder = '../../datasets/smd'
 
@@ -97,41 +168,6 @@ def load_dataset(dataset):
             file = dataset + '_' + file
 
             loader.append(np.load(os.path.join(folder, f'{file}.npy')))
-
-    else:
-
-            data_source = dataset.split('_')[1]
-            variant = int(dataset.split('_')[-1])
-
-            train_set = HLTDataset(data_source, variant,
-                                            'train', False,
-                                            'minmax', 'train_set_fit',
-                                            applied_augmentations=\
-                                                    args.augmentations,
-                                            augmented_dataset_size_relative=\
-                                                    args.augmented_dataset_size_relative,
-                                            augmented_data_ratio=\
-                                                    args.augmented_data_ratio)
-
-            folder = f'./checkpoints/{args.model}_{args.dataset}_{augmentation_string}_seed_{int(args.seed)}/'
-
-            os.makedirs(folder, exist_ok=True)
-            train_set.pickle_scaler(f'{folder}/scaler.pkl')
-
-            loader.append(train_set.get_data())
-
-            test_set = HLTDataset(data_source, variant,
-                                            'test', False,
-                                            'minmax', 'train_set_fit',
-                                            applied_augmentations=\
-                                                    args.augmentations,
-                                            augmented_dataset_size_relative=\
-                                                    args.augmented_dataset_size_relative,
-                                            augmented_data_ratio=\
-                                                    args.augmented_data_ratio)
-
-            loader.append(test_set.get_data())
-            loader.append(test_set.get_labels())
 
     if args.less:
         loader[0] = cut_array(0.2, loader[0])
@@ -145,6 +181,7 @@ def load_dataset(dataset):
     labels = loader[2]
 
     return train_loader, test_loader, labels
+
 
 def save_model(model, optimizer, scheduler, epoch, accuracy_list):
     folder = f'checkpoints/{args.model}_{args.dataset}_{augmentation_string}_seed_{int(args.seed)}/'
@@ -214,8 +251,8 @@ def backprop(epoch,
             for d in data:
                 d = d.to(device)
 
-                _save_model_attributes(model, d, dataset_name)
-                exit()
+                # _save_model_attributes(model, d, dataset_name)
+                # exit()
 
                 _, x_hat, z, gamma = model(d)
                 l1, l2 = l(x_hat, d), l(gamma, d)
@@ -278,9 +315,9 @@ def backprop(epoch,
             for i, d in enumerate(data):
                 d = d.to(device)
 
-                if i:
-                    _save_model_attributes(model, (d, hidden), dataset_name)
-                    exit()
+                # if i:
+                #     _save_model_attributes(model, (d, hidden), dataset_name)
+                #     exit()
 
                 y_pred, mu, logvar, hidden = model(d, hidden if i else None)
                 MSE = l(y_pred, d)
@@ -314,8 +351,8 @@ def backprop(epoch,
         if training:
             for d in data:
 
-                _save_model_attributes(model, d, dataset_name)
-                exit()                
+                # _save_model_attributes(model, d, dataset_name)
+                # exit()                
 
                 ae1s, ae2s, ae2ae1s = model(d)
                 l1 = (1 / n) * l(ae1s, d) + (1 - 1/n) * l(ae2ae1s, d)
@@ -355,8 +392,8 @@ def backprop(epoch,
 
                 d = d.to(device)
 
-                _save_model_attributes(model, d, dataset_name)
-                exit()
+                # _save_model_attributes(model, d, dataset_name)
+                # exit()
 
                 if 'MTAD_GAT' in model.name: 
                     x, h = model(d, h if i else None)
@@ -571,8 +608,8 @@ def backprop(epoch,
 
                 elem = window[-1, :, :].view(1, local_bs, feats)
 
-                _save_model_attributes(model, (window, elem), dataset_name)
-                exit()
+                # _save_model_attributes(model, (window, elem), dataset_name)
+                # exit()
 
                 z = model(window, elem)
 
@@ -820,6 +857,25 @@ if __name__ == '__main__':
 
         _save_numpy_array(lossFinal,
                             f'../../evaluation/reduced_detection_{variant}/'\
+                                            f'predictions/{args.model.lower()}_'\
+                                            f'{augment_label}seed_{int(args.seed)}.npy')
+        
+    if args.dataset == 'ECLIPSE':
+
+        augment_label = 'no_augment_' if augmentation_string == 'no_augment' else ''
+
+        _save_numpy_array(lossTfinal,
+                            '../../evaluation/reduced_detection_eclipse/'\
+                                            f'predictions/{args.model.lower()}_'\
+                                            f'train_{augment_label}seed_{int(args.seed)}.npy')
+
+        _save_numpy_array(lossTfinal,
+                            '../../evaluation/combined_detection_eclipse/'\
+                                            f'predictions/{args.model.lower()}_'\
+                                            f'train_{augment_label}seed_{int(args.seed)}.npy')
+
+        _save_numpy_array(lossFinal,
+                            '../../evaluation/reduced_detection_eclipse/'\
                                             f'predictions/{args.model.lower()}_'\
                                             f'{augment_label}seed_{int(args.seed)}.npy')
 

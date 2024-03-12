@@ -1,49 +1,29 @@
-import os
 import pickle
 
 import numpy as np
 import pandas as pd
-import torch
 from torch.utils.data import Dataset
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
-import matplotlib.pyplot as plt
 
-from utils.data_augmentation import EclipseDataTimeseriesAugmentor
-from utils.timefeatures import time_features
+from .data_augmentation import EclipseDataTimeseriesAugmentor
 
 import warnings
 warnings.filterwarnings('ignore')
 
-dataset_path_local = '/home/kstehle/Documents/phd/strada/datasets/eclipse/'
+dataset_path_local = '../../datasets/eclipse/'
 
 
 class EclipseDataset(Dataset):
     def __init__(self,
                     mode,
-                    size, 
-                    features,
-                    target,
                     inverse,
-                    timeenc,
-                    freq,
                     scaling_type,
                     scaling_source,
                     applied_augmentations=[],
                     augmented_dataset_size_relative=1,
                     augmented_data_ratio=0):
-        
-        # print(os.getcwd())
 
         self.mode = mode
-
-        self.seq_len = size[0]
-        self.label_len = size[1]
-        self.pred_len = size[2]
-
-        self.features = features
-        self.target = target
-        self.timeenc = timeenc
-        self.freq = freq
         self.inverse = inverse
 
         if scaling_type == 'standard':
@@ -158,6 +138,9 @@ class EclipseDataset(Dataset):
 
             labels_pd =\
                 data_test.loc[:, data_test.columns == 'label']
+            
+            print(labels_pd.columns)
+            exit()
 
             self.labels = np.any(labels_pd.to_numpy()>=1, axis=1).astype(np.int8).flatten()
 
@@ -231,50 +214,9 @@ class EclipseDataset(Dataset):
         else:
             self.data_y = self.data_x
 
-        timestamps = pd.DataFrame(data_x_pd.index)
 
-        timestamps.columns = ['date']
-
-        data_stamp = time_features(timestamps,
-                                    timeenc=self.timeenc,
-                                    freq=self.freq)
-
-        self.data_stamp = data_stamp
-
-
-    def __getitem__(self, index):
-        s_begin = index
-        s_end = s_begin + self.seq_len
-        r_begin = s_end - self.label_len 
-        r_end = r_begin + self.label_len + self.pred_len
-
-        seq_x = self.data_x[s_begin:s_end]
-
-        if self.inverse:
-            seq_y = np.concatenate([self.data_x[r_begin:r_begin + self.label_len],
-                                    self.data_y[r_begin + self.label_len:r_end]], 0)
-        else:
-            seq_y = self.data_y[r_begin:r_end]
-        seq_x_mark = self.data_stamp[s_begin:s_end]
-        seq_y_mark = self.data_stamp[r_begin:r_end]
-
-        if self.mode != 'labeled_train':
-            return seq_x,\
-                    seq_y,\
-                    seq_x_mark,\
-                    seq_y_mark
-        else:
-            label = self.labels[s_begin:s_end]
-
-            return seq_x,\
-                        seq_y,\
-                        seq_x_mark,\
-                        seq_y_mark,\
-                        label
-
-
-    def __len__(self):
-        return len(self.data_x) - self.seq_len - self.pred_len + 1
+    def get_data(self):
+        return self.data_x
 
 
     def inverse_transform(self, data):
@@ -283,10 +225,6 @@ class EclipseDataset(Dataset):
 
     def get_channels(self):
         return len(self.data_x[0, :])
-
-
-    def get_sequence_length(self):
-        return self.seq_len
 
 
     def get_labels(self):

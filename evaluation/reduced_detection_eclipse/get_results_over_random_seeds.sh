@@ -5,5 +5,6 @@ declare -a seeds=(7 129 28 192 85 148 142 30 78 33)
 
 for seed in ${seeds[@]}
 do
-    python3 main.py --seed ${seed} --model DAGMM --dataset "ECLIPSE" --retrain
+    python3 eclipse_analysis.py --seed ${seed} --to-csv
+    # python3 eclipse_analysis.py --seed ${seed}
 done

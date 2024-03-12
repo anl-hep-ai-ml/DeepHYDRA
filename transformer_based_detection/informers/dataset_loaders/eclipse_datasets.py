@@ -14,7 +14,7 @@ from utils.timefeatures import time_features
 import warnings
 warnings.filterwarnings('ignore')
 
-dataset_path_local = '/home/kstehle/Documents/phd/strada/datasets/eclipse/'
+dataset_path_local = '../../datasets/eclipse/'
 
 
 class EclipseDataset(Dataset):
@@ -69,13 +69,14 @@ class EclipseDataset(Dataset):
             data_train_set_x_pd.index =\
                 pd.DatetimeIndex(data_train_set_x_pd.index)
 
-            if len(applied_augmentations):
+            if applied_augmentations:
+                if len(applied_augmentations):
 
-                timeseries_augmentor =\
-                    EclipseDataTimeseriesAugmentor(applied_augmentations)
+                    timeseries_augmentor =\
+                        EclipseDataTimeseriesAugmentor(applied_augmentations)
 
-                data_train_set_x_pd =\
-                    timeseries_augmentor.fit_transform(data_train_set_x_pd)
+                    data_train_set_x_pd =\
+                        timeseries_augmentor.fit_transform(data_train_set_x_pd)
 
             data_train_set_x_np = data_train_set_x_pd.to_numpy()
 
@@ -101,24 +102,25 @@ class EclipseDataset(Dataset):
 
             labels_pd.index = pd.DatetimeIndex(labels_pd.index)
 
-            if len(applied_augmentations):
-                timeseries_augmentor =\
-                    EclipseDataTimeseriesAugmentor(applied_augmentations)
+            if applied_augmentations:
+                if len(applied_augmentations):
+                    timeseries_augmentor =\
+                        EclipseDataTimeseriesAugmentor(applied_augmentations)
 
-                target_size = int(len(data_labeled_train_set_x_pd)*\
-                                        augmented_dataset_size_relative)
+                    target_size = int(len(data_labeled_train_set_x_pd)*\
+                                            augmented_dataset_size_relative)
 
-                data_labeled_train_set_x_pd,\
-                                    labels_pd =\
-                                        timeseries_augmentor.fit_transform_labeled(
-                                                                data_labeled_train_set_x_pd,
-                                                                labels_pd)
+                    data_labeled_train_set_x_pd,\
+                                        labels_pd =\
+                                            timeseries_augmentor.fit_transform_labeled(
+                                                                    data_labeled_train_set_x_pd,
+                                                                    labels_pd)
 
-                data_labeled_train_set_x_pd =\
-                    data_labeled_train_set_x_pd.iloc[:target_size, :]
+                    data_labeled_train_set_x_pd =\
+                        data_labeled_train_set_x_pd.iloc[:target_size, :]
 
-                labels_pd =\
-                    labels_pd.iloc[:target_size, :]
+                    labels_pd =\
+                        labels_pd.iloc[:target_size, :]
 
             data_labeled_train_set_x_np = data_labeled_train_set_x_pd.to_numpy()
 
@@ -149,10 +151,17 @@ class EclipseDataset(Dataset):
             
         elif mode == 'test':
 
+            #TODO: DO NOT FORGET TO REVERT THIS BACK TO THE
+            # TEST SET
+
+            # data_test = pd.read_hdf(dataset_path_local +\
+            #                             'reduced_eclipse_'
+            #                             'test_set_median.h5')
+
             data_test = pd.read_hdf(dataset_path_local +\
                                         'reduced_eclipse_'
-                                        'test_set_median.h5')
-
+                                        'labeled_val_set_median.h5')
+        
             data_x_pd =\
                 data_test.loc[:, ~(data_test.columns.str.contains('label'))]
 
@@ -160,8 +169,6 @@ class EclipseDataset(Dataset):
                 data_test.loc[:, data_test.columns == 'label']
 
             self.labels = np.any(labels_pd.to_numpy()>=1, axis=1).astype(np.int8).flatten()
-
-            print(self.labels)
             
             data_x_pd.index = pd.DatetimeIndex(data_x_pd.index)
 

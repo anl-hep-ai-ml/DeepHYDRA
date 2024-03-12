@@ -18,6 +18,7 @@ lm_d = {
 		'MBA': [(0.87, 1), (0.93, 1.04)],
         'HLT_DCM_2018': [(0.99995, 1.04), (0.99995, 1.06)],
         'HLT_DCM_2022': [(0.99995, 1.04), (0.99995, 1.06)],
+        'ECLIPSE': [(0.99995, 1.04), (0.99995, 1.06)],
 	}
 lm = lm_d[args.dataset][1 if 'TranAD' in args.model else 0]
 
@@ -39,6 +40,7 @@ lr_d = {
 		'MBA': 0.001, 
         'HLT_DCM_2018': 0.0001,
         'HLT_DCM_2022': 0.0001,
+        'ECLIPSE': 0.0001,
 	}
 lr = lr_d[args.dataset]
 
@@ -60,6 +62,7 @@ percentiles = {
 		'MBA': (99, 2),
         'HLT_DCM_2018': (98, 2000),
         'HLT_DCM_2022': (98, 2000),
+        'ECLIPSE': (98, 2000),
 	}
 
 percentile_merlin = percentiles[args.dataset][0]
