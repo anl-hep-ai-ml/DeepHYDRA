@@ -141,15 +141,19 @@ def get_contiguous_runs(x):
 
 def remove_timestamp_jumps(index: pd.Index) -> pd.Index:
 
-        delta = index[1:] - index[:-1]
+    delta = index[1:] - index[:-1]
 
-        index = pd.Series(index)
+    index = pd.Series(index)
 
-        for i in range(1, len(index)):
-            if delta[i - 1] > pd.Timedelta(seconds=1):
-                index[i:] = index[i:] - delta[i - 1] + pd.Timedelta(seconds=1)
+    for i in range(1, len(index)):
+        if delta[i - 1] > pd.Timedelta(seconds=1):
+            index[i:] = index[i:] - delta[i - 1] + pd.Timedelta(seconds=1)
 
-        return pd.Index(index)
+    index = pd.DatetimeIndex(index)
+
+    assert index.is_monotonic_increasing
+
+    return index
 
 
 def run_pca(data_df: pd.DataFrame,
@@ -380,7 +384,12 @@ if __name__ == '__main__':
 
     train_set_x_df.set_index(data_indices, inplace=True)
     test_set_x_df.set_index(data_indices, inplace=True)
-    
+
+    time_shifts = {'exa': 0,
+                    'lammps': 12,
+                    'sw4': 24,
+                    'sw4lite': 36}
+
     # Reshape datasets
 
     app_names = train_set_y_df['app_name'].unique()
@@ -401,11 +410,20 @@ if __name__ == '__main__':
 
             per_instance_data = per_app_data.xs(id_, level=1)
 
-            print(f'ID: {id_}: {len(per_instance_data)}')
+            # print(f'ID: {id_}: {len(per_instance_data)}')
 
             per_instance_data.index =\
-                pd.DatetimeIndex(per_instance_data.index*1000)
+                pd.DatetimeIndex(per_instance_data.index*1e9)
+            
+            timestamp_old = per_instance_data.index[0]
 
+            per_instance_data.index =\
+                per_instance_data.index +\
+                pd.Timedelta(hours=time_shifts[app_name])
+            
+            print(f'Old timestamp origin: {timestamp_old} -'
+                    f'new timestamp origin: {per_instance_data.index[0]}')
+            
             per_instance_data.columns =\
                     rename_columns(per_instance_data.columns,
                                                 app_name, id_)
@@ -430,16 +448,27 @@ if __name__ == '__main__':
 
             per_instance_data = per_app_data.xs(id_, level=1)
 
-            print(f'ID: {id_}: {len(per_instance_data)}')
+            # print(f'ID: {id_}: {len(per_instance_data)}')
 
             per_instance_data.index =\
-                pd.DatetimeIndex(per_instance_data.index*1000)
+                pd.DatetimeIndex(per_instance_data.index*1e9)
+            
+            timestamp_old = per_instance_data.index[0]
+
+            per_instance_data.index =\
+                per_instance_data.index +\
+                pd.Timedelta(hours=time_shifts[app_name])
+            
+            print(f'Old timestamp origin: {timestamp_old} -'
+                    f'new timestamp origin: {per_instance_data.index[0]}')
 
             per_instance_data.columns =\
                     rename_columns(per_instance_data.columns,
                                                 app_name, id_)
 
             test_subsets_in[id_].append(per_instance_data)
+
+    exit()
 
     # Compose unlabeled train, labeled train, test,
     # unlabeled val, and labeled val datasets from
