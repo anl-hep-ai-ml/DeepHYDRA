@@ -146,8 +146,8 @@ def remove_timestamp_jumps(index: pd.Index) -> pd.Index:
         index = pd.Series(index)
 
         for i in range(1, len(index)):
-            if delta[i - 1] > 1:
-                index[i:] = index[i:] - delta[i - 1] + 1
+            if delta[i - 1] > pd.Timedelta(seconds=1):
+                index[i:] = index[i:] - delta[i - 1] + pd.Timedelta(seconds=1)
 
         return pd.Index(index)
 
@@ -220,8 +220,11 @@ def rename_label_columns(columns: pd.Index):
     columns = pd.Series(columns)
 
     def _renaming_func(element):
-        constituents = str(element).split('_')
-        return f'{constituents[1]}_{constituents[0]}_{constituents[2]}'
+        if 'label' in element:
+            constituents = str(element).split('_')
+            return f'{constituents[1]}_{constituents[0]}_{constituents[2]}'
+        else:
+            return element
 
     return pd.Index(columns.map(_renaming_func))
 
@@ -392,69 +395,22 @@ if __name__ == '__main__':
 
         ids = per_app_data.reset_index()['id'].unique()
 
-        # print(f'{app_name}: {len(per_app_data)}')
-
-        lengths = []
-        starts = []
-        ends = []
-
-        length_max = 0
-        id_length_max = ''
-
-        start_min = np.iinfo(np.int64).max
-        id_start_min = ''
-
-        end_max = 0
-        id_end_max = ''
+        print(f'{app_name}: {len(per_app_data)}')
 
         for id_ in ids:
 
             per_instance_data = per_app_data.xs(id_, level=1)
 
-            # print(f'ID: {id_}: {len(per_instance_data)}')
+            print(f'ID: {id_}: {len(per_instance_data)}')
 
-            timestamps = per_instance_data.reset_index()['timestamp']
-
-            timestamps = pd.Index(timestamps)
-
-            delta = timestamps[1:] - timestamps[:-1]
-            delta = pd.Series(delta)
-
-            # print(f'Delta mean: {delta.mean():.5f}\tmedian: {delta.median():.5f}'\
-            #                             f'\tmin: {delta.min()}\tmax: {delta.max()}')
-
-            lengths.append(len(timestamps))
-
-            if len(timestamps) > length_max:
-                length_max = len(timestamps)
-                id_length_max = id_
-
-            starts.append(timestamps[0])
-            
-            if timestamps[0] < start_min:
-                start_min = timestamps[0]
-                id_start_min = id_
-
-            ends.append(timestamps[-1])
-
-            if timestamps[-1] > end_max:
-                end_max = timestamps[-1]
-                id_end_max = id_
+            per_instance_data.index =\
+                pd.DatetimeIndex(per_instance_data.index*1000)
 
             per_instance_data.columns =\
                     rename_columns(per_instance_data.columns,
                                                 app_name, id_)
 
             train_subsets[id_].append(per_instance_data)
-
-    # train_set_reshaped_df = pd.concat(train_subsets, axis=1)
-
-    # print(train_set_reshaped_df)
-
-    # nan_amount = np.mean(np.sum(pd.isna(train_set_reshaped_df.to_numpy()), 1)/\
-    #                                                     train_set_reshaped_df.shape[1])
-
-    # print(f'Mean sparsity reshaped train set: {100*nan_amount:.3f} %')
 
     app_names = test_set_y_df['app_name'].unique()
 
@@ -468,61 +424,22 @@ if __name__ == '__main__':
 
         ids = per_app_data.reset_index()['id'].unique()
 
-        # print(f'{app_name}: {len(per_app_data)}')
-
-        lengths = []
-        starts = []
-        ends = []
-
-        length_max = 0
-        id_length_max = ''
-
-        start_min = np.iinfo(np.int64).max
-        id_start_min = ''
-
-        end_max = 0
-        id_end_max = ''
+        print(f'{app_name}: {len(per_app_data)}')
 
         for id_ in ids:
 
             per_instance_data = per_app_data.xs(id_, level=1)
 
-            # print(f'ID: {id_}: {len(per_instance_data)}')
+            print(f'ID: {id_}: {len(per_instance_data)}')
 
-            timestamps = per_instance_data.reset_index()['timestamp']
-
-            timestamps = pd.Index(timestamps)
-
-            delta = timestamps[1:] - timestamps[:-1]
-            delta = pd.Series(delta)
-
-            # print(f'Delta mean: {delta.mean():.5f}\tmedian: {delta.median():.5f}'\
-            #                             f'\tmin: {delta.min()}\tmax: {delta.max()}')
-
-            lengths.append(len(timestamps))
-
-            if len(timestamps) > length_max:
-                length_max = len(timestamps)
-                id_length_max = id_
-            
-            starts.append(timestamps[0])
-
-            if timestamps[0] < start_min:
-                start_min = timestamps[0]
-                id_start_min = id_
-
-            ends.append(timestamps[-1])
-
-            if timestamps[-1] > end_max:
-                end_max = timestamps[-1]
-                id_end_max = id_
+            per_instance_data.index =\
+                pd.DatetimeIndex(per_instance_data.index*1000)
 
             per_instance_data.columns =\
                     rename_columns(per_instance_data.columns,
                                                 app_name, id_)
 
             test_subsets_in[id_].append(per_instance_data)
-
 
     # Compose unlabeled train, labeled train, test,
     # unlabeled val, and labeled val datasets from
@@ -619,44 +536,29 @@ if __name__ == '__main__':
         dataset_reshaped[label_columns] =\
             dataset_reshaped[label_columns].fillna(0).astype(np.uint8)
 
-        labels_individual = dataset_reshaped[label_columns]
-
-        labels_individual.columns =\
-            rename_label_columns(labels_individual.columns)
-
-        dataset_reshaped['label'] =\
-            dataset_reshaped[label_columns]\
-                .agg(lambda row: reduce(lambda x, y: x|y, row.tolist()), axis=1)
+        dataset_reshaped.columns =\
+            rename_label_columns(dataset_reshaped.columns)
         
-        dataset_reshaped.drop(label_columns, axis=1, inplace=True)
+        label_columns = dataset_reshaped.columns.str.contains('label')
+        
+        # print(dataset_reshaped[label_columns].columns)
 
+        # continue
+        
         # Print anomaly ratio
 
         anomaly_count =\
-            np.count_nonzero(dataset_reshaped['label'].to_numpy().flatten()>=1)
+            np.count_nonzero(dataset_reshaped.loc[:, label_columns].to_numpy().flatten()>=1)
 
         print(f'Anomalous data ratio: {100*anomaly_count/len(dataset_reshaped):.3f} %')
 
         # Sort columns by application and metric
-
+        
         dataset_reshaped_ordered =\
-            dataset_reshaped.loc[:, ~(dataset_reshaped.columns == 'label')].sort_index(axis=1)
-
-        # for app in ['exa', 'lammps', 'sw4', 'sw4lite']:
-
-        #     values_unique = []
-
-        #     cols = dataset_reshaped_ordered.columns.str.startswith(f'{app}_')
-            
-        #     app_data = dataset_reshaped_ordered.loc[:, cols]
-
-        #     for col in range(app_data.shape[-1]):
-        #         label_local =\
-        #             '_'.join(str(app_data.iloc[:, col].name).split('_')[:-1])
-
-        #         values_unique_all[label_local].append(app_data.iloc[:, col].unique())
-
-        # continue
+            dataset_reshaped.loc[:, ~label_columns].sort_index(axis=1)
+        
+        labels_reshaped_ordered =\
+            dataset_reshaped.loc[:, label_columns].sort_index(axis=1)
 
         # Convert columns with less than 16 unique values
         # to ordinal representation
@@ -675,14 +577,6 @@ if __name__ == '__main__':
 
         ordinal_data_np = encoder.fit_transform(ordinal_data_df)
 
-        # ordinal_data_df = pd.DataFrame(ordinal_data_np,
-        #                                 index=ordinal_data_df.index,
-        #                                 columns=ordinal_data_df.columns)
-
-        # for col in range(ordinal_data_df.shape[-1]):
-        #     unique_vals = np.unique(ordinal_data_df.iloc[:, col])
-        #     print(f'{ordinal_data_df.columns[col]}: {len(unique_vals)}')
-
         dataset_reshaped_ordered.loc[:, ordinal_locs] =\
                                             ordinal_data_np
 
@@ -693,24 +587,20 @@ if __name__ == '__main__':
 
         if dataset_type == 'test':
 
-            # Add the labels back
-
-            dataset_reshaped_ordered['label'] =\
-                            dataset_reshaped['label']
-
-            dataset_reshaped_ordered[label_columns] =\
-                                        labels_individual
-
             dataset_label =\
                 f"unreduced_eclipse_{dataset_type.replace(' ', '_')}_set"
 
-            # dataset_reshaped_ordered.to_hdf(
-            #             f'{args.dataset_dir}/{dataset_label}.h5',
-            #             key=dataset_label, mode='w')
+            dataset_reshaped_ordered.to_hdf(
+                        f'{args.dataset_dir}/{dataset_label}.h5',
+                        key='data', mode='w')
+            
+            labels_reshaped_ordered.to_hdf(
+                        f'{args.dataset_dir}/{dataset_label}.h5',
+                        key='label', mode='w')
             
         anomaly_ratio_cumulative =\
-            np.cumsum(dataset_reshaped['label']\
-                .to_numpy().flatten()>=1)/len(dataset_reshaped)
+            np.cumsum(np.any(dataset_reshaped.loc[:, label_columns]\
+                            .to_numpy()>=1, axis=1))/len(dataset_reshaped)
         
         if dataset_type == 'test' or dataset_type.startswith('labeled'):
             fig, ax = plt.subplots(figsize=(10, 6), dpi=300)
@@ -768,7 +658,8 @@ if __name__ == '__main__':
                 ax.plot(dataset_reshaped_ordered.index.values, data)
 
                 anomaly_starts, anomaly_ends =\
-                    get_contiguous_runs(dataset_reshaped['label'].to_numpy().flatten()>=1)
+                    get_contiguous_runs(np.any(dataset_reshaped.loc[:, label_columns]\
+                                                                    .to_numpy()>=1, axis=1))
                     
                 for start, end in zip(anomaly_starts, anomaly_ends):
 
@@ -850,28 +741,18 @@ if __name__ == '__main__':
         data_mean_all_df = pd.DataFrame(data_mean_all_np,
                                             dataset_reshaped_ordered.index,
                                             columns_reduced)
-
-        data_mean_all_df['label'] = dataset_reshaped['label']
         
-        data_mean_all_df[label_columns] = labels_individual
-        
-        print(list(data_mean_all_df.columns))
-
         data_median_all_df = pd.DataFrame(data_median_all_np,
                                             dataset_reshaped_ordered.index,
                                             columns_reduced)
 
-        data_median_all_df['label'] = dataset_reshaped['label']
-
-        data_median_all_df[label_columns] = labels_individual
-
         dataset_label = f"reduced_eclipse_{dataset_type.replace(' ', '_')}_set"
 
-        data_mean_all_df.to_hdf(f'{args.dataset_dir}/{dataset_label}_mean.h5',
-                                                    key=dataset_label, mode='w')
+        # data_mean_all_df.to_hdf(f'{args.dataset_dir}/{dataset_label}_mean.h5',
+        #                                             key=dataset_label, mode='w')
         
-        data_median_all_df.to_hdf(f'{args.dataset_dir}/{dataset_label}_median.h5',
-                                                        key=dataset_label, mode='w')
+        # data_median_all_df.to_hdf(f'{args.dataset_dir}/{dataset_label}_median.h5',
+        #                                                 key=dataset_label, mode='w')
 
         if args.generate_videos:
 
@@ -931,23 +812,3 @@ if __name__ == '__main__':
                 plt.close()
 
             writer.release()
-
-    # columns = []
-
-    # for name, values_unique_per_channel in values_unique_all.items():
-    #     values = np.concatenate(values_unique_per_channel)
-
-    #     values_unique = np.unique(values)
-
-    #     if len(values_unique) < 16:
-    #         columns.append(name)
-
-    # print(columns)
-
-    # columns_all = ['_'.join(val.split('_')[1:]) for val in columns]
-
-    # from collections import Counter
-
-    # counts = Counter(columns_all)
-
-    # print(counts)
