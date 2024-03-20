@@ -742,9 +742,7 @@ if __name__ == '__main__':
             
         plt.savefig(f"plots/eclipse_{dataset_type.replace(' ', '_')}"\
                                                     '_set_meminfo.png')
-
-        continue
-
+        
         # Reduce dataset
 
         rmap_data = [val.rsplit('_', 1)[0] for val in\
