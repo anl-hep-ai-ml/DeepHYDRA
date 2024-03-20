@@ -523,7 +523,7 @@ if __name__ == '__main__':
 
     choices = ['train', 'test', 'val']
 
-    p_train = [0.7, 0.2, 0.1]
+    p_train = [0.7, 0.17, 0.13]
     p_test = [0.1, 0.8, 0.1]
 
     for id_, data in train_subsets.items():
@@ -742,6 +742,8 @@ if __name__ == '__main__':
             
         plt.savefig(f"plots/eclipse_{dataset_type.replace(' ', '_')}"\
                                                     '_set_meminfo.png')
+
+        continue
 
         # Reduce dataset
 
