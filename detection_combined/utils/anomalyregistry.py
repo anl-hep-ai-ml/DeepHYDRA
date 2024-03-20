@@ -19,7 +19,8 @@ base_data_anomaly_ends = [264,
                             4277]
 
 # output_dir = '../../../evaluation/combined_detection_2023/predictions/'
-output_dir = '../../../evaluation/combined_detection_dcm_2018/predictions/'
+# output_dir = '../../../evaluation/combined_detection_dcm_2018/predictions/'
+output_dir = '../../../evaluation/combined_detection_eclipse/predictions/'
 
 def _save_numpy_array(array: np.array,
                         filename: str):
@@ -151,13 +152,13 @@ class BenchmarkAnomalyRegistry(AnomalyRegistry):
 
         true_np = np.any(true_pd.to_numpy()>=1, axis=1).astype(np.uint8).flatten()
 
-        base_data_anomalies_np = np.zeros_like(true_np)
+        # base_data_anomalies_np = np.zeros_like(true_np)
 
-        for start, end in zip(base_data_anomaly_starts,
-                                    base_data_anomaly_ends):
-            base_data_anomalies_np[start:end] = 1
+        # for start, end in zip(base_data_anomaly_starts,
+        #                             base_data_anomaly_ends):
+        #     base_data_anomalies_np[start:end] = 1
 
-        true_np = np.logical_or(true_np, base_data_anomalies_np)
+        # true_np = np.logical_or(true_np, base_data_anomalies_np)
 
         pred_pd = pd.DataFrame(np.zeros_like(true_np), true_pd.index)
 
@@ -173,7 +174,7 @@ class BenchmarkAnomalyRegistry(AnomalyRegistry):
                 
         pred_clustering_np = pred_pd.to_numpy().astype(np.uint8).flatten()
         
-        # _save_numpy_array(pred_clustering_np, f'{output_dir}/clustering.npy')
+        _save_numpy_array(pred_clustering_np, f'{output_dir}/clustering.npy')
 
         if model_name == 'Informer-MSE':
             pred_transformer_np = np.pad(pred_transformer_np, (16, 1))

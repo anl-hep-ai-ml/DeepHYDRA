@@ -215,6 +215,7 @@ def rename_columns(columns: pd.Index,
             name = element
 
         return f'{app_name}_{name}_{id_}'
+        # return f'common_{name}_{id_}'
 
     return pd.Index(columns.map(_renaming_func))
 
@@ -385,10 +386,10 @@ if __name__ == '__main__':
     train_set_x_df.set_index(data_indices, inplace=True)
     test_set_x_df.set_index(data_indices, inplace=True)
 
-    time_shifts = {'exa': 0,
-                    'lammps': 12,
-                    'sw4': 24,
-                    'sw4lite': 36}
+    time_shifts = {'exa': -24,
+                    'lammps': 24,
+                    'sw4': -24,
+                    'sw4lite': 24}
 
     # Reshape datasets
 
@@ -398,13 +399,19 @@ if __name__ == '__main__':
 
     # print('Train\n')
 
+    time_shift = None
+
+    rng = np.random.default_rng(42)
+
     for app_name in app_names:
 
         per_app_data = train_set_x_df.xs(app_name, level=1)
 
         ids = per_app_data.reset_index()['id'].unique()
 
-        print(f'{app_name}: {len(per_app_data)}')
+        print(len(ids))
+
+        # print(f'{app_name}: {len(per_app_data)}')
 
         for id_ in ids:
 
@@ -415,14 +422,26 @@ if __name__ == '__main__':
             per_instance_data.index =\
                 pd.DatetimeIndex(per_instance_data.index*1e9)
             
-            timestamp_old = per_instance_data.index[0]
+            # timestamp_old = per_instance_data.index[0]
 
-            per_instance_data.index =\
-                per_instance_data.index +\
-                pd.Timedelta(hours=time_shifts[app_name])
+            # per_instance_data.index =\
+            #     per_instance_data.index +\
+            #     pd.Timedelta(hours=time_shifts[app_name])
             
-            print(f'Old timestamp origin: {timestamp_old} -'
-                    f'new timestamp origin: {per_instance_data.index[0]}')
+            # per_instance_data.index =\
+            #     per_instance_data.index +\
+            #     pd.Timedelta(minutes=(id_ % 1000))
+            
+            # if time_shift:
+            #     per_instance_data.index =\
+            #         per_instance_data.index +\
+            #             rng.integers(0, 7)*time_shift
+
+            # time_shift = per_instance_data.index[-1] -\
+            #                     per_instance_data.index[0]
+            
+            # print(f'Old timestamp origin: {timestamp_old} -'
+            #         f'new timestamp origin: {per_instance_data.index[0]}')
             
             per_instance_data.columns =\
                     rename_columns(per_instance_data.columns,
@@ -436,13 +455,17 @@ if __name__ == '__main__':
 
     # print('\nTest\n')
 
+    time_shift = None
+
     for app_name in app_names:
 
         per_app_data = test_set_x_df.xs(app_name, level=1)
 
         ids = per_app_data.reset_index()['id'].unique()
 
-        print(f'{app_name}: {len(per_app_data)}')
+        # print(f'{app_name}: {len(per_app_data)}')
+
+        print(len(ids))
 
         for id_ in ids:
 
@@ -453,14 +476,26 @@ if __name__ == '__main__':
             per_instance_data.index =\
                 pd.DatetimeIndex(per_instance_data.index*1e9)
             
-            timestamp_old = per_instance_data.index[0]
+            # timestamp_old = per_instance_data.index[0]
 
             per_instance_data.index =\
                 per_instance_data.index +\
                 pd.Timedelta(hours=time_shifts[app_name])
             
-            print(f'Old timestamp origin: {timestamp_old} -'
-                    f'new timestamp origin: {per_instance_data.index[0]}')
+            # per_instance_data.index =\
+            #     per_instance_data.index +\
+            #     pd.Timedelta(minutes=(id_ % 1000))
+            
+            # if time_shift:
+            #     per_instance_data.index =\
+            #         per_instance_data.index +\
+            #             rng.integers(0, 7)*time_shift
+
+            # time_shift = per_instance_data.index[-1] -\
+            #                     per_instance_data.index[0]
+            
+            # print(f'Old timestamp origin: {timestamp_old} - '
+            #         f'new timestamp origin: {per_instance_data.index[0]}')
 
             per_instance_data.columns =\
                     rename_columns(per_instance_data.columns,
@@ -468,24 +503,28 @@ if __name__ == '__main__':
 
             test_subsets_in[id_].append(per_instance_data)
 
-    exit()
+    # exit()
 
     # Compose unlabeled train, labeled train, test,
     # unlabeled val, and labeled val datasets from
     # existing train and test sets
 
-    output_subsets = {'unlabeled train': defaultdict(list),
+    # output_subsets = {'unlabeled train': defaultdict(list),
+    #                     'labeled train': defaultdict(list),
+    #                     'test': defaultdict(list),
+    #                     'unlabeled val': defaultdict(list),
+    #                     'labeled val': defaultdict(list),}
+    
+    output_subsets = {'test': defaultdict(list),
+                        'unlabeled train': defaultdict(list),
                         'labeled train': defaultdict(list),
-                        'test': defaultdict(list),
                         'unlabeled val': defaultdict(list),
                         'labeled val': defaultdict(list),}
 
     choices = ['train', 'test', 'val']
 
-    p_train = [0.8, 0.1, 0.1]
-    p_test = [0.02, 0.96, 0.02]
-
-    rng = np.random.default_rng(42)
+    p_train = [0.7, 0.2, 0.1]
+    p_test = [0.1, 0.8, 0.1]
 
     for id_, data in train_subsets.items():
         for element in data:
@@ -546,6 +585,7 @@ if __name__ == '__main__':
                 subset_list.append(subset)
 
         dataset_reshaped = pd.concat(subset_list, axis=1)
+        # dataset_reshaped = pd.concat(subset_list, axis=0)
 
         dataset_reshaped.sort_index(inplace=True)
 
@@ -578,8 +618,10 @@ if __name__ == '__main__':
 
         anomaly_count =\
             np.count_nonzero(dataset_reshaped.loc[:, label_columns].to_numpy().flatten()>=1)
+        
+        label_size = dataset_reshaped.loc[:, label_columns].size
 
-        print(f'Anomalous data ratio: {100*anomaly_count/len(dataset_reshaped):.3f} %')
+        print(f'Anomalous data ratio: {100*anomaly_count/label_size:.3f} %')
 
         # Sort columns by application and metric
         
@@ -625,7 +667,7 @@ if __name__ == '__main__':
             
             labels_reshaped_ordered.to_hdf(
                         f'{args.dataset_dir}/{dataset_label}.h5',
-                        key='label', mode='w')
+                        key='labels', mode='r+')
             
         anomaly_ratio_cumulative =\
             np.cumsum(np.any(dataset_reshaped.loc[:, label_columns]\
@@ -652,6 +694,7 @@ if __name__ == '__main__':
         # Plot meminfo data as a representation for the dataset
 
         apps = ['exa', 'lammps', 'sw4', 'sw4lite']
+        # apps = ['common']
 
         plt.rcParams['figure.constrained_layout.use'] = True
 
@@ -702,49 +745,75 @@ if __name__ == '__main__':
 
         # Reduce dataset
 
-        reduction_map =\
-            [val.rsplit('_', 1)[0] for val in\
-                dataset_reshaped_ordered.columns.values]
+        rmap_data = [val.rsplit('_', 1)[0] for val in\
+                        dataset_reshaped_ordered.columns.values]
+        
+        rmap_label = [val.split('_')[1] for val in\
+                        labels_reshaped_ordered.columns.values]
 
         data_mean_all = []
         data_median_all = []
+        labels_all = []
 
-        columns_reduced = None
+        columns_reduced_data = None
         keys_last = None
 
-        for count, row_x_data in enumerate(tqdm(dataset_reshaped_ordered.to_numpy(),
-                                                desc=f'Generating {dataset_type} set')):
+        for count, (row_x_data, row_x_label) in\
+                enumerate(tqdm(zip(dataset_reshaped_ordered.to_numpy(),
+                                    labels_reshaped_ordered.to_numpy()),
+                                total=len(dataset_reshaped_ordered),
+                                desc=f'Generating {dataset_type} set')):
 
-            buckets = defaultdict(list)
+            data_buckets = defaultdict(list)
+            label_buckets = defaultdict(list)
 
             for index, datapoint in enumerate(row_x_data):
-                buckets[reduction_map[index]].append(datapoint)
+                data_buckets[rmap_data[index]].append(datapoint)
+
+            for index, label in enumerate(row_x_label):
+                label_buckets[rmap_label[index]].append(label)
 
             data_mean = {}
             data_median = {}
             data_std = {}
+            labels = {}
 
-            for col_reduced, bucket in buckets.items():
+            for col_reduced, bucket in data_buckets.items():
                 data_mean[col_reduced] = np.nanmedian(bucket)
                 data_median[col_reduced] = np.nanmedian(bucket)
                 data_std[col_reduced] = np.nanstd(bucket)
+            
+            for col_reduced, bucket in label_buckets.items():
+                label_total = 0
+
+                for label in bucket:
+                    label_total = label_total | label
+                    
+                labels[col_reduced] = label_total
 
             data_mean = dict(sorted(data_mean.items()))
             data_median = dict(sorted(data_median.items()))
             data_std = dict(sorted(data_std.items()))
+            labels = dict(sorted(labels.items()))
 
             if keys_last != None:
-                assert data_median.keys() == keys_last,\
-                                'Bucket keys changed between slices'
+                assert data_median.keys() == keys_last_data,\
+                                'Data bucket keys changed between slices'
 
                 assert data_median.keys() == data_std.keys(),\
-                                                'Bucket keys not identical'
+                                    'Median/Stdev keys not identical'
+                
+                assert labels.keys() == keys_last_labels,\
+                        'Label bucket keys changed between slices'
 
-            keys_last = data_median.keys()
+            keys_last_data = data_median.keys()
+            keys_last_labels = labels.keys()
 
-            if type(columns_reduced) == type(None):
-                columns_reduced = create_channel_names(data_median.keys(),
+            if type(columns_reduced_data) == type(None):
+                columns_reduced_data = create_channel_names(data_median.keys(),
                                                                 data_std.keys())
+                
+                columns_reduced_labels = labels.keys()
 
             data_mean_np = np.concatenate((np.array(list(data_mean.values())),
                                                     np.array(list(data_std.values()))))
@@ -754,34 +823,45 @@ if __name__ == '__main__':
 
             data_mean_all.append(data_mean_np)
             data_median_all.append(data_median_np)
+            labels_all.append(np.array(list(labels.values())))
 
         data_mean_all_np = np.stack(data_mean_all)
         data_median_all_np = np.stack(data_median_all)
+        labels_all_np = np.stack(labels_all)
 
         data_mean_all_np = np.nan_to_num(data_mean_all_np, nan=-1)
         data_median_all_np = np.nan_to_num(data_median_all_np, nan=-1)
 
-        nan_amount_train_unlabeled =\
-                100*pd.isna(data_median_all_np.flatten()).sum()/\
-                                                data_median_all_np.size
+        nan_amount = 100*pd.isna(data_median_all_np.flatten()).sum()/\
+                                                    data_median_all_np.size
 
-        print(f'NaN amount: {nan_amount_train_unlabeled:.3f} %')
+        print(f'NaN amount: {nan_amount:.3f} %')
         
         data_mean_all_df = pd.DataFrame(data_mean_all_np,
                                             dataset_reshaped_ordered.index,
-                                            columns_reduced)
+                                            columns_reduced_data)
         
         data_median_all_df = pd.DataFrame(data_median_all_np,
                                             dataset_reshaped_ordered.index,
-                                            columns_reduced)
+                                            columns_reduced_data)
+        
+        labels_all_df = pd.DataFrame(labels_all_np,
+                                        labels_reshaped_ordered.index,
+                                        columns_reduced_labels)
 
         dataset_label = f"reduced_eclipse_{dataset_type.replace(' ', '_')}_set"
 
-        # data_mean_all_df.to_hdf(f'{args.dataset_dir}/{dataset_label}_mean.h5',
-        #                                             key=dataset_label, mode='w')
+        data_mean_all_df.to_hdf(f'{args.dataset_dir}/{dataset_label}_mean.h5',
+                                                            key='data', mode='w')
         
-        # data_median_all_df.to_hdf(f'{args.dataset_dir}/{dataset_label}_median.h5',
-        #                                                 key=dataset_label, mode='w')
+        labels_all_df.to_hdf(f'{args.dataset_dir}/{dataset_label}_mean.h5',
+                                                        key='labels', mode='r+')
+        
+        data_median_all_df.to_hdf(f'{args.dataset_dir}/{dataset_label}_median.h5',
+                                                                key='data', mode='w')
+        
+        labels_all_df.to_hdf(f'{args.dataset_dir}/{dataset_label}_median.h5',
+                                                        key='labels', mode='r+')
 
         if args.generate_videos:
 

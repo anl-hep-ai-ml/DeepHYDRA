@@ -17,7 +17,7 @@ from rich.logging import RichHandler
 
 sys.path.append('../../')
 
-from clustering.dbscananomalydetector import DBScanAnomalyDetector
+from clustering.dbscananomalydetector import HLTDBSCANAnomalyDetector
 from reduction.medianstdreducer import MedianStdReducer
 from transformer_based_detection.informers.informerrunner import InformerRunner
 from utils.runcontrolstateprovider import RunControlStateProvider
@@ -229,7 +229,7 @@ if __name__ == '__main__':
                                             output_queue=gradio_time_series_queue)
 
     dbscan_anomaly_detector =\
-        DBScanAnomalyDetector(tpu_labels,
+        HLTDBSCANAnomalyDetector(tpu_labels,
                                 args.dbscan_eps,
                                 args.dbscan_min_samples,
                                 args.dbscan_duration_threshold,
