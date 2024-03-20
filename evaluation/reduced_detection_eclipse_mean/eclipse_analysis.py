@@ -522,12 +522,15 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     data = pd.read_hdf(args.data_dir +\
-                            '/reduced_eclipse_labeled_val_set_median.h5')
+                            '/reduced_eclipse_test_set_median.h5',
+                            key='data')
     
-    labels_pd = data.loc[:, data.columns == 'label']
+    labels_pd = pd.read_hdf(args.data_dir +\
+                            '/reduced_eclipse_test_set_median.h5',
+                            key='labels')
 
     labels_np = labels_pd.to_numpy()
-    labels_np = (labels_np>=1).astype(np.uint8)
+    labels_np = np.any(labels_pd.to_numpy()>=1, axis=1).astype(np.int8).flatten()
 
     print_results(labels_np,
                     args.seed,

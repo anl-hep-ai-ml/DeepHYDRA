@@ -88,7 +88,8 @@ class ExpInformer(ExpBasic):
             'HLT_PPD_2022': HLTDataset,
             'HLT_DCM_2023': HLTDataset,
             'HLT_PPD_2023': HLTDataset,
-            'ECLIPSE': EclipseDataset,}
+            'ECLIPSE_MEAN': EclipseDataset,
+            'ECLIPSE_MEDIAN': EclipseDataset,}
 
         Data = data_dict[self.args.data]
 
@@ -154,7 +155,10 @@ class ExpInformer(ExpBasic):
 
         elif Data == EclipseDataset:
 
-            dataset = Data(mode=flag,
+            variant = int(self.args.data.split('_')[-1])
+
+            dataset = Data(variant=variant,
+                            mode=flag,
                             size=[args.seq_len,
                                     args.label_len,
                                     args.pred_len],

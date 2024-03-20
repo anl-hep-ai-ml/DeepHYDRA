@@ -144,8 +144,9 @@ if __name__ == '__main__':
         subfolder = f'reduced_detection_dcm_{variant}'
     elif 'HLT_PPD' in args.data:
         subfolder = f'reduced_detection_ppd_{variant}'
-    elif args.data == 'ECLIPSE':
-        subfolder = 'reduced_detection_eclipse'
+    elif 'ECLIPSE' in args.data:
+        variant = args.data.split('_')[-1].lower()
+        subfolder = f'reduced_detection_eclipse_{variant}'
     else:
         subfolder = 'smd'
 
@@ -157,8 +158,8 @@ if __name__ == '__main__':
         np.save(f'{output_dir}/combined_detection_dcm_{variant}/predictions/'
                     f'l2_dist_train_{args.loss.lower()}{augment_label}seed_{int(args.seed)}.npy',
                                                                                     l2_distances_all_train)
-    elif args.data == 'ECLIPSE':
-        np.save(f'{output_dir}/combined_detection_eclipse/predictions/'
+    elif 'ECLIPSE' in args.data:
+        np.save(f'{output_dir}/combined_detection_eclipse_{variant}/predictions/'
                     f'l2_dist_train_{args.loss.lower()}{augment_label}seed_{int(args.seed)}.npy',
                                                                                     l2_distances_all_train)
 
