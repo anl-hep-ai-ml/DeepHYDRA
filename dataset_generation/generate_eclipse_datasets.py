@@ -11,6 +11,7 @@ import prince
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OrdinalEncoder
+from sklearn.metrics import mean_squared_error
 import cv2 as cv
 import matplotlib.pyplot as plt
 from tqdm import tqdm
@@ -661,13 +662,13 @@ if __name__ == '__main__':
             dataset_label =\
                 f"unreduced_eclipse_{dataset_type.replace(' ', '_')}_set"
 
-            dataset_reshaped_ordered.to_hdf(
-                        f'{args.dataset_dir}/{dataset_label}.h5',
-                        key='data', mode='w')
+            # dataset_reshaped_ordered.to_hdf(
+            #             f'{args.dataset_dir}/{dataset_label}.h5',
+            #             key='data', mode='w')
             
-            labels_reshaped_ordered.to_hdf(
-                        f'{args.dataset_dir}/{dataset_label}.h5',
-                        key='labels', mode='r+')
+            # labels_reshaped_ordered.to_hdf(
+            #             f'{args.dataset_dir}/{dataset_label}.h5',
+            #             key='labels', mode='r+')
             
         anomaly_ratio_cumulative =\
             np.cumsum(np.any(dataset_reshaped.loc[:, label_columns]\
@@ -753,6 +754,10 @@ if __name__ == '__main__':
 
         data_mean_all = []
         data_median_all = []
+
+        means_all = []
+        medians_all = []
+
         labels_all = []
 
         columns_reduced_data = None
@@ -776,6 +781,7 @@ if __name__ == '__main__':
             data_mean = {}
             data_median = {}
             data_std = {}
+
             labels = {}
 
             for col_reduced, bucket in data_buckets.items():
@@ -825,9 +831,20 @@ if __name__ == '__main__':
             data_median_all.append(data_median_np)
             labels_all.append(np.array(list(labels.values())))
 
+            means_all.append(np.array(list(data_mean.values())))
+            medians_all.append(np.array(list(data_median.values())))
+
         data_mean_all_np = np.stack(data_mean_all)
         data_median_all_np = np.stack(data_median_all)
         labels_all_np = np.stack(labels_all)
+
+        means_all = np.nan_to_num(np.stack(means_all), nan=-1)
+        medians_all = np.nan_to_num(np.stack(medians_all), nan=-1)
+
+
+        print(f'{math.sqrt(mean_squared_error(medians_all, means_all)):.5f}')
+
+        continue
 
         data_mean_all_np = np.nan_to_num(data_mean_all_np, nan=-1)
         data_median_all_np = np.nan_to_num(data_median_all_np, nan=-1)
@@ -851,17 +868,17 @@ if __name__ == '__main__':
 
         dataset_label = f"reduced_eclipse_{dataset_type.replace(' ', '_')}_set"
 
-        data_mean_all_df.to_hdf(f'{args.dataset_dir}/{dataset_label}_mean.h5',
-                                                            key='data', mode='w')
+        # data_mean_all_df.to_hdf(f'{args.dataset_dir}/{dataset_label}_mean.h5',
+        #                                                     key='data', mode='w')
         
-        labels_all_df.to_hdf(f'{args.dataset_dir}/{dataset_label}_mean.h5',
-                                                        key='labels', mode='r+')
+        # labels_all_df.to_hdf(f'{args.dataset_dir}/{dataset_label}_mean.h5',
+        #                                                 key='labels', mode='r+')
         
-        data_median_all_df.to_hdf(f'{args.dataset_dir}/{dataset_label}_median.h5',
-                                                                key='data', mode='w')
+        # data_median_all_df.to_hdf(f'{args.dataset_dir}/{dataset_label}_median.h5',
+        #                                                         key='data', mode='w')
         
-        labels_all_df.to_hdf(f'{args.dataset_dir}/{dataset_label}_median.h5',
-                                                        key='labels', mode='r+')
+        # labels_all_df.to_hdf(f'{args.dataset_dir}/{dataset_label}_median.h5',
+        #                                                 key='labels', mode='r+')
 
         if args.generate_videos:
 

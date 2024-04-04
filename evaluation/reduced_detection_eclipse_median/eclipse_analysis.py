@@ -6,7 +6,8 @@ import pandas as pd
 from sklearn.metrics import roc_auc_score,\
                                 precision_recall_curve,\
                                 precision_recall_fscore_support,\
-                                matthews_corrcoef
+                                matthews_corrcoef,\
+                                accuracy_score
 import matplotlib
 import matplotlib.pyplot as plt
 from tqdm.auto import trange
@@ -173,11 +174,14 @@ def get_scores(model_name,
 
     auroc = roc_auc_score(true, pred)
 
+    accuracy = accuracy_score(true, pred)
+
     print(f'AUROC: {auroc:.3f}\t'
             f'F1: {f1:.3f}\t'
             f'MCC: {mcc:.3f}\t'
             f'Precision: {precision:.3f}\t'
-            f'Recall: {recall:.3f}')
+            f'Recall: {recall:.3f}\t'
+            f'Accuracy: {accuracy:.3f}')
     
     if to_csv:
         save_to_csv(model_name,
@@ -185,7 +189,8 @@ def get_scores(model_name,
                         auroc,
                         f1, mcc,
                         precision,
-                        recall)
+                        recall,
+                        accuracy)
 
     return pred
 
@@ -279,13 +284,11 @@ def get_scores_dagmm(model_name,
     Returns:
         dict: pot result dict
     """
-
-    lms = 0.99995
     while True:
         try:
             s = SPOT(q)  # SPOT object
             s.fit(pred_train, pred_test)  # data import
-            s.initialize(level=lms, min_extrema=False, verbose=False)  # initialization step
+            s.initialize(level=level, min_extrema=False, verbose=False)  # initialization step
         except: lms = lms * 0.999
         else: break
     ret = s.run(dynamic=False)  # run
@@ -305,22 +308,24 @@ def get_scores_dagmm(model_name,
                                                     average='binary')
 
     mcc = matthews_corrcoef(true, pred)
-
     auroc = roc_auc_score(true, pred)
+    accuracy = accuracy_score(true, pred)
 
     print(f'AUROC: {auroc:.3f}\t'
             f'F1: {f1:.3f}\t'
             f'MCC: {mcc:.3f}\t'
             f'Precision: {precision:.3f}\t'
-            f'Recall: {recall:.3f}')
+            f'Recall: {recall:.3f}\t'
+            f'Accuracy: {accuracy:.3f}')
     
     if to_csv:
         save_to_csv(model_name,
-                        seed,
-                        auroc,
-                        f1, mcc,
-                        precision,
-                        recall)
+                            seed,
+                            auroc,
+                            f1, mcc,
+                            precision,
+                            recall,
+                            accuracy)
 
     return pred
 
@@ -331,13 +336,15 @@ def save_to_csv(model_name: str,
                         f1: np.float64,
                         mcc: np.float64,
                         precision: np.float64,
-                        recall: np.float64):
+                        recall: np.float64,
+                        accuracy: np.float64):
     
     metrics_to_save = [seed,
                         auroc,
                         f1, mcc,
                         precision,
-                        recall]
+                        recall,
+                        accuracy]
 
     metrics_to_save = np.atleast_2d(metrics_to_save)
 
@@ -360,14 +367,14 @@ def print_results(label: np.array,
     #     load_numpy_array(f'predictions/tranad_train_seed_{seed}.npy')
     # preds_tranad =\
     #     load_numpy_array(f'predictions/tranad_seed_{seed}.npy')
-    # preds_l2_dist_train_mse_no_augment =\
-    #     load_numpy_array(f'predictions/l2_dist_train_mse_no_augment_seed_{seed}.npy')
-    # preds_l2_dist_mse_no_augment =\
-    #     load_numpy_array(f'predictions/l2_dist_mse_no_augment_seed_{seed}.npy')
-    # preds_l2_dist_train_smse_no_augment =\
-    #     load_numpy_array(f'predictions/l2_dist_train_smse_no_augment_seed_{seed}.npy')
-    # preds_l2_dist_smse_no_augment =\
-    #     load_numpy_array(f'predictions/l2_dist_smse_no_augment_seed_{seed}.npy')
+    preds_l2_dist_train_mse_no_augment =\
+        load_numpy_array(f'predictions/l2_dist_train_mse_no_augment_seed_{seed}.npy')
+    preds_l2_dist_mse_no_augment =\
+        load_numpy_array(f'predictions/l2_dist_mse_no_augment_seed_{seed}.npy')
+    preds_l2_dist_train_smse_no_augment =\
+        load_numpy_array(f'predictions/l2_dist_train_smse_no_augment_seed_{seed}.npy')
+    preds_l2_dist_smse_no_augment =\
+        load_numpy_array(f'predictions/l2_dist_smse_no_augment_seed_{seed}.npy')
     preds_l2_dist_train_mse =\
         load_numpy_array(f'predictions/l2_dist_train_mse_seed_{seed}.npy')
     preds_l2_dist_mse =\
@@ -422,26 +429,27 @@ def print_results(label: np.array,
     #                         label[:len(preds_l2_dist_mse_no_augment)],
     #                         0.01, 0.02, to_csv)
 
-    # print('Informer-MSE - No Augmentation:')
+    print('Informer-MSE - No Augmentation:')
 
-    # offset = 16
+    offset = 16
 
-    # preds_l2_dist_mse_no_augment =\
-    #     get_scores('informer_mse_no_augment', seed,
-    #                     preds_l2_dist_train_mse_no_augment[:spot_train_size],
-    #                     preds_l2_dist_mse_no_augment,
-    #                     label[offset:len(preds_l2_dist_mse_no_augment) + offset], 0.00001, 0.01, to_csv)
+    preds_l2_dist_mse_no_augment =\
+        get_scores_dagmm('informer_mse_no_augment', seed,
+                            preds_l2_dist_train_mse_no_augment[:spot_train_size],
+                            preds_l2_dist_mse_no_augment,
+                            label[offset:len(preds_l2_dist_mse_no_augment) + offset],
+                            0.00001, 0.8, 1000, to_csv)
 
 
-    # print('Informer-SMSE - No Augmentation:')
+    print('Informer-SMSE - No Augmentation:')
 
-    # offset = 64
+    offset = 64
 
-    # preds_l2_dist_smse_no_augment =\
-    #     get_scores('informer_smse_no_augment', seed,
-    #                     preds_l2_dist_train_smse_no_augment[:spot_train_size],
-    #                     preds_l2_dist_smse_no_augment,
-    #                     label[offset:len(preds_l2_dist_smse_no_augment) + offset], 0.005, 0.8, to_csv)
+    preds_l2_dist_smse_no_augment =\
+        get_scores('informer_smse_no_augment', seed,
+                        preds_l2_dist_train_smse_no_augment[:spot_train_size],
+                        preds_l2_dist_smse_no_augment,
+                        label[offset:len(preds_l2_dist_smse_no_augment) + offset], 0.001, 0.8, to_csv)
     
     print('Informer-MSE:')
 
@@ -451,18 +459,19 @@ def print_results(label: np.array,
         get_scores('informer_mse', seed,
                         preds_l2_dist_train_mse[:spot_train_size],
                         preds_l2_dist_mse,
-                        label[offset:len(preds_l2_dist_mse) + offset], 0.0008, 0.8, to_csv)
+                        label[offset:len(preds_l2_dist_mse) + offset], 0.00001, 0.01, to_csv)
 
     print('Informer-SMSE:')
 
     offset = 64
 
     preds_l2_dist_smse =\
-        get_scores('informer_smse', seed,
-                        preds_l2_dist_train_smse[:spot_train_size],
-                        preds_l2_dist_smse,
-                        label[offset:len(preds_l2_dist_smse) + offset], 0.0008, 0.8, to_csv)
-
+        get_scores_dagmm('informer_smse', seed,
+                            preds_l2_dist_train_smse[:spot_train_size],
+                            preds_l2_dist_smse,
+                            label[offset:len(preds_l2_dist_smse) + offset],
+                            0.000001, 0.8, 10000, to_csv)
+        
     # print('DAGMM - No Augmentation:')
 
     # preds_dagmm_no_augment =\

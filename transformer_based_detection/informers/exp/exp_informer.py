@@ -155,7 +155,7 @@ class ExpInformer(ExpBasic):
 
         elif Data == EclipseDataset:
 
-            variant = int(self.args.data.split('_')[-1])
+            variant = self.args.data.split('_')[-1].lower()
 
             dataset = Data(variant=variant,
                             mode=flag,
