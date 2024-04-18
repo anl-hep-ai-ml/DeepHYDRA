@@ -18,7 +18,6 @@ sys.path.append('../../')
 from clustering.dbscananomalydetector import HLTDBSCANAnomalyDetector
 from reduction.medianstdreducer import MedianStdReducer
 from transformer_based_detection.informers.informerrunner import InformerRunner
-from utils.runcontrolstateprovider import RunControlStateProvider
 from utils.offlinepbeastdataloader import OfflinePBeastDataLoader
 from utils.anomalyregistry import JSONAnomalyRegistry
 from utils.reduceddatabuffer import ReducedDataBuffer
