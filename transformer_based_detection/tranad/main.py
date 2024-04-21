@@ -580,7 +580,9 @@ def backprop(epoch,
 
     elif 'TranAD' in model.name:
         l = nn.MSELoss(reduction = 'none')
-        data_x = torch.DoubleTensor(data)
+
+        # data_x = torch.DoubleTensor(data)
+        data_x = data
 
         dataset = TensorDataset(data_x, data_x)
         

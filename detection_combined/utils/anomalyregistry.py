@@ -20,7 +20,7 @@ base_data_anomaly_ends = [264,
 
 # output_dir = '../../../evaluation/combined_detection_2023/predictions/'
 # output_dir = '../../../evaluation/combined_detection_dcm_2018/predictions/'
-output_dir = '../../../evaluation/combined_detection_eclipse/predictions/'
+output_dir = '../../../evaluation/combined_detection_eclipse_median/predictions/'
 
 def _save_numpy_array(array: np.array,
                         filename: str):
@@ -144,8 +144,13 @@ class BenchmarkAnomalyRegistry(AnomalyRegistry):
                     variant: str,
                     seed: int) -> None:
 
+        # true_pd = pd.read_hdf(self.label_dir +\
+        #                             f'/unreduced_hlt_dcm_test_set_{variant}_y.h5')
+        
         true_pd = pd.read_hdf(self.label_dir +\
-                                    f'/unreduced_hlt_dcm_test_set_{variant}_y.h5')
+                                'unreduced_eclipse_'
+                                'test_set.h5',
+                                key='labels')
 
         true_pd.index = _remove_timestamp_jumps(
                             pd.DatetimeIndex(true_pd.index)).strftime('%Y-%m-%d %H:%M:%S')
@@ -176,16 +181,16 @@ class BenchmarkAnomalyRegistry(AnomalyRegistry):
         
         _save_numpy_array(pred_clustering_np, f'{output_dir}/clustering.npy')
 
-        if model_name == 'Informer-MSE':
-            pred_transformer_np = np.pad(pred_transformer_np, (16, 1))
-            _save_numpy_array(pred_transformer_np, f'{output_dir}/l2_dist_mse_seed_{seed}.npy')
-        elif model_name == 'Informer-SMSE':
-            pred_transformer_np = np.pad(pred_transformer_np, (64, 1))
-            _save_numpy_array(pred_transformer_np, f'{output_dir}/l2_dist_smse_seed_{seed}.npy')
-        elif model_name == 'TranAD':
-            pred_transformer_np = np.pad(pred_transformer_np, (9, 0))
-            _save_numpy_array(pred_transformer_np, f'{output_dir}/{model_name.lower()}_seed_{seed}.npy')
-        elif model_name in ['USAD', 'DAGMM', 'OmniAnomaly']:
-            pred_transformer_np = np.pad(pred_transformer_np, (4, 0))
-            _save_numpy_array(pred_transformer_np, f'{output_dir}/{model_name.lower()}_seed_{seed}.npy')
+        # if model_name == 'Informer-MSE':
+        #     pred_transformer_np = np.pad(pred_transformer_np, (16, 1))
+        #     _save_numpy_array(pred_transformer_np, f'{output_dir}/l2_dist_mse_seed_{seed}.npy')
+        # elif model_name == 'Informer-SMSE':
+        #     pred_transformer_np = np.pad(pred_transformer_np, (64, 1))
+        #     _save_numpy_array(pred_transformer_np, f'{output_dir}/l2_dist_smse_seed_{seed}.npy')
+        # elif model_name == 'TranAD':
+        #     pred_transformer_np = np.pad(pred_transformer_np, (9, 0))
+        #     _save_numpy_array(pred_transformer_np, f'{output_dir}/{model_name.lower()}_seed_{seed}.npy')
+        # elif model_name in ['USAD', 'DAGMM', 'OmniAnomaly']:
+        #     pred_transformer_np = np.pad(pred_transformer_np, (4, 0))
+        #     _save_numpy_array(pred_transformer_np, f'{output_dir}/{model_name.lower()}_seed_{seed}.npy')
             
