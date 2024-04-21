@@ -33,20 +33,20 @@ def _save_model_attributes(model,
 
     fvcore_writer = FVCoreWriter(model, data)
 
-    fvcore_writer.write_flops_to_json('../../evaluation/computational_intensity_analysis/'
-                                                    f'data/by_module/{output_filename}.json',
+    fvcore_writer.write_flops_to_json('../../evaluation/computational_intensity_analysis/data/'
+                                                    f'eclipse/by_module/{output_filename}.json',
                                         'by_module')
 
-    fvcore_writer.write_flops_to_json('../../evaluation/computational_intensity_analysis/'
-                                                    f'data/by_operator/{output_filename}.json',
+    fvcore_writer.write_flops_to_json('../../evaluation/computational_intensity_analysis/data/'
+                                                    f'eclipse/by_operator/{output_filename}.json',
                                         'by_operator')
 
-    fvcore_writer.write_activations_to_json('../../evaluation/activation_analysis/'
-                                                    f'data/by_module/{output_filename}.json',
+    fvcore_writer.write_activations_to_json('../../evaluation/activation_analysis/data/'
+                                                    f'eclipse/by_module/{output_filename}.json',
                                                 'by_module')
 
-    fvcore_writer.write_activations_to_json('../../evaluation/activation_analysis/'
-                                                    f'data/by_operator/{output_filename}.json',
+    fvcore_writer.write_activations_to_json('../../evaluation/activation_analysis/data/'
+                                                    f'eclipse/by_operator/{output_filename}.json',
                                                 'by_operator')
 
     torchinfo_writer = TorchinfoWriter(model,
@@ -57,8 +57,8 @@ def _save_model_attributes(model,
 
     torchinfo_writer.show_model_tree(attr_list=['Parameters', 'MACs'])
 
-    torchinfo_writer.get_dataframe().to_pickle(
-        f'../../evaluation/parameter_analysis/{output_filename}.pkl')
+    torchinfo_writer.get_dataframe().to_pickle('../../evaluation/parameter_analysis/'
+                                                    f'data/eclipse/{output_filename}.pkl')
 
 
 def _save_numpy_array(array: np.array,
@@ -122,9 +122,11 @@ def load_dataset(dataset):
         loader.append(test_set.get_data())
         loader.append(test_set.get_labels())
 
-    elif dataset == 'ECLIPSE':
+    elif 'ECLIPSE' in dataset:
 
-        train_set = EclipseDataset('train', False,
+        variant = dataset.split('_')[-1].lower()
+
+        train_set = EclipseDataset(variant, 'train', False,
                                         'minmax', 'train_set_fit',
                                         applied_augmentations=\
                                                 args.augmentations,
@@ -140,7 +142,7 @@ def load_dataset(dataset):
 
         loader.append(train_set.get_data())
 
-        test_set = EclipseDataset('test', False,
+        test_set = EclipseDataset(variant, 'test', False,
                                     'minmax', 'train_set_fit',
                                     applied_augmentations=\
                                             args.augmentations,
@@ -148,10 +150,6 @@ def load_dataset(dataset):
                                             args.augmented_dataset_size_relative,
                                     augmented_data_ratio=\
                                             args.augmented_data_ratio)
-        
-        print(test_set.get_labels())
-
-        exit()
 
         loader.append(test_set.get_data())
         loader.append(test_set.get_labels())
@@ -860,22 +858,24 @@ if __name__ == '__main__':
                                             f'predictions/{args.model.lower()}_'\
                                             f'{augment_label}seed_{int(args.seed)}.npy')
         
-    if args.dataset == 'ECLIPSE':
+    if 'ECLIPSE' in args.dataset:
+
+        variant = args.dataset.split('_')[-1].lower()
 
         augment_label = 'no_augment_' if augmentation_string == 'no_augment' else ''
 
         _save_numpy_array(lossTfinal,
-                            '../../evaluation/reduced_detection_eclipse/'\
+                            f'../../evaluation/reduced_detection_eclipse_{variant}/'\
                                             f'predictions/{args.model.lower()}_'\
                                             f'train_{augment_label}seed_{int(args.seed)}.npy')
 
         _save_numpy_array(lossTfinal,
-                            '../../evaluation/combined_detection_eclipse/'\
+                            f'../../evaluation/combined_detection_eclipse_{variant}/'\
                                             f'predictions/{args.model.lower()}_'\
                                             f'train_{augment_label}seed_{int(args.seed)}.npy')
 
         _save_numpy_array(lossFinal,
-                            '../../evaluation/reduced_detection_eclipse/'\
+                            f'../../evaluation/reduced_detection_eclipse_{variant}/'\
                                             f'predictions/{args.model.lower()}_'\
                                             f'{augment_label}seed_{int(args.seed)}.npy')
 

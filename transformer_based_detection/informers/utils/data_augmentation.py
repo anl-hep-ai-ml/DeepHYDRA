@@ -1370,6 +1370,6 @@ class EclipseDataTimeseriesAugmentor():
 
                     ax.axvspan(index[start], index[end], color='red', alpha=0.5)
             
-        plt.savefig('eclipse_augmentation_test_labeled.png')
+        # plt.savefig('eclipse_augmentation_test_labeled.png')
 
         return dataset_augmented, labels_augmented

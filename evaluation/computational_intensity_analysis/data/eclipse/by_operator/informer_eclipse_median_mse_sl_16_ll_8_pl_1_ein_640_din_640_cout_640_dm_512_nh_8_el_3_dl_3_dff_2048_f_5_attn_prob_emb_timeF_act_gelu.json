@@ -1,0 +1,1 @@
+{"add": 95760, "sub": 488, "conv": 158793728, "linear": 81144832, "matmul": 864768, "sum": 46400, "div": 440, "mul": 5368, "mean": 157699, "layer_norm": 384000, "batch_norm": 61440, "cumsum": 55296, "einsum": 110580.0}

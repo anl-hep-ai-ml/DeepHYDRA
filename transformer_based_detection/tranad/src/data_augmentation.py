@@ -925,8 +925,6 @@ class EclipseDataTimeseriesAugmentor():
     def _reduce_labels(self, label: pd.DataFrame):
         columns_individual_labels = (label.columns != 'label')
 
-        # print(columns_individual_labels)
-
         label.loc[:, columns_individual_labels] =\
             label.loc[:, columns_individual_labels].fillna(0).astype(np.uint8)
 
@@ -934,7 +932,14 @@ class EclipseDataTimeseriesAugmentor():
             label.loc[:, columns_individual_labels]\
                 .agg(lambda row: np.any(row).astype(np.uint8), axis=1)
         
-        label = label.drop(label.columns[columns_individual_labels], axis=1)
+        label = label[['label']]
+
+        anomaly_count =\
+            np.count_nonzero(label.to_numpy().flatten()>=1)
+        
+        label_size = label.size
+
+        print(f'Anomalous data ratio: {100*anomaly_count/label_size:.3f} %')
 
         return label
 
@@ -1186,7 +1191,7 @@ class EclipseDataTimeseriesAugmentor():
 
                 ax.plot(index, data)
             
-        plt.savefig('eclipse_augmentation_test_unlabeled.png')
+        # plt.savefig('eclipse_augmentation_test_unlabeled.png')
 
         return dataset_augmented
 
@@ -1365,6 +1370,6 @@ class EclipseDataTimeseriesAugmentor():
 
                     ax.axvspan(index[start], index[end], color='red', alpha=0.5)
             
-        plt.savefig('eclipse_augmentation_test_labeled.png')
+        # plt.savefig('eclipse_augmentation_test_labeled.png')
 
         return dataset_augmented, labels_augmented

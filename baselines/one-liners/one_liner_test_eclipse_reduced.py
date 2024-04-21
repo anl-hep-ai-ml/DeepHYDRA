@@ -27,10 +27,6 @@ def expand_labels(data_columns: pd.Index,
                     labels: pd.DataFrame):
     
     app_names = ['exa', 'lammps', 'sw4', 'sw4lite']
-    
-    label_columns = labels.columns
-    
-    label_columns = pd.Series(label_columns)
 
     def _renaming_func(element):
 
@@ -53,9 +49,8 @@ def expand_labels(data_columns: pd.Index,
 
     labels_expanded.columns = data_columns
 
-    print(labels_expanded)
+    return labels_expanded
 
-    exit()
 
 def adjust_predicts(score, label,
                     threshold=None,
@@ -176,8 +171,7 @@ def method_4_fixed_k(k: int,
 
 def method_4_combined(abs_diff: np.array,
                             labels: np.array,
-                            parameters: np.array,
-                            variant: str) -> np.array:
+                            parameters: np.array) -> np.array:
 
     channel_count = abs_diff.shape[-1]
 
@@ -242,10 +236,6 @@ def parameter_exploration(data: np.array,
     diff = np.diff(data, axis=0)
 
     labels = labels[1:, :]
-
-    print(labels.shape)
-
-    exit()
 
     b_array = np.linspace(b_lower, b_upper, b_count)
     c_array = np.linspace(c_lower, c_upper, c_count)
@@ -589,18 +579,19 @@ def run_with_best_parameters_method_3(data: np.array,
     #     print(i, e)
     # pylikwid.markerclose()
 
-    save_numpy_array(preds_all, '../../evaluation/reduced_detection_eclipse/predictions/method_3.npy')
+    save_numpy_array(preds_all, f'../../evaluation/reduced_detection_eclipse_{variant}/predictions/method_3.npy')
 
 
 def run_with_best_parameters_method_4(data: np.array,
                                         labels: np.array,
-                                        threshold: np.float64):
+                                        threshold: np.float64,
+                                        variant: str):
 
     # pylikwid.markerinit()
     # pylikwid.markerthreadinit()
 
     results_best_method_4 =\
-        pd.read_csv('parameters_best_method_4_eclipse_reduced.csv', sep='\t')
+        pd.read_csv(f'parameters_best_method_4_eclipse_{variant}_reduced.csv', sep='\t')
 
     # pylikwid.markerstartregion("1lm4_0")
     diff = np.diff(data, axis=0)
@@ -657,6 +648,8 @@ def run_with_best_parameters_method_4(data: np.array,
     #     print(i, e)
     # pylikwid.markerclose()
 
+    save_numpy_array(preds_all, f'../../evaluation/reduced_detection_eclipse_{variant}/predictions/method_4.npy')
+
 
 if __name__ == '__main__':
 
@@ -675,9 +668,6 @@ if __name__ == '__main__':
                                     f'{args.variant}.h5',
                                     key='data')
 
-    print(eclipse_data_pd.shape)
-    print(eclipse_data_pd.columns)
-
     eclipse_data_np = eclipse_data_pd.to_numpy()
         
     labels_pd = pd.read_hdf(args.data_dir +\
@@ -686,38 +676,33 @@ if __name__ == '__main__':
                                 f'{args.variant}.h5',
                                 key='labels')
 
-    expand_labels(eclipse_data_pd.columns,
-                                    labels_pd)
-
-    print(labels_pd.shape)
-    print(labels_pd.columns)
-
-    exit()
+    labels_pd = expand_labels(eclipse_data_pd.columns,
+                                                labels_pd)
 
     labels_np = labels_pd.to_numpy()
 
     labels_np = np.greater_equal(labels_np, 1)
 
-    parameter_exploration(eclipse_data_np,
-                                labels_np,
-                                k_lower=args.k_lower,
-                                k_upper=args.k_upper,
-                                variant=args.variant)
+    # parameter_exploration(eclipse_data_np,
+    #                             labels_np,
+    #                             k_lower=args.k_lower,
+    #                             k_upper=args.k_upper,
+    #                             variant=args.variant)
 
-    test_thresholds_method_3(eclipse_data_np,
-                                    labels_np,
-                                    args.variant)
+    # test_thresholds_method_3(eclipse_data_np,
+    #                                 labels_np,
+    #                                 args.variant)
 
-    test_thresholds_method_4(eclipse_data_np,
-                                    labels_np,
-                                    args.variant)
+    # test_thresholds_method_4(eclipse_data_np,
+    #                                 labels_np,
+    #                                 args.variant)
 
-    run_with_best_parameters_method_3(eclipse_data_np,
-                                                labels_np,
-                                                0.675,
-                                                args.variant)
+    # run_with_best_parameters_method_3(eclipse_data_np,
+    #                                             labels_np,
+    #                                             0.975,
+    #                                             args.variant)
 
     run_with_best_parameters_method_4(eclipse_data_np,
                                                 labels_np,
-                                                0.625,
+                                                0.975,
                                                 args.variant)

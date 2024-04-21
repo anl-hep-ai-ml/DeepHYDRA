@@ -15,6 +15,7 @@ dataset_path_local = '../../datasets/eclipse/'
 
 class EclipseDataset(Dataset):
     def __init__(self,
+                    variant,
                     mode,
                     inverse,
                     scaling_type,
@@ -23,6 +24,7 @@ class EclipseDataset(Dataset):
                     augmented_dataset_size_relative=1,
                     augmented_data_ratio=0):
 
+        self.variant = variant
         self.mode = mode
         self.inverse = inverse
 
@@ -36,26 +38,24 @@ class EclipseDataset(Dataset):
 
         if mode == 'train' or mode == 'unlabeled_train':
 
-            data_unlabeled_train =\
+            data_train_set_x_pd =\
                     pd.read_hdf(dataset_path_local +\
                                     'reduced_eclipse_'
-                                    'unlabeled_train_set_median.h5')
-
-            data_train_set_x_pd =\
-                data_unlabeled_train.loc[:, ~(data_unlabeled_train.columns.str.contains('label'))]
-
-            data_train_set_x_pd.index *= 1e9
+                                    'unlabeled_train_set_'
+                                    f'{self.variant}.h5',
+                                    key='data')
 
             data_train_set_x_pd.index =\
-                pd.DatetimeIndex(data_train_set_x_pd.index)
+                pd.DatetimeIndex(data_train_set_x_pd.index)           
 
-            if len(applied_augmentations):
+            if applied_augmentations:
+                if len(applied_augmentations):
 
-                timeseries_augmentor =\
-                    EclipseDataTimeseriesAugmentor(applied_augmentations)
+                    timeseries_augmentor =\
+                        EclipseDataTimeseriesAugmentor(applied_augmentations)
 
-                data_train_set_x_pd =\
-                    timeseries_augmentor.fit_transform(data_train_set_x_pd)
+                    data_train_set_x_pd =\
+                        timeseries_augmentor.fit_transform(data_train_set_x_pd)
 
             data_train_set_x_np = data_train_set_x_pd.to_numpy()
 
@@ -66,52 +66,57 @@ class EclipseDataset(Dataset):
 
         if mode == 'labeled_train':
 
-            data_labeled_train = pd.read_hdf(dataset_path_local +\
+            data_labeled_train_set_x_pd =\
+                        pd.read_hdf(dataset_path_local +\
+                                        'reduced_eclipse_'
+                                        'labeled_train_set_'
+                                        f'{self.variant}.h5',
+                                        key='data')
+
+            labels_pd = pd.read_hdf(dataset_path_local +\
                                                 'reduced_eclipse_'
-                                                'labeled_train_set_median.h5')
-
-            data_labeled_train_set_x_pd = \
-                data_labeled_train.loc[:, ~(data_labeled_train.columns.str.contains('label'))]
-
-            labels_pd =\
-                data_labeled_train.loc[:, (data_labeled_train.columns.str.contains('label'))]
+                                                'labeled_train_set_'
+                                                f'{self.variant}.h5',
+                                                key='labels')
 
             data_labeled_train_set_x_pd.index =\
                 pd.DatetimeIndex(data_labeled_train_set_x_pd.index)
 
             labels_pd.index = pd.DatetimeIndex(labels_pd.index)
 
-            if len(applied_augmentations):
-                timeseries_augmentor =\
-                    EclipseDataTimeseriesAugmentor(applied_augmentations)
+            if applied_augmentations:
+                if len(applied_augmentations):
+                    timeseries_augmentor =\
+                        EclipseDataTimeseriesAugmentor(applied_augmentations)
 
-                target_size = int(len(data_labeled_train_set_x_pd)*\
-                                        augmented_dataset_size_relative)
+                    target_size = int(len(data_labeled_train_set_x_pd)*\
+                                            augmented_dataset_size_relative)
 
-                data_labeled_train_set_x_pd,\
-                                    labels_pd =\
-                                        timeseries_augmentor.fit_transform_labeled(
-                                                                data_labeled_train_set_x_pd,
-                                                                labels_pd)
+                    data_labeled_train_set_x_pd,\
+                                        labels_pd =\
+                                            timeseries_augmentor.fit_transform_labeled(
+                                                                    data_labeled_train_set_x_pd,
+                                                                    labels_pd)
 
-                data_labeled_train_set_x_pd =\
-                    data_labeled_train_set_x_pd.iloc[:target_size, :]
+                    data_labeled_train_set_x_pd =\
+                        data_labeled_train_set_x_pd.iloc[:target_size, :]
 
-                labels_pd =\
-                    labels_pd.iloc[:target_size, :]
+                    labels_pd =\
+                        labels_pd.iloc[:target_size, :]
 
             data_labeled_train_set_x_np = data_labeled_train_set_x_pd.to_numpy()
 
-            self.labels = labels_pd.to_numpy().astype(np.int8).flatten()
+            labels_pd = self.expand_labels(data_labeled_train_set_x_pd.columns, labels_pd)
+
+            self.labels = (labels_pd.to_numpy()>=1).astype(np.int8)
 
             if scaling_source == 'train_set_fit':
-                data_unlabeled_train =\
+                data_unlabeled_train_set_x_pd =\
                         pd.read_hdf(dataset_path_local +\
                                         'reduced_eclipse_'
-                                        'unlabeled_train_set_median.h5')
-
-                data_unlabeled_train_set_x_pd =\
-                    data_unlabeled_train.loc[:, ~(data_unlabeled_train.columns.str.contains('label'))]
+                                        'unlabeled_train_set_'
+                                        f'{self.variant}.h5',
+                                        key='data')
 
                 data_unlabeled_train_set_x_np =\
                             data_unlabeled_train_set_x_pd.to_numpy()
@@ -129,35 +134,32 @@ class EclipseDataset(Dataset):
             
         elif mode == 'test':
 
-            data_test = pd.read_hdf(dataset_path_local +\
+            data_x_pd = pd.read_hdf(dataset_path_local +\
                                         'reduced_eclipse_'
-                                        'test_set_median.h5')
+                                        'test_set_'
+                                        f'{self.variant}.h5',
+                                        key='data')
+        
+            labels_pd = pd.read_hdf(dataset_path_local +\
+                                        'reduced_eclipse_'
+                                        'test_set_'
+                                        f'{self.variant}.h5',
+                                        key='labels')
 
-            data_x_pd =\
-                data_test.loc[:, ~(data_test.columns.str.contains('label'))]
-
-            labels_pd =\
-                data_test.loc[:, data_test.columns == 'label']
-            
-            print(labels_pd.columns)
-            exit()
-
-            self.labels = np.any(labels_pd.to_numpy()>=1, axis=1).astype(np.int8).flatten()
-
-            print(self.labels)
+            labels_pd = self.expand_labels(data_x_pd.columns, labels_pd)
+            self.labels = (labels_pd.to_numpy()>=1).astype(np.int8)
             
             data_x_pd.index = pd.DatetimeIndex(data_x_pd.index)
 
             data_x_np = data_x_pd.to_numpy()
 
             if scaling_source == 'train_set_fit':
-                data_unlabeled_train =\
+                data_unlabeled_train_set_x_pd =\
                         pd.read_hdf(dataset_path_local +\
                                         'reduced_eclipse_'
-                                        'unlabeled_train_set_median.h5')
-
-                data_unlabeled_train_set_x_pd =\
-                    data_unlabeled_train.loc[:, ~(data_unlabeled_train.columns.str.contains('label'))]
+                                        'unlabeled_train_set_'
+                                        f'{self.variant}.h5',
+                                        key='data')
 
                 data_train_set_x_np =\
                     data_unlabeled_train_set_x_pd.to_numpy()
@@ -172,24 +174,22 @@ class EclipseDataset(Dataset):
 
         elif mode == 'val':
 
-            data_val = pd.read_hdf(dataset_path_local +\
+            data_x_pd = pd.read_hdf(dataset_path_local +\
                                             'reduced_eclipse_'
-                                            'unlabeled_val_set_median.h5')
-
-            data_x_pd =\
-                data_val.loc[:, ~(data_val.columns.str.contains('label'))]
+                                            'unlabeled_val_set_'
+                                            f'{self.variant}.h5',
+                                            key='data')
             
             data_x_pd.index = pd.DatetimeIndex(data_x_pd.index)
             data_x_np = data_x_pd.to_numpy()
 
             if scaling_source == 'train_set_fit':
-                data_unlabeled_train =\
+                data_unlabeled_train_set_x_pd =\
                         pd.read_hdf(dataset_path_local +\
                                         'reduced_eclipse_'
-                                        'unlabeled_train_set_median.h5')
-
-                data_unlabeled_train_set_x_pd =\
-                    data_unlabeled_train.loc[:, ~(data_unlabeled_train.columns.str.contains('label'))]
+                                        'unlabeled_train_set_'
+                                        f'{self.variant}.h5',
+                                        key='data')
 
                 data_train_set_x_np =\
                     data_unlabeled_train_set_x_pd.to_numpy()
@@ -213,6 +213,36 @@ class EclipseDataset(Dataset):
             self.data_y = data_x_np
         else:
             self.data_y = self.data_x
+
+
+    def expand_labels(self,
+                        data_columns: pd.Index,
+                        labels: pd.DataFrame):
+    
+        app_names = ['exa', 'lammps', 'sw4', 'sw4lite']
+
+        def _renaming_func(element):
+
+            column_name = ''
+
+            for app_name in app_names:
+                if f'{app_name}_' in element:
+                    column_name = app_name
+
+            return column_name
+        
+        label_columns_expanded =\
+            pd.Index(data_columns.map(_renaming_func))
+
+        labels_expanded = pd.DataFrame(columns=label_columns_expanded)
+
+        for app_name in app_names:
+            labels_expanded[app_name] =\
+                            labels.loc[:, app_name]
+
+        labels_expanded.columns = data_columns
+
+        return labels_expanded
 
 
     def get_data(self):

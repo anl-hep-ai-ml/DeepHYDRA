@@ -363,7 +363,7 @@ def get_preds_best_threshold(data: np.ndarray,
     pred_reduced[:, included_indices] =\
                     pred[:, included_indices]
 
-    save_numpy_array(pred_reduced, '../../evaluation/combined_detection/predictions/merlin.npy')
+    save_numpy_array(pred_reduced, '../../evaluation/combined_detection_hlt_dcm_2018/predictions/merlin.npy')
 
 
 if __name__ == '__main__':

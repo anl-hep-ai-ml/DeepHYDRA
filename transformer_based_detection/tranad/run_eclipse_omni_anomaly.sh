@@ -5,5 +5,7 @@ declare -a seeds=(7 129 28 192 85 148 142 30 78 33)
 
 for seed in ${seeds[@]}
 do
-    python3 main.py --model OmniAnomaly --seed=${seed} --dataset "ECLIPSE" --retrain --apply_augmentations --augmentations 'Scale:1.0,1.2' 'Scale_APP:1.0,1.2,0.01,0.01,0.01' --augmented_dataset_size_relative=1.0 --augmented_data_ratio=0.25
+    python3 main.py --model OmniAnomaly --seed=${seed} --dataset "ECLIPSE_MEDIAN" --retrain --apply_augmentations --augmentations 'Roll:0,1' 'Roll:0,1' 'Roll:0,1' 'Roll:0,1' 'Roll:0,1' 'Roll:0,1' 'Roll:0,1' 'Roll:0,1'
+    python3 main.py --model OmniAnomaly --seed=${seed} --dataset "ECLIPSE_MEAN" --retrain --apply_augmentations --augmentations 'Roll:0,1' 'Roll:0,1' 'Roll:0,1' 'Roll:0,1' 'Roll:0,1' 'Roll:0,1' 'Roll:0,1' 'Roll:0,1'
+
 done

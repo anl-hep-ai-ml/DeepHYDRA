@@ -112,43 +112,39 @@ def get_anomalous_runs(x):
         return run_starts, run_ends
 
 
-def expand_labels(label,
-                    expansion_pre: int,
-                    expansion_post: int):
+def expand_labels(data_columns: pd.Index,
+                    labels: pd.DataFrame):
+    
+    app_names = ['exa', 'lammps', 'sw4', 'sw4lite']
 
-    if label.ndim == 1:
-        anomalous_run_starts, anomalous_run_ends =\
-                                get_anomalous_runs(label)
+    def _renaming_func_data(element):
 
-        for start_old, end_old in zip(anomalous_run_starts,
-                                        anomalous_run_ends):
-            
-            print(f'Old anomaly interval: [{start_old} {end_old}]')
+        constituents = str(element).split('_')
+        id_ = constituents[-1]
 
-            start_new = max(0, start_old - expansion_pre)
-            end_new = min(len(label), end_old + expansion_post)
+        column_name = ''
 
-            label[start_new:end_new] = label[start_old]
+        for app_name in app_names:
+            if f'{app_name}_' in element:
+                column_name = app_name
 
-            print(f'New anomaly interval: [{start_new} {end_new}]')
+        return f'{column_name}_{id_}'
+    
+    label_columns_expanded =\
+        pd.Index(data_columns.map(_renaming_func_data))
 
-    elif label.ndim == 2:
-        for col in range(label.shape[-1]):
-            anomalous_run_starts, anomalous_run_ends =\
-                                    get_anomalous_runs(label[:, col])
+    labels.columns =\
+        pd.Index(labels.columns.map(lambda x: str(x).removeprefix('label_')))
+    
+    labels_expanded = pd.DataFrame(columns=label_columns_expanded)
 
-            for start_old, end_old in zip(anomalous_run_starts,
-                                            anomalous_run_ends):
+    for col in labels.columns:
+        labels_expanded[col] =\
+                        labels.loc[:, col]
 
-                start_new = max(0, start_old - expansion_pre)
-                end_new = min(len(label), end_old + expansion_post)
+    labels_expanded.columns = data_columns
 
-                label[start_new:end_new, col] = label[start_old, col]
-
-    else:
-        raise ValueError('Only 1d and 2d label arrays are supported')
-
-    return label
+    return labels_expanded
 
 
 def adjust_predicts(score: np.ndarray,
@@ -232,26 +228,26 @@ def run_merlin(data: np.ndarray,
 
         parameters_all.append(parameters)
 
-        # discords_all.append(discords)
-        # distances_all.append(distances)
-        # lengths_all.append(lengths)
+        discords_all.append(discords)
+        distances_all.append(distances)
+        lengths_all.append(lengths)
 
-    print(f'Size MERLIN sequential: {np.max(parameters_all)}')
-    print(f'Size MERLIN parallel: {np.sum(parameters_all)}')
+    # print(f'Size MERLIN sequential: {np.max(parameters_all)}')
+    # print(f'Size MERLIN parallel: {np.sum(parameters_all)}')
 
-    exit()
+    # exit()
     
     discords_all = np.column_stack(discords_all)
     distances_all = np.column_stack(distances_all)
     lengths_all = np.column_stack(lengths_all)
 
-    save_numpy_array(distances_all, 'distances_hlt_reduced.npy')
-    save_numpy_array(discords_all, 'discords_hlt_reduced.npy')
-    save_numpy_array(lengths_all, 'lengths_hlt_reduced.npy')
+    save_numpy_array(distances_all, 'distances_eclipse.npy')
+    save_numpy_array(discords_all, 'discords_eclipse.npy')
+    save_numpy_array(lengths_all, 'lengths_eclipse.npy')
 
-    distances_all = load_numpy_array('distances_hlt_reduced.npy')
-    discords_all = load_numpy_array('discords_hlt_reduced.npy')
-    lengths_all = load_numpy_array('lengths_hlt_reduced.npy')
+    distances_all = load_numpy_array('distances_eclipse.npy')
+    discords_all = load_numpy_array('discords_eclipse.npy')
+    lengths_all = load_numpy_array('lengths_eclipse.npy')
 
     pred = preds_from_discords(discords_all,
                                     lengths_all,
@@ -264,7 +260,6 @@ def run_merlin(data: np.ndarray,
 
         pred_column = pred[:, column]
         label_column = label[:, column]
-
 
         auroc = roc_auc_score(label_column, pred_column)
         f1 = f1_score(label_column, pred_column)
@@ -295,7 +290,6 @@ def run_merlin(data: np.ndarray,
 
         pred_reduced = pred[:, included_indices]
 
-
         pred_reduced = np.any(pred_reduced, axis=1).astype(np.uint8)
         label_reduced = np.any(label, axis=1).astype(np.uint8)
 
@@ -313,7 +307,7 @@ def run_merlin(data: np.ndarray,
 
         results_combined.loc[threshold, :] = (auroc, f1, mcc, precision, recall)
 
-    results_combined.to_csv('results_merlin_combined_hlt_reduced.csv', sep='\t')
+    results_combined.to_csv('results_merlin_combined_eclipse.csv', sep='\t')
 
 
 def get_preds_best_threshold(data: np.ndarray,
@@ -322,9 +316,9 @@ def get_preds_best_threshold(data: np.ndarray,
 
     columns = data.shape[-1]
 
-    distances_all = load_numpy_array('distances_hlt_reduced.npy')
-    discords_all = load_numpy_array('discords_hlt_reduced.npy')
-    lengths_all = load_numpy_array('lengths_hlt_reduced.npy')
+    distances_all = load_numpy_array('distances_eclipse.npy')
+    discords_all = load_numpy_array('discords_eclipse.npy')
+    lengths_all = load_numpy_array('lengths_eclipse.npy')
 
     pred = preds_from_discords(discords_all,
                                     lengths_all,
@@ -359,18 +353,15 @@ def get_preds_best_threshold(data: np.ndarray,
     pred_reduced = np.zeros_like(pred)
     pred_reduced[:, included_indices] =\
                     pred[:, included_indices]
+    
+    save_numpy_array(pred_reduced, '../../evaluation/combined_detection_eclipse/predictions/merlin.npy')
 
 
 if __name__ == '__main__':
 
-    parser = argparse.ArgumentParser(description='MERLIN HLT Test')
+    parser = argparse.ArgumentParser(description='MERLIN ECLIPSE Test')
 
-    parser.add_argument('--dataset', type=str, default=\
-                            '../../datasets/hlt/reduced_hlt_dcm_test_set_2018_x.h5')
-    
-    parser.add_argument('--labels', type=str, default=\
-                            '../../datasets/hlt/reduced_hlt_dcm_test_set_2018_y.h5')
-
+    parser.add_argument('--data-dir', type=str, default='../../datasets/eclipse')
     parser.add_argument('--l-min', type=int, default=8)
     parser.add_argument('--l-max', type=int, default=96)
     parser.add_argument('--k', type=int, default=1)
@@ -388,24 +379,33 @@ if __name__ == '__main__':
                                     format=logging_format,
                                     datefmt='%Y-%m-%d %H:%M:%S')
 
-    hlt_data_pd = pd.read_hdf(args.dataset)
+    eclipse_data_pd = pd.read_hdf(args.data_dir +\
+                                    '/unreduced_eclipse_'
+                                    'test_set.h5',
+                                    key='data')
+    
+    eclipse_data_pd.fillna(0, inplace=True)
 
-    hlt_data_pd.fillna(0, inplace=True)
-
-    hlt_data_np = hlt_data_pd.to_numpy()
-
-    labels_pd = pd.read_hdf(args.labels)
+    eclipse_data_np = eclipse_data_pd.to_numpy()
+        
+    labels_pd = pd.read_hdf(args.data_dir +\
+                                '/unreduced_eclipse_'
+                                'test_set.h5',
+                                key='labels')
+    
+    labels_pd = expand_labels(eclipse_data_pd.columns,
+                                                labels_pd)
 
     labels_np = labels_pd.to_numpy()
 
     labels_np = np.greater_equal(labels_np, 1)
 
-    run_merlin(hlt_data_np,
+    run_merlin(eclipse_data_np,
                         labels_np,
                         args.l_min,
                         args.l_max,
                         not args.no_near_constant_fix)
 
-    get_preds_best_threshold(hlt_data_np,
+    get_preds_best_threshold(eclipse_data_np,
                                     labels_np,
                                     0.725)
