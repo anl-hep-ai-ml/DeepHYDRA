@@ -33,9 +33,8 @@ class MedianStdReducer(BaseReducer):
 
 
     def _parse_channel_name_eclipse(self, channel_name):
-        # TODO: Adapt channel parsing for eclipse dataset
-        parameters = [int(substring) for substring in re.findall(r'\d+', channel_name)]
-        return parameters[-1]//1000
+        cluster_name = channel_name.rsplit('_', maxsplit=1)[0]
+        return cluster_name
 
 
     def _create_channel_names(self,

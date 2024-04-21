@@ -190,6 +190,11 @@ class EclipseDBSCANAnomalyDetector(BaseClusteringDetector):
                     output_queue = None) -> None:
         super(EclipseDBSCANAnomalyDetector, self).__init__()
 
+        self.application_dict = {'exa': 0,
+                                    'sw4lite': 1,
+                                    'lammps': 2,
+                                    'sr4': 3}
+
         self.eps = eps
         self.min_samples = min_samples
         self.duration_threshold = duration_threshold
@@ -239,7 +244,7 @@ class EclipseDBSCANAnomalyDetector(BaseClusteringDetector):
         memory_sizes = pd.DataFrame(memory_sizes,
                                         columns=['Memory'])
 
-        memory_sizes.to_csv('memory_dbscan.csv')
+        memory_sizes.to_csv('memory_dbscan_eclipse.csv')
 
 
     @tqdmloggingdecorator
@@ -261,7 +266,10 @@ class EclipseDBSCANAnomalyDetector(BaseClusteringDetector):
         
         cluster_predictions =\
             self.dbscan_clustering.fit_predict(
-                        np.array(list(zip(channel_labels_ord_filtered, data_filtered))))
+                        np.array(list(zip(channel_labels_ord_filtered*1e6, data_filtered))))
+        
+        # for label, pred in zip(channel_labels_filtered, cluster_predictions):
+        #     print(f'{label}: {pred}')
 
         # memory_size = deep_sizeof(self.dbscan_clustering, with_overhead=True, verbose=True)
 
@@ -270,7 +278,7 @@ class EclipseDBSCANAnomalyDetector(BaseClusteringDetector):
         for machine_index, datapoint in enumerate(data_filtered):
 
             subgroup_buckets[channel_labels_filtered[machine_index]].append(
-                                        [machine_labels_filtered[machine_index],
+                                        [channel_labels_ord_filtered[machine_index],
                                             datapoint,
                                             cluster_predictions[machine_index]])
 
@@ -283,8 +291,6 @@ class EclipseDBSCANAnomalyDetector(BaseClusteringDetector):
 
             multimode_channel_bucket = multimode(cluster_predictions)
             largest_cluster_membership = multimode_channel_bucket[0]
-
-            print(largest_cluster_membership, end=' ')
 
             y_predicted = np.array([0 if cluster_prediction == largest_cluster_membership \
                                         else 1 for cluster_prediction in cluster_predictions], np.byte)
@@ -304,8 +310,20 @@ class EclipseDBSCANAnomalyDetector(BaseClusteringDetector):
                 else:
                     self.anomaly_registry_drop_to_0.pop(machine_label, None)
                     self.anomaly_registry_general.pop(machine_label, None)
-
-        print()
+                
+                # if y == 1:
+                #     if np.isclose(datapoint, 0):
+                #         self.anomaly_registry_drop_to_0[machine_label] += 1
+                #         self.anomaly_registry_general.pop(machine_label, None)
+                #     elif np.isclose(datapoint, nan_fill_value):
+                #         self.anomaly_registry_drop_to_0.pop(machine_label, None)
+                #         self.anomaly_registry_general.pop(machine_label, None)
+                #     else:
+                #         self.anomaly_registry_general[machine_label] += 1
+                #         self.anomaly_registry_drop_to_0.pop(machine_label, None)
+                # else:
+                #     self.anomaly_registry_drop_to_0.pop(machine_label, None)
+                #     self.anomaly_registry_general.pop(machine_label, None)
 
         # Add subgroups that show anomalous behavior for longer than the
         # set threshold to the persistent anomaly registry

@@ -10,10 +10,10 @@ import matplotlib.dates as mdates
 
 plt.rcParams['figure.constrained_layout.use'] = True
 
-data_dir = 'data/smd/by_operator/'
+# data_dir = 'data/smd/by_operator/'
+data_dir = 'data/eclipse/by_operator/'
 
 flop_display_lower_threshold_percent = 0.001
-
 
 def group_small_flop_counts(results: dict,
                                 flops_sum):
@@ -104,8 +104,10 @@ if __name__ == '__main__':
         #     f'{model_params[2].upper()}_'\
         #     f'{model_params[3]}'
 
-        if len(model_params) > 2:
-            model_name = f'{model_name}-{model_params[2].upper()}'
+        # if len(model_params) > 2:
+            # model_name = f'{model_name}-{model_params[2].upper()}'
+        if len(model_params) > 3:
+            model_name = f'{model_name}-{model_params[3].upper()}'
 
         results_all[model_name] = results
 
@@ -125,8 +127,11 @@ if __name__ == '__main__':
     # results_all_pd.to_csv(
     #     '../characterization_plots_combined/data/flops_hlt_dcm_2018.csv')
 
+    # results_all_pd.to_csv(
+    #     '../characterization_plots_combined/data/flops_smd.csv')
+    
     results_all_pd.to_csv(
-        '../characterization_plots_combined/data/flops_smd.csv')
+        '../characterization_plots_combined/data/flops_eclipse.csv')
     
     # fig, ax = plt.subplots(figsize=(8, 5), dpi=300)
 
