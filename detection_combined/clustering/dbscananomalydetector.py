@@ -13,8 +13,8 @@ import pandas as pd
 # from sklearnex import patch_sklearn
 # patch_sklearn(verbose=False)
 
-from sklearnex.cluster import DBSCAN
-# from sklearn.cluster import DBSCAN
+# from sklearnex.cluster import DBSCAN
+from sklearn.cluster import DBSCAN
 from sklearn.preprocessing import OrdinalEncoder
 
 from .baseclusteringdetector import BaseClusteringDetector

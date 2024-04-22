@@ -85,6 +85,8 @@ if __name__ == '__main__':
     results_all_pd = pd.DataFrame(index=results_all.keys(),
                                     columns=['Activations'])
 
+    print(results_all)
+
     for model_name, results in results_all.items():
 
         results = {k: v for k, v in sorted(results.items(), key=lambda item: item[1])}
@@ -92,6 +94,7 @@ if __name__ == '__main__':
         activations_summed = int(np.sum(list(results.values())))
 
         results_all_pd.loc[model_name, 'Activations'] = activations_summed
+
 
     # results_all_pd.to_csv(
     #     '../characterization_plots_combined/data/activations_hlt_dcm_2018.csv')
