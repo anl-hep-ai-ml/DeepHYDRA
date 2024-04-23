@@ -246,7 +246,7 @@ def get_scores_tranad(model_name,
     ret = s.run(dynamic=False)  # run
     # print(len(ret['alarms']))
     # print(len(ret['thresholds']))
-    pot_th = np.mean(ret['thresholds'])*5
+    pot_th = np.mean(ret['thresholds'])*3.5
     # pot_th = np.percentile(score, 100 * lm[0])
     # np.percentile(score, 100 * lm[0])
 
@@ -392,6 +392,10 @@ def print_results(label: np.array,
                         seed: int,
                         to_csv: bool):
 
+    preds_method_3 =\
+        load_numpy_array('predictions/method_3.npy')
+    preds_method_4 =\
+        load_numpy_array('predictions/method_4.npy')
     preds_clustering =\
         load_numpy_array('predictions/clustering.npy')
     preds_tranad_train =\
@@ -420,24 +424,31 @@ def print_results(label: np.array,
     preds_dagmm =\
         load_numpy_array(f'predictions/dagmm_no_augment_seed_{seed}.npy')
 
-    spot_train_size = int(len(preds_l2_dist_mse)*0.1)
+    #spot_train_size = int(len(preds_l2_dist_mse)*0.2)
+    spot_train_size = int(len(preds_l2_dist_train_mse)*0.25)
+
+    preds_method_3 = np.sum(preds_method_3, axis=1)
+    preds_method_4 = np.sum(preds_method_4, axis=1)
+
+    preds_method_3 = np.squeeze(MinMaxScaler().fit_transform(np.atleast_2d(preds_method_3).T))
+    preds_method_4 = np.squeeze(MinMaxScaler().fit_transform(np.atleast_2d(preds_method_4).T))
 
     # Fix alignment
     
     preds_l2_dist_mse =\
         np.pad(preds_l2_dist_mse,
-                    (17, 76), 'constant',
-                    constant_values=(0,1))
+                    (16, 77), 'constant',
+                    constant_values=(1,))
     
     preds_l2_dist_smse =\
         np.pad(preds_l2_dist_smse,
-                        (17, 76), 'constant',
-                        constant_values=(0,1))
+                        (16, 77), 'constant',
+                        constant_values=(1,))
     
     preds_tranad =\
         np.pad(preds_tranad,
-                        (1, 92), 'constant',
-                        constant_values=(0,1))
+                        (0, 93), 'constant',
+                        constant_values=(1,))
     
     label_reduced =\
         np.any(np.greater_equal(label, 1), axis=1).astype(np.uint8)
@@ -454,13 +465,13 @@ def print_results(label: np.array,
                                 label,
                                 to_csv)
     
-    print('TranAD:')
+    # print('TranAD:')
 
     preds_tranad = get_scores_tranad('tranad',
                                             seed,
                                             preds_tranad_train[spot_train_size:2*spot_train_size],
                                             preds_tranad,
-                                            label, 0.01, 0.02,
+                                            label, 0.001, 0.8,
                                             to_csv)
     
     print('DeepHYDRA-TranAD:')
@@ -469,103 +480,89 @@ def print_results(label: np.array,
         np.logical_or(preds_clustering,
                             preds_tranad)
     
-    get_scores_thresholded('strada_tranad',
+    get_scores_thresholded('deephydra_tranad',
                                     seed,
                                     preds_strada_tranad,
                                     label,
                                     to_csv)
     
-    print('Informer-MSE:')
+    # print('Informer-MSE:')
 
-    preds_l2_dist_mse = get_scores('informer_mse', seed,
-                                    preds_l2_dist_train_mse[spot_train_size:2*spot_train_size],
-                                    preds_l2_dist_mse, label, 0.000001, 0.8, to_csv)
+    # preds_l2_dist_mse = get_scores('informer_mse', seed,
+    #                                 preds_l2_dist_train_mse[spot_train_size:2*spot_train_size],
+    #                                 preds_l2_dist_mse, label, 0.00001, 0.8, to_csv)
 
-    print('DeepHYDRA-MSE:')
+    # print('DeepHYDRA-MSE:')
 
-    preds_strada_mse =\
-        np.logical_or(preds_clustering,
-                        preds_l2_dist_mse)
+    # preds_strada_mse =\
+    #     np.logical_or(preds_clustering,
+    #                     preds_l2_dist_mse)
     
-    get_scores_thresholded('deephydra_mse',
-                                    seed,
-                                    preds_strada_mse,
-                                    label,
-                                    to_csv)
+    # get_scores_thresholded('deephydra_mse',
+    #                                 seed,
+    #                                 preds_strada_mse,
+    #                                 label,
+    #                                 to_csv)
 
-    print('Informer-SMSE:')
+    # print('Informer-SMSE:')
 
-    preds_l2_dist_smse = get_scores('informer_smse', seed,
-                                        preds_l2_dist_train_smse[spot_train_size:2*spot_train_size],
-                                        preds_l2_dist_smse, label, 0.000001, 0.8, to_csv)
+    # preds_l2_dist_smse = get_scores('informer_smse', seed,
+    #                                     preds_l2_dist_train_smse[spot_train_size:2*spot_train_size],
+    #                                     preds_l2_dist_smse, label, 0.0001, 0.8, to_csv)
     
-    print('DeepHYDRA-SMSE:')
+    # print('DeepHYDRA-SMSE:')
 
-    preds_strada_smse =\
-        np.logical_or(preds_clustering,
-                        preds_l2_dist_smse)
+    # preds_strada_smse =\
+    #     np.logical_or(preds_clustering,
+    #                     preds_l2_dist_smse)
 
-    get_scores_thresholded('deephydra_smse',
-                                    seed,
-                                    preds_strada_smse,
-                                    label,
-                                    to_csv)
+    # get_scores_thresholded('deephydra_smse',
+    #                                 seed,
+    #                                 preds_strada_smse,
+    #                                 label,
+    #                                 to_csv)
     
-    print('DAGMM:')
+    # print('DAGMM:')
 
-    preds_dagmm = get_scores_dagmm('dagmm', seed,
-                                    preds_dagmm_train[spot_train_size:2*spot_train_size],
-                                    preds_dagmm,
-                                    label, 0.8,
-                                    0.02, 60, to_csv)
-
-
-    # preds_dagmm = get_scores('dagmm', seed,
-    #                             preds_dagmm_train[spot_train_size:2*spot_train_size],
-    #                             preds_dagmm,
-    #                             label, 0.08,
-    #                             0.8, to_csv)
+    # preds_dagmm = get_scores_dagmm('dagmm', seed,
+    #                                 preds_dagmm_train[spot_train_size:2*spot_train_size],
+    #                                 preds_dagmm,
+    #                                 label, 0.008,
+    #                                 0.02, 10, to_csv)
     
     
-    print('DeepHYDRA-DAGMM:')
+    # print('DeepHYDRA-DAGMM:')
 
-    preds_strada_dagmm =\
-        np.logical_or(preds_clustering,
-                            preds_dagmm)
+    # preds_strada_dagmm =\
+    #     np.logical_or(preds_clustering,
+    #                         preds_dagmm)
 
-    get_scores_thresholded('deephydra_dagmm',
-                                    seed,
-                                    preds_strada_dagmm,
-                                    label,
-                                    to_csv)
+    # get_scores_thresholded('deephydra_dagmm',
+    #                                 seed,
+    #                                 preds_strada_dagmm,
+    #                                 label,
+    #                                 to_csv)
     
-    print('OmniAnomaly:')
-
-    # preds_omni_anomaly  = get_scores('omnianomaly',
+    # print('OmniAnomaly:')
+    
+    # preds_omni_anomaly = get_scores_dagmm('omnianomaly',
     #                                     seed,
-    #                                     preds_omni_anomaly_train[:spot_train_size],
+    #                                     preds_omni_anomaly_train[spot_train_size:3*spot_train_size],
     #                                     preds_omni_anomaly,
-    #                                     label, 0.0001, 0.8,
+    #                                     label, 0.001, 0.8, 1.6,
     #                                     to_csv)
     
-    preds_omni_anomaly = get_scores_dagmm('omnianomaly',
-                                        seed,
-                                        preds_omni_anomaly_train[spot_train_size:2*spot_train_size],
-                                        preds_omni_anomaly,
-                                        label, 0.0001, 0.8, 1.3,
-                                        to_csv)
-    
-    print('DeepHYDRA-OmniAnomaly:')
+    # print('DeepHYDRA-OmniAnomaly:')
 
-    preds_strada_omni_anomaly =\
-        np.logical_or(preds_clustering,
-                            preds_omni_anomaly)
+    # preds_strada_omni_anomaly =\
+    #     np.logical_or(preds_clustering,
+    #                         preds_omni_anomaly)
     
-    get_scores_thresholded('deephydra_omnianomaly',
-                                            seed,
-                                            preds_strada_omni_anomaly,
-                                            label,
-                                            to_csv)
+    # get_scores_thresholded('deephydra_omnianomaly',
+    #                                         seed,
+    #                                         preds_strada_omni_anomaly,
+    #                                         label,
+    #                                         to_csv)
     
     print('USAD:')
 
@@ -573,17 +570,8 @@ def print_results(label: np.array,
                                     seed,
                                     preds_usad_train[spot_train_size:2*spot_train_size],
                                     preds_usad,
-                                    label, 0.01, 0.02, 18,
+                                    label, 0.1, 0.02, 18,
                                     to_csv)
-    
-    # preds_usad,\
-    #     preds_usad_by_category =\
-    #             get_scores('usad',
-    #                         seed,
-    #                         preds_usad_train[spot_train_size:2*spot_train_size],
-    #                         preds_usad,
-    #                         label, 0.0001, 0.8,
-    #                         to_csv)
 
     print('DeepHYDRA-USAD:')
 
@@ -591,7 +579,7 @@ def print_results(label: np.array,
         np.logical_or(preds_clustering,
                             preds_usad)
     
-    get_scores_thresholded('strada_usad',
+    get_scores_thresholded('deephydra_usad',
                                     seed,
                                     preds_strada_usad,
                                     label,
@@ -613,8 +601,6 @@ if __name__ == '__main__':
                             key='labels')
 
     labels_np = labels_pd.to_numpy()
-
-    # labels_np = np.any(labels_np>=1, axis=1).astype(np.int8).flatten()
 
     print_results(labels_np,
                     args.seed,
