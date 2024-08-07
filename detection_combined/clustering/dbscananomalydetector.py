@@ -43,9 +43,24 @@ class HLTDBSCANAnomalyDetector(BaseClusteringDetector):
         self.timesteps = []
         self.node_labels = node_labels
 
+        # def parse_channel_name(channel_name):
+        #     parameters = [int(substring) for substring in re.findall(r'\d+', channel_name)]
+        #     return parameters[1], parameters[4]
+
         def parse_channel_name(channel_name):
-            parameters = [int(substring) for substring in re.findall(r'\d+', channel_name)]
-            return parameters[1], parameters[4]
+            rack_match = re.search(r'tpu-rack-(\d+)', channel_name)
+            if rack_match:
+                rack_number = int(rack_match.group(1))
+            else:
+                raise ValueError("Rack number not found in the channel name.")
+            
+            tpu_match = re.search(r'pc-tdq-tpu-(\d+)', channel_name)
+            if tpu_match:
+                tpu_number = int(tpu_match.group(1))
+            else:
+                raise ValueError("TPU number not found in the channel name.")
+            
+            return rack_number, tpu_number
 
         self.machine_labels = [0]*len(node_labels)
         self.rack_labels = [0]*len(node_labels)
@@ -95,13 +110,13 @@ class HLTDBSCANAnomalyDetector(BaseClusteringDetector):
         rack_labels_filtered = np.array(self.rack_labels)[indices_not_nan]
         machine_labels_filtered = np.array(self.machine_labels)[indices_not_nan]
         data_filtered = data[indices_not_nan]
+
         
         cluster_predictions =\
             self.dbscan_clustering.fit_predict(
                         np.array(list(zip(rack_labels_filtered, data_filtered))))
 
         # memory_size = deep_sizeof(self.dbscan_clustering, with_overhead=True, verbose=True)
-
         # self.memory_sizes.append(memory_size)
 
         for machine_index, datapoint in enumerate(data_filtered):

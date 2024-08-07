@@ -7,7 +7,8 @@ import numpy as np
 import pandas as pd
 from beauty import Beauty
 
-from .atlasrunsparser import AtlasRunsParser
+from .atlas_runs_parser_test import AtlasRunsParser
+#from .atlasrunsparser import AtlasRunsParser
 from .variables import nan_fill_value
 
 _data_channel_vars_dict = {'L1Rate': ['ATLAS', 'DCM', 'L1Rate', 'DF_IS:.*.DCM.*.info']}
@@ -17,8 +18,7 @@ nan_fill_value = np.finfo(np.float32).min
 
 class OfflinePBeastDataLoader():
 
-    def __init__(self, data_channel: str,
-                        runs_summary_filename: str) -> None:
+    def __init__(self, runs_summary_filename: str, data_channel: str ='') -> None:
 
         self._data_channel = data_channel
 
@@ -38,6 +38,11 @@ class OfflinePBeastDataLoader():
         self._runs_df = atlas_runs_parser.runs
 
         self._run_numbers_all = list(self._runs_df.index.values)
+
+        #print(atlas_runs_parser.runs_data)
+        #print(atlas_runs_parser.runs)
+        #print(self._runs_df)
+        #print(self._run_numbers_all)
 
         self._logger = logging.getLogger(__name__)
 
@@ -63,6 +68,8 @@ class OfflinePBeastDataLoader():
         self._logger.info(f'Duration: {int(duration):d} s')
 
         data_channel_vars = _data_channel_vars_dict['L1Rate']
+
+        print( time_start, time_end,  data_channel_vars[0], data_channel_vars[1], data_channel_vars[2], data_channel_vars[3])
 
         try:
             dcm_rates_all_list = self._beauty_instance.timeseries(time_start,
