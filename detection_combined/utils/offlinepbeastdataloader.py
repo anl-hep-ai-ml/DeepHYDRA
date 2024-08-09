@@ -39,11 +39,6 @@ class OfflinePBeastDataLoader():
 
         self._run_numbers_all = list(self._runs_df.index.values)
 
-        #print(atlas_runs_parser.runs_data)
-        #print(atlas_runs_parser.runs)
-        #print(self._runs_df)
-        #print(self._run_numbers_all)
-
         self._logger = logging.getLogger(__name__)
 
 
@@ -69,8 +64,6 @@ class OfflinePBeastDataLoader():
 
         data_channel_vars = _data_channel_vars_dict['L1Rate']
 
-        print( time_start, time_end,  data_channel_vars[0], data_channel_vars[1], data_channel_vars[2], data_channel_vars[3])
-
         try:
             dcm_rates_all_list = self._beauty_instance.timeseries(time_start,
                                                                     time_end,
@@ -95,4 +88,4 @@ class OfflinePBeastDataLoader():
 
 
     def __len__(self) -> int:
-        return len(self._run_numbers_all) 
+        return len(self._run_numbers_all)

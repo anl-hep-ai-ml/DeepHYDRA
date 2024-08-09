@@ -89,9 +89,12 @@ if __name__ == '__main__':
             hlt_data_pd.index = _remove_timestamp_jumps(pd.DatetimeIndex(hlt_data_pd.index))
             #hlt_data_pd.to_csv('hlt_data_pd_'+str(run_number)+'.csv', index=True)
             # Load anomaly data and filter columns
-            anomaly_data = load_anomaly_machines(args.anomaly_json_dir, run_number)
-            filtered_df = filter_columns(anomaly_data, hlt_data_pd)
+            if args.anomaly_json_dir != "None":
+                anomaly_data = load_anomaly_machines(args.anomaly_json_dir, run_number)
+                filtered_df = filter_columns(anomaly_data, hlt_data_pd)
             
-            filtered_df.to_csv(f'hlt_data_pd_{run_number}.csv', index=True)
+                filtered_df.to_csv(f'hlt_data_pd_{run_number}.csv', index=True)
+            else:
+                hlt_data_pd.to_csv(f'hlt_data_pd_{run_number}.csv', index=True)
         else:
             print(f'Error: The specified run number {str(run_number)} was not found. Check the atlas data summary runs list.')

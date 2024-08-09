@@ -133,7 +133,7 @@ class InformerRunner():
 
         timestamp = data.index[-1]
 
-        self._logger.info(data.shape)
+        #self._logger.info(data.shape)
 
         viz_data = data.to_numpy()[:self.parameter_dict['seq_len'], :]
 
@@ -143,7 +143,7 @@ class InformerRunner():
                                                             data_x_mark,
                                                             data_y_mark,
                                                             viz_data)
-                
+
         preds = preds.detach().cpu().numpy()
 
         if np.any(np.isnan(preds)):
