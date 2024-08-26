@@ -6,6 +6,7 @@ import logging
 import numpy as np
 import pandas as pd
 from beauty import Beauty
+import pytz
 
 from .atlas_runs_parser_test import AtlasRunsParser
 #from .atlasrunsparser import AtlasRunsParser

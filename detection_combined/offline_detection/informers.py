@@ -111,7 +111,7 @@ if __name__ == '__main__':
     for run_number in run_numbers:
 
         #if run_number != 461096: continue
-        #if run_number != 456522: continue
+        if run_number != 456522: continue
         logger.info(f'Starting data loading for run {run_number}')
 
         hlt_data_pd = offline_pbeast_data_loader[run_number]
@@ -170,11 +170,11 @@ if __name__ == '__main__':
                 try:
                     dbscan_anomaly_detector.process(timestamp, data)
 
-                    output_slice =\
-                        median_std_reducer.reduce_numpy(tpu_labels,
-                                                            timestamp,
-                                                            data)
-                    reduced_data_buffer.push(output_slice)
+                    #output_slice =\
+                    #    median_std_reducer.reduce_numpy(tpu_labels,
+                    #                                        timestamp,
+                    #                                        data)
+                    #reduced_data_buffer.push(output_slice)
                     
                 except NonCriticalPredictionException:
                     break

@@ -2,6 +2,7 @@ from html.parser import HTMLParser
 import pandas as pd
 from datetime import datetime
 import re
+import pytz
 
 class AtlasRunsParser(HTMLParser):
     def __init__(self):
@@ -15,7 +16,7 @@ class AtlasRunsParser(HTMLParser):
         self.data_buffer = []
         self.runs_data = []
         self.current_run = {'Run Number': None, 'start': None, 'end': None, 'duration': None}
-        self.current_year = 1990
+        self.current_year = 1900
 
 
     def extract_year_from_href(self, href):
@@ -45,7 +46,7 @@ class AtlasRunsParser(HTMLParser):
         elif tag == 'p':
             self.in_p = True
         
-        if tag == 'a' and self.in_p and self.current_year != 1900:
+        if tag == 'a' and self.in_p and self.current_year == 1900:
             for attr in attrs:
                 if attr[0] == 'href':
                     href = attr[1]
@@ -83,10 +84,22 @@ class AtlasRunsParser(HTMLParser):
         self.header_buffer.clear()
 
     def parse_datetime(self, date_str):
-        year = self.current_year
+        year = str(self.current_year)
+        date_str = date_str.replace(" CEST", "")
         date_with_year_str = f"{date_str}, {year}"
-        date_format = "%a %b %d, %H:%M %Z, %Y"
-        datetime_obj = datetime.strptime(date_with_year_str, date_format)
+        #date_with_year_str = f"{date_str}, {year}".replace("CEST", "UTC") #Be careful where are you running the code. CEST might not be recognized in US computers....
+        #print(date_with_year_str)
+        date_format = "%a %b %d, %H:%M, %Y"
+        #date_format = "%a %b %d, %H:%M %Z, %Y"
+        try:
+            datetime_obj = datetime.strptime(date_with_year_str, date_format)
+            ## Localize to CEST (Central European Summer Time)
+            #cest = pytz.timezone('Europe/Berlin')  # Berlin time is CEST during summer
+            #datetime_obj = cest.localize(datetime_obj)
+            ##print("Parsed Date:", datetime_obj)
+        except ValueError as e:
+            print("Error:", e)
+
         return datetime_obj
 
     def parse_duration(self, duration_str):
