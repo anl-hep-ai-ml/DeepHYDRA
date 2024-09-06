@@ -14,8 +14,8 @@ import torch.nn as nn
 from torch import optim
 from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
-from fvcore.nn import FlopCountAnalysis, ActivationCountAnalysis
-from torchinfo import summary
+#from fvcore.nn import FlopCountAnalysis, ActivationCountAnalysis
+#from torchinfo import summary
 from bigtree import Node, tree_to_dataframe, tree_to_dot
 from bigtree.tree.search import find_child_by_name
 from tqdm import tqdm
@@ -34,8 +34,8 @@ from utils.tools import EarlyStopping, adjust_learning_rate
 # from utils.fvcorewriter import FVCoreWriter
 # from utils.torchinfowriter import TorchinfoWriter
 
-from torch_profiling_utils.torchinfowriter import TorchinfoWriter
-from torch_profiling_utils.fvcorewriter import FVCoreWriter
+#from torch_profiling_utils.torchinfowriter import TorchinfoWriter
+#from torch_profiling_utils.fvcorewriter import FVCoreWriter
 
 
 def log_gradients_in_model(model, summary_writer, step):

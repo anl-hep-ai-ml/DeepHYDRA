@@ -15,7 +15,7 @@ class AtlasRunsParser(HTMLParser):
         self.data_buffer = []
         self.runs_data = []
         self.current_run = {'Run Number': None, 'start': None, 'end': None, 'duration': None}
-        self.current_year = 1990
+        self.current_year = 1900
 
 
     def extract_year_from_href(self, href):
@@ -68,6 +68,7 @@ class AtlasRunsParser(HTMLParser):
         if len(self.header_buffer) >= 1:
             header = self.header_buffer[0]
             value = self.data_buffer[0]
+            #print(header)
             if header == 'Start':
                 start = self.parse_datetime(value)
                 #print(start)
