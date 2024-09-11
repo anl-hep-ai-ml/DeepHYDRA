@@ -2,6 +2,7 @@
 
 import argparse
 import sys
+import os
 import datetime as dt
 import json
 import logging
@@ -49,6 +50,8 @@ if __name__ == '__main__':
 
     log_model_name = args.model.lower().replace('-', '_')
 
+    if not os.path.exists(args.log_dir):
+        os.makedirs(args.log_dir)
     log_filename = f'{args.log_dir}/strada_{log_model_name}'\
                             f'benchmark_log_{time_now_string}.log'
 
