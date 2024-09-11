@@ -9,7 +9,18 @@ We are kindly asking the reviewers receiving this code to refrain from sharing i
 # STRADA
 This is the official implementation of the STRADA algorithm presented in the paper "STRADA: A Synergising Transformer and DBSCAN-Based Approach to Time-Series Anomaly Detection in Dynamically-Configured Systems".
 
-## Creation of the conda Environments
+# Set up
+
+### Option 1 (recommended for now): LCG view
+Source the 
+```
+setup_lcrc.sh
+```
+script. This starts an ATLAS container that gives access to ATLAS
+software. It also sets up an LCG view which contains the necessary
+python packages.
+
+### Option 2 (not recommended for now): Creation of the conda Environments
 The folder envs/ contains the conda environments for the different models.
 You can create the conda environments with the following command:  
 
@@ -34,6 +45,7 @@ generate_hlt_datasets.py
 generate_combined_detection_test_set.py  
 ```
 Use the conda environment contained in envs/dataset_generation.txt for this step.
+
 
 ## Running the One-Liners
 To run the one-liner baselines, run the script  
@@ -73,6 +85,23 @@ To do this, run the scripts
 ```
 run_informers_combined.sh  
 run_tranad_combined.sh  
+```
+
+## Running combined detection on LCRC
+
+Create a working directory inside of 
+```
+detection_combined/offline_detection/
+```
+
+Change into your working directory and run
+
+```
+python ../informers_localData.py --model Informer-MSE --data-dir
+/lcrc/group/ATLAS/users/jhoya/DAQ/atlas-hlt-datasets/ --checkpoint-dir
+'/lcrc/group/ATLAS/users/jhoya/DAQ/trained_models/hlt_2023_mse_Scale_0.8_1.0_Scale_APP_0.8_1.0_0.01_0.05_0.05_rel_size_1.0_ratio_0.25_seed_192/'
+--inp-data-name 'val_set_dcm_rates_2023.csv' --variant '2023' --seed
+42
 ```
 
 contained in the subfolders detection_combined/benchmark/informers and detection_combined/benchmark/tranad.
