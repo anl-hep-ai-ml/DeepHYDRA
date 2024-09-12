@@ -106,6 +106,8 @@ if __name__ == '__main__':
 
     reduced_data_buffer.set_buffer_filled_callback(informer_runner.detect)
     
+    if not os.path.exists(args.output_dir):
+        os.makedirs(args.output_dir)
     json_anomaly_registry = JSONAnomalyRegistry(args.output_dir)
 
     dbscan_anomaly_detector.register_detection_callback(
