@@ -17,7 +17,12 @@ Source the
 setup_lcrc.sh
 ```
 script. This starts an ATLAS container that gives access to ATLAS
-software. It also sets up an LCG view which contains the necessary
+software. 
+Now source the following:
+```
+setup_env.sh
+```
+This sets up an LCG view which contains the necessary
 python packages.
 
 ### Option 2 (not recommended for now): Creation of the conda Environments
