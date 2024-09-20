@@ -102,11 +102,7 @@ detection_combined/offline_detection/
 Change into your working directory and run
 
 ```
-python ../informers_localData.py --model Informer-MSE --data-dir
-/lcrc/group/ATLAS/users/jhoya/DAQ/atlas-hlt-datasets/ --checkpoint-dir
-'/lcrc/group/ATLAS/users/jhoya/DAQ/trained_models/hlt_2023_mse_Scale_0.8_1.0_Scale_APP_0.8_1.0_0.01_0.05_0.05_rel_size_1.0_ratio_0.25_seed_192/'
---inp-data-name 'val_set_dcm_rates_2023.csv' --variant '2023' --seed
-42
+python ../informers_localData.py --model Informer-MSE --data-dir /lcrc/group/ATLAS/users/jhoya/DAQ/atlas-hlt-datasets/ --checkpoint-dir '/lcrc/group/ATLAS/users/jhoya/DAQ/trained_models/hlt_2023_mse_Scale_0.8_1.0_Scale_APP_0.8_1.0_0.01_0.05_0.05_rel_size_1.0_ratio_0.25_seed_192/' --inp-data-name 'val_set_dcm_rates_2023.csv' --variant '2023' --seed 42
 ```
 
 contained in the subfolders detection_combined/benchmark/informers and detection_combined/benchmark/tranad.
