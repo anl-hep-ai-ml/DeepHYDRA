@@ -6,6 +6,9 @@ import numpy as np
 import pandas as pd
 import torch
 
+# Apply dynamic quantization to the model
+import torch.quantization
+
 from .models.model import Informer
 from .utils.datapreprocessor import DataPreprocessor
 import utils.spotunpickler as supkl
@@ -57,7 +60,8 @@ class InformerRunner():
         self._logger.debug(f'Loading DataPreprocessor instance from {self.checkpoint_dir}')
         
         self.data_preprocessor = DataPreprocessor(self.parameter_dict,
-                                                    self.checkpoint_dir)
+                                                    self.checkpoint_dir,
+                                                    device=self.device)
         
         self._logger.debug('Successfully loaded DataPreprocessor instance')
         self._logger.debug(f'Instantiating model and copying to device {self.device}')
@@ -77,6 +81,13 @@ class InformerRunner():
         self._logger.debug('Successfully loaded Informer state_dict')
 
         self._predictions_all = []
+
+        self.model.cpu()
+        quantized_model = torch.quantization.quantize_dynamic(
+            self.model, {torch.nn.Linear}, dtype=torch.qint8
+        )
+        # Replace the original model with the quantized
+        self.model = quantized_model
 
         self.model.eval()
 
@@ -122,154 +133,255 @@ class InformerRunner():
 
         return model
 
-    
+
     @tqdmloggingdecorator
     def detect(self, data: pd.DataFrame):
+        with torch.no_grad():
+            # Process data using the optimized DataPreprocessor
+            data_x, data_y, data_x_mark, data_y_mark = self.data_preprocessor.process(data)
+            timestamp = data.index[-1]
 
-        data_x,\
-            data_y,\
-            data_x_mark,\
-            data_y_mark = self.data_preprocessor.process(data)
+            # Perform model inference
+            preds, true_vals = self._process_one_batch(
+                data_x,
+                data_y,
+                data_x_mark,
+                data_y_mark
+            )
 
-        timestamp = data.index[-1]
+            # Check for NaNs in predictions without moving data to CPU
+            if torch.isnan(preds).any():
+                self._nan_output_count += 1
 
-        #self._logger.info(data.shape)
+                if self._nan_output_count >= self._nan_output_tolerance_period:
+                    self._logger.warning('Encountered NaN in Informer predictions')
+                    self._logger.error(f'Reached threshold of tolerated consecutive NaN predictions of {self._nan_output_tolerance_period}')
+                    raise NonCriticalPredictionException(
+                        f'Informer reached threshold of tolerated consecutive NaN predictions of {self._nan_output_tolerance_period}'
+                    )
+                else:
+                    self._logger.warning('Encountered NaN in Informer predictions')
+                    self._logger.warning(f'Consecutive NaN predictions: {self._nan_output_count} tolerated NaN predictions: {self._nan_output_tolerance_period}')
+                return
+            else:
+                self._nan_output_count = 0
 
-        viz_data = data.to_numpy()[:self.parameter_dict['seq_len'], :]
 
-        preds, _ = self._process_one_batch(self.data_preprocessor,
-                                                            data_x,
-                                                            data_y,
-                                                            data_x_mark,
-                                                            data_y_mark,
-                                                            viz_data)
+            # Convert preds and true_vals to NumPy arrays
+            preds_np = preds.detach().cpu().numpy().squeeze()
+            true_vals_np = true_vals.detach().cpu().numpy().squeeze()
 
-        preds = preds.detach().cpu().numpy()
+            l2_dist_detection = False
 
-        if np.any(np.isnan(preds)):
-            self._nan_output_count += 1
+            if self._data_x_last is not None:
+                # Move tensors to CPU and convert to NumPy arrays only when needed
+                preds_np = preds.cpu().numpy()
+                data_y_np = data_y.cpu().numpy()
 
-            if self._nan_output_count >=\
-                    self._nan_output_tolerance_period:
+                # Compute L2 distance
+                l2_dist = np.mean(np.square(preds_np[:, 0, :] - data_y_np[:, -1, :]), axis=1)[0]
+                self._predictions_all.append(l2_dist)
 
-                self._logger.warning('Encountered NaN in '
-                                        'Informer predictions')
-                self._logger.error(f'Reached threshold of tolerated '
-                                    'consecutive NaN predictions of '
-                                    f'{self._nan_output_tolerance_period}')
+                # Anomaly detection
+                if self._use_spot_detection:
+                    l2_dist_detection = self._spot.run_online([l2_dist])
+                else:
+                    l2_dist_detection = (l2_dist > 0.5)
+
+                if l2_dist_detection:
+                    if self._anomaly_duration == 0:
+                        self._anomaly_start = timestamp.strftime('%Y-%m-%d %H:%M:%S')
+                        self._logger.warning(f'Transformer-based detection encountered anomaly at timestamp {self._anomaly_start}')
+                    self.detection_callback(0, AnomalyType.TransformerBased, self._anomaly_start, self._anomaly_duration)
+                    self._anomaly_duration += 1
+                else:
+                    if self._anomaly_duration != 0:
+                        anomaly_end = timestamp.strftime('%Y-%m-%d %H:%M:%S')
+                        self._logger.warning(f'Transformer-based detection anomaly ended at {anomaly_end}')
+                    self._anomaly_duration = 0
+
+            # Update last data_y
+            self._data_x_last = data_y.cpu().numpy()
+
+            # Handle output queue
+            if self._output_queue is not None:
+                self._output_queue.put((data.iloc[[-1]].to_numpy(), timestamp, l2_dist_detection))
+
+    
+    # @tqdmloggingdecorator
+    # def detect(self, data: pd.DataFrame):
+    #     with torch.no_grad():  # Disable gradient calculation
+    #         #data_x,\
+    #         #    data_y,\
+    #         #    data_x_mark,\
+    #         #    data_y_mark = self.data_preprocessor.process(data)
+
+    #         data_x, data_y, data_x_mark, data_y_mark = self.data_preprocessor.process(data)
+
+    #         timestamp = data.index[-1]
+
+    #         #self._logger.info(data.shape)
+
+    #         #viz_data = data.to_numpy()[:self.parameter_dict['seq_len'], :]
+
+    #         preds, _ = self._process_one_batch(self.data_preprocessor,
+    #                                                             data_x,
+    #                                                             data_y,
+    #                                                             data_x_mark,
+    #                                                             data_y_mark) #,
+    #                                                             #viz_data)
+
+    #         preds = preds.detach().cpu().numpy()
+
+    #         if np.any(np.isnan(preds)):
+    #             self._nan_output_count += 1
+
+    #             if self._nan_output_count >=\
+    #                     self._nan_output_tolerance_period:
+
+    #                 self._logger.warning('Encountered NaN in '
+    #                                         'Informer predictions')
+    #                 self._logger.error(f'Reached threshold of tolerated '
+    #                                     'consecutive NaN predictions of '
+    #                                     f'{self._nan_output_tolerance_period}')
+                    
+    #                 raise NonCriticalPredictionException(
+    #                                     f'Informer reached threshold of tolerated '
+    #                                     'consecutive NaN predictions of '
+    #                                     f'{self._nan_output_tolerance_period}')
+
+    #             else:
+    #                 self._logger.warning('Encountered NaN in '
+    #                                         'Informer predictions')
+    #                 self._logger.warning(f'Consecutive NaN predictions:'
+    #                                             f'{self._nan_output_count} '
+    #                                             'tolerated NaN predictions: '
+    #                                             f'{self._nan_output_tolerance_period}')
                 
-                raise NonCriticalPredictionException(
-                                    f'Informer reached threshold of tolerated '
-                                    'consecutive NaN predictions of '
-                                    f'{self._nan_output_tolerance_period}')
+    #             return
 
-            else:
-                self._logger.warning('Encountered NaN in '
-                                        'Informer predictions')
-                self._logger.warning(f'Consecutive NaN predictions:'
-                                            f'{self._nan_output_count} '
-                                            'tolerated NaN predictions: '
-                                            f'{self._nan_output_tolerance_period}')
+    #         else:
+    #             self._nan_output_count = 0
+
+    #         l2_dist_detection = False
+
+    #         if not isinstance(self._data_x_last, type(None)):
+
+    #             # l2_dist =\
+    #             #     np.mean((preds[:, 0, :] - self._data_x_last[:, -1, :])**2, 1)[0]
+                
+    #             l2_dist =\
+    #                 np.mean(np.square(preds[:, 0, :] - data_y.detach().cpu().numpy()[:, -1, :]), axis=1)[0]
+    #                 #np.mean((preds[:, 0, :] - data_y.detach().cpu().numpy()[:, -1, :])**2, 1)[0]
+                    
+
+
+    #             self._predictions_all.append(l2_dist)
             
-            return
+    #             if self._use_spot_detection:
+    #                 l2_dist_detection = self._spot.run_online([l2_dist])
+    #             else:
+    #                 l2_dist_detection = (l2_dist > 0.5)
 
-        else:
-            self._nan_output_count = 0
+    #             if l2_dist_detection:
 
-        l2_dist_detection = False
+    #                 if self._anomaly_duration == 0:
+    #                     self._anomaly_start =\
+    #                             timestamp.strftime('%Y-%m-%d %H:%M:%S')
 
-        if not isinstance(self._data_x_last, type(None)):
+    #                     self._logger.warning('Transformer-based detection '
+    #                                             'encountered anomaly at timestamp '
+    #                                             f'{self._anomaly_start}')
 
-            # l2_dist =\
-            #     np.mean((preds[:, 0, :] - self._data_x_last[:, -1, :])**2, 1)[0]
-            
-            l2_dist =\
-                np.mean((preds[:, 0, :] - data_y.detach().cpu().numpy()[:, -1, :])**2, 1)[0]
+    #                 self.detection_callback(0, AnomalyType.TransformerBased,
+    #                                                         self._anomaly_start,
+    #                                                         self._anomaly_duration)
 
-            self._predictions_all.append(l2_dist)
-        
-            if self._use_spot_detection:
-                l2_dist_detection = self._spot.run_online([l2_dist])
-            else:
-                l2_dist_detection = (l2_dist > 0.5)
+    #                 self._anomaly_duration += 1
 
-            if l2_dist_detection:
+    #             else:
 
-                if self._anomaly_duration == 0:
-                    self._anomaly_start =\
-                            timestamp.strftime('%Y-%m-%d %H:%M:%S')
+    #                 if self._anomaly_duration != 0:
+    #                     anomaly_end = timestamp.strftime('%Y-%m-%d %H:%M:%S')
+    #                     self._logger.warning('Transformer-based detection '
+    #                                             f'anomaly ended at {anomaly_end}')
 
-                    self._logger.warning('Transformer-based detection '
-                                            'encountered anomaly at timestamp '
-                                            f'{self._anomaly_start}')
+    #                 self._anomaly_duration = 0
 
-                self.detection_callback(0, AnomalyType.TransformerBased,
-                                                        self._anomaly_start,
-                                                        self._anomaly_duration)
+    #         self._data_x_last = data_y.detach().cpu().numpy()
 
-                self._anomaly_duration += 1
+    #         if self._output_queue is not None:
+    #             # self._output_queue.put((self._data_x_last[:, -1, :],
+    #             #                                         timestamp,
+    #             #                                         l2_dist_detection))
 
-            else:
-
-                if self._anomaly_duration != 0:
-                    anomaly_end = timestamp.strftime('%Y-%m-%d %H:%M:%S')
-                    self._logger.warning('Transformer-based detection '
-                                            f'anomaly ended at {anomaly_end}')
-
-                self._anomaly_duration = 0
-
-        self._data_x_last = data_y.detach().cpu().numpy()
-
-        if self._output_queue is not None:
-            # self._output_queue.put((self._data_x_last[:, -1, :],
-            #                                         timestamp,
-            #                                         l2_dist_detection))
-
-            self._output_queue.put((data.to_numpy()[[-1], :],
-                                                    timestamp,
-                                                    l2_dist_detection))
+    #             self._output_queue.put((data.to_numpy()[[-1], :],
+    #                                                     timestamp,
+    #                                                     l2_dist_detection))
 
 
-    def _process_one_batch(self,
-                            dataset_object,
-                            batch_x,
-                            batch_y,
-                            batch_x_mark,
-                            batch_y_mark,
-                            viz_data):
+    def _process_one_batch(self, data_x, data_y, data_x_mark, data_y_mark):
+        # Ensure that the model is in evaluation mode
+        self.model.eval()
 
-        batch_x = batch_x.float().to(self.device)
-        batch_y = batch_y.float()
+        # Assuming that the decoder input `dec_inp` is the `data_y` sequence shifted by one position.
+        dec_inp = torch.zeros_like(data_y)
+        dec_inp[:, 1:, :] = data_y[:, :-1, :]
 
-        batch_x_mark = batch_x_mark.float().to(self.device)
-        batch_y_mark = batch_y_mark.float().to(self.device)
+        # Perform model inference
+        outputs, _ = self.model(data_x, data_x_mark, dec_inp, data_y_mark)
 
-        # Decoder input
-
-        padding = self.parameter_dict['padding']
-        pred_len = self.parameter_dict['pred_len']
-        label_len = self.parameter_dict['label_len']
-
-        if padding == 0:
-            dec_inp = torch.zeros([batch_y.shape[0], pred_len, batch_y.shape[-1]]).float()
-
-        elif padding == 1:
-            dec_inp = torch.ones([batch_y.shape[0], pred_len, batch_y.shape[-1]]).float()
-
-        dec_inp = torch.cat([batch_y[:, :label_len, :], dec_inp], dim=1).float().to(self.device)
-
-        # Encoder - decoder
-
-        outputs, _ = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark,
-                                                            viz_data=viz_data)
 
         if self.parameter_dict['inverse']:
-            outputs = dataset_object.inverse_transform(outputs)
+            preds = self.scaler.inverse_transform(outputs.detach().cpu().numpy())
+            preds = torch.from_numpy(preds).to(self.device)
+            true_vals = self.scaler.inverse_transform(data_y.detach().cpu().numpy())
+            true_vals = torch.from_numpy(true_vals).to(self.device)
+        else:
+            preds = outputs.detach()
+            true_vals = data_y.detach()
 
-        f_dim = 0
-        batch_y = batch_y[:, -pred_len:, f_dim:].to(self.device)
+        return preds, true_vals
+    # def _process_one_batch(self,
+    #                         dataset_object,
+    #                         batch_x,
+    #                         batch_y,
+    #                         batch_x_mark,
+    #                         batch_y_mark,
+    #                         viz_data):
 
-        return outputs, batch_y
+    #     batch_x = batch_x.float().to(self.device)
+    #     batch_y = batch_y.float()
+
+    #     batch_x_mark = batch_x_mark.float().to(self.device)
+    #     batch_y_mark = batch_y_mark.float().to(self.device)
+
+    #     # Decoder input
+
+    #     padding = self.parameter_dict['padding']
+    #     pred_len = self.parameter_dict['pred_len']
+    #     label_len = self.parameter_dict['label_len']
+
+    #     if padding == 0:
+    #         dec_inp = torch.zeros([batch_y.shape[0], pred_len, batch_y.shape[-1]]).float()
+
+    #     elif padding == 1:
+    #         dec_inp = torch.ones([batch_y.shape[0], pred_len, batch_y.shape[-1]]).float()
+
+    #     dec_inp = torch.cat([batch_y[:, :label_len, :], dec_inp], dim=1).float().to(self.device)
+
+    #     # Encoder - decoder
+
+    #     outputs, _ = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark,
+    #                                                         viz_data=viz_data)
+
+    #     if self.parameter_dict['inverse']:
+    #         outputs = dataset_object.inverse_transform(outputs)
+
+    #     f_dim = 0
+    #     batch_y = batch_y[:, -pred_len:, f_dim:].to(self.device)
+
+    #     return outputs, batch_y
 
 
     def register_detection_callback(self,

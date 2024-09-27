@@ -51,6 +51,7 @@ class MedianStdReducer(BaseReducer):
                                     stdev_labels))
 
         return labels
+        
 
     @tqdmloggingdecorator
     def reduce_numpy(self,

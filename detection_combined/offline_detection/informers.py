@@ -170,11 +170,11 @@ if __name__ == '__main__':
                 try:
                     dbscan_anomaly_detector.process(timestamp, data)
 
-                    #output_slice =\
-                    #    median_std_reducer.reduce_numpy(tpu_labels,
-                    #                                        timestamp,
-                    #                                        data)
-                    #reduced_data_buffer.push(output_slice)
+                    output_slice =\
+                        median_std_reducer.reduce_numpy(tpu_labels,
+                                                            timestamp,
+                                                            data)
+                    reduced_data_buffer.push(output_slice)
                     
                 except NonCriticalPredictionException:
                     break
