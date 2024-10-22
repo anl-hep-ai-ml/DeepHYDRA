@@ -275,16 +275,24 @@ def run_merlin(data: np.ndarray,
     distances_all = []
     lengths_all = []
 
+    parameters_all = []
+
     for channel in trange(columns):
+        discords, distances, lengths, parameters =\
+                                merlin(data[:, channel],
+                                            l_min, l_max,
+                                            sanitize=near_constant_fix)
 
-        discords, distances, lengths =\
-                        merlin(data[:, channel],
-                                    l_min, l_max,
-                                    sanitize=near_constant_fix)
+        parameters_all.append(parameters)
 
-        discords_all.append(discords)
-        distances_all.append(distances)
-        lengths_all.append(lengths)
+        # discords_all.append(discords)
+        # distances_all.append(distances)
+        # lengths_all.append(lengths)
+
+    print(f'Size MERLIN sequential: {np.max(parameters_all)}')
+    print(f'Size MERLIN parallel: {np.sum(parameters_all)}')
+
+    exit()
     
     discords_all = np.column_stack(discords_all)
     distances_all = np.column_stack(distances_all)

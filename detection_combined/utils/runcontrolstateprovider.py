@@ -42,13 +42,9 @@ class RunControlStateProvider():
 
             time_start = t.monotonic()
 
-            # request_time = dt.datetime.now()
-
-            #request_time = ShiftedTimeSingleton(dt.datetime(2023, 7, 13, 14, 30, 0)).now()
-
-            # request_time = ShiftedTimeSingleton(dt.datetime(2023, 10, 18, 23, 45, 0)).now()
-
-            request_time = ShiftedTimeSingleton(dt.datetime(2024, 2, 7, 12, 0, 0)).now()
+            request_time = dt.datetime.now()
+            
+            request_time = ShiftedTimeSingleton(dt.datetime(2023, 7, 13, 14, 30, 0)).now()
 
             # print(request_time)
 

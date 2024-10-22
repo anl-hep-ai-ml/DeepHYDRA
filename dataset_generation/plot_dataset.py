@@ -89,11 +89,25 @@ def get_rack_hardware_configuration(rack_number: int,
             raise ValueError(f'Rack number {rack_number} not '
                                 f'in known nodes for variant {variant}')
 
+    if variant == '2023':
+
+        if 44 <= rack_number <= 54:
+            return 0
+        elif 55 <= rack_number <= 63:
+            return 1
+        elif (64 <= rack_number <= 77) or\
+                    (79 <= rack_number <= 90):
+            return 2
+        elif rack_number <= 26:
+            return 3
+        else:
+            raise ValueError(f'Rack number {rack_number} not '
+                                f'in known nodes for variant {variant}')
+    
     else:
         raise NotImplementedError('Rack hardware configuration '
                                     'identification not implemented '
                                     f'for variant {variant}')
-
 
 if __name__ == '__main__':
 

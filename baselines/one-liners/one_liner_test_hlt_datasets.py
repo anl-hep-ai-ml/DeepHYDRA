@@ -550,7 +550,7 @@ def run_with_best_parameters_method_3(data: np.array,
     pylikwid.markerclose()
 
 
-    save_numpy_array(preds_all, '../../evaluation/combined_detection/predictions/method_3.npy')
+    # save_numpy_array(preds_all, '../../evaluation/combined_detection/predictions/method_3.npy')
 
 
 def run_with_best_parameters_method_4(data: np.array,
@@ -562,7 +562,7 @@ def run_with_best_parameters_method_4(data: np.array,
 
     results_best_method_4 =\
         pd.read_csv('parameters_best_method_4_hlt.csv', sep='\t')
-
+#
     pylikwid.markerstartregion("1lm4_0")
     diff = np.diff(data, axis=0)
     pylikwid.markerstopregion("1lm4_0")
@@ -616,7 +616,7 @@ def run_with_best_parameters_method_4(data: np.array,
         print(i, e)
     pylikwid.markerclose()
 
-    save_numpy_array(preds_all, '../../evaluation/combined_detection/predictions/method_4.npy')
+    # save_numpy_array(preds_all, '../../evaluation/combined_detection/predictions/method_4.npy')
 
 
 if __name__ == '__main__':
@@ -643,6 +643,10 @@ if __name__ == '__main__':
 
     hlt_data_np = hlt_data_pd.to_numpy()
 
+    # print(hlt_data_np.shape)
+
+    # exit()
+
     labels_pd = pd.read_hdf(args.data_dir +\
                             '/unreduced_hlt_dcm_test_set_2018_y.h5')
 
@@ -654,21 +658,21 @@ if __name__ == '__main__':
 
     cols_without_anomalies = np.argwhere(anomalies_per_col==0)
 
-    parameter_exploration(hlt_data_np,
-                            labels_np,
-                            k_lower=args.k_lower,
-                            k_upper=args.k_upper)
+    # parameter_exploration(hlt_data_np,
+    #                         labels_np,
+    #                         k_lower=args.k_lower,
+    #                         k_upper=args.k_upper)
 
-    test_thresholds_method_3(hlt_data_np,
-                                    labels_np)
+    # test_thresholds_method_3(hlt_data_np,
+    #                                 labels_np)
 
-    test_thresholds_method_4(hlt_data_np,
-                                    labels_np)
+    # test_thresholds_method_4(hlt_data_np,
+    #                                 labels_np)
 
     run_with_best_parameters_method_3(hlt_data_np,
                                                 labels_np,
                                                 0.45)
 
-    run_with_best_parameters_method_4(hlt_data_np,
-                                                labels_np,
-                                                0.475)
+    # run_with_best_parameters_method_4(hlt_data_np,
+    #                                             labels_np,
+    #                                             0.475)

@@ -39,13 +39,15 @@ class AtlasRunsParser(HTMLParser):
                 
                 assert(self._run_info['start'] is None)
                 
-                self._run_info['start'] = dt.datetime.strptime('2018 ' + data, '%Y %a %b %d, %H:%M %Z')
+                self._run_info['start'] = dt.datetime.strptime('2023 ' + data, '%Y %a %b %d, %H:%M %Z')
+                #self._run_info['start'] = dt.datetime.strptime('2018 ' + data, '%Y %a %b %d, %H:%M %Z')
                 
             elif self._run_info_data_type is self.RunInfoDataType.run_end:
                 
                 assert(self._run_info['end'] is None)
                 
-                self._run_info['end'] = dt.datetime.strptime('2018 ' + data, '%Y %a %b %d, %H:%M %Z')
+                self._run_info['end'] = dt.datetime.strptime('2023 ' + data, '%Y %a %b %d, %H:%M %Z')
+                #self._run_info['end'] = dt.datetime.strptime('2018 ' + data, '%Y %a %b %d, %H:%M %Z')
                 
                 duration_dt = self._run_info['end'] - self._run_info['start']
                 

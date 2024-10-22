@@ -6,8 +6,10 @@ import logging
 import numpy as np
 import pandas as pd
 from beauty import Beauty
+import pytz
 
-from .atlasrunsparser import AtlasRunsParser
+from .atlas_runs_parser_test import AtlasRunsParser
+#from .atlasrunsparser import AtlasRunsParser
 from .variables import nan_fill_value
 
 _data_channel_vars_dict = {'L1Rate': ['ATLAS', 'DCM', 'L1Rate', 'DF_IS:.*.DCM.*.info']}
@@ -17,8 +19,7 @@ nan_fill_value = np.finfo(np.float32).min
 
 class OfflinePBeastDataLoader():
 
-    def __init__(self, data_channel: str,
-                        runs_summary_filename: str) -> None:
+    def __init__(self, runs_summary_filename: str, data_channel: str ='') -> None:
 
         self._data_channel = data_channel
 
@@ -88,4 +89,4 @@ class OfflinePBeastDataLoader():
 
 
     def __len__(self) -> int:
-        return len(self._run_numbers_all) 
+        return len(self._run_numbers_all)

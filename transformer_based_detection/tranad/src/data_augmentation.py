@@ -8,7 +8,6 @@ import numpy as np
 import numpy.lib.stride_tricks as np_st
 import pandas as pd
 from scipy.fft import fft, ifft
-from sklearn.metrics import mean_squared_error
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 from tqdm import tqdm
@@ -204,7 +203,6 @@ class HLTDataTimeseriesAugmentor():
 
         self.rng = np.random.default_rng(seed=42)
 
-
     def _find_collision_windows(self,
                                     data: np.array,
                                     downtime_period: int,
@@ -333,7 +331,6 @@ class HLTDataTimeseriesAugmentor():
 
         return data
 
-
     def _prepend_zeros_labeled(self,
                                 data: pd.DataFrame,
                                 label: pd.DataFrame,
@@ -459,6 +456,38 @@ class HLTDataTimeseriesAugmentor():
             data[:, column] =\
                 np.maximum(0, ifft(amp_data*e_i_phase))
 
+        return data
+
+
+    def _iaaft(self,
+                data: np.array,
+                sliding_window_size: int = 32,
+                tolerance_percent: float = 5,
+                candidate_count: int = 10,
+                gradient_threshold: float = 2,
+                gradient_mask_patience: int = 10) -> np.array:
+
+        usable_processors = len(os.sched_getaffinity(0))
+        process_pool = Pool(usable_processors//2)
+
+        data_list_in = np.hsplit(data, data.shape[1])
+
+        _apply_iaaft_with_args =\
+                partial(_apply_iaaft,
+                            sliding_window_size=sliding_window_size,
+                            tolerance_percent=tolerance_percent,
+                            candidate_count=candidate_count,
+                            gradient_threshold=gradient_threshold,
+                            gradient_mask_patience=gradient_mask_patience)
+                            
+
+        data_list_out = process_pool.map(_apply_iaaft_with_args,
+                                                    data_list_in)
+
+        process_pool.close()
+
+        data = np.hstack(data_list_out)
+            
         return data
 
 
@@ -614,6 +643,10 @@ class HLTDataTimeseriesAugmentor():
         p_augmentation[-1] = 1 - ratio_augmented
 
         while augmented_dataset_size < target_size_min:
+
+            # Sample segment with good data range
+            
+            # index_source_segment = 16
 
             index_source_segment =\
                     self.rng.choice(len(data_segments_unmodified))

@@ -107,6 +107,8 @@ if __name__ == '__main__':
 
         results_all[model_name] = int(results['Parameters'][0])
 
+        print(results['Parameters'])
+
     results_all_pd = pd.DataFrame(
                             results_all.values(),
                             index=results_all.keys(),

@@ -925,8 +925,6 @@ class EclipseDataTimeseriesAugmentor():
     def _reduce_labels(self, label: pd.DataFrame):
         columns_individual_labels = (label.columns != 'label')
 
-        # print(columns_individual_labels)
-
         label.loc[:, columns_individual_labels] =\
             label.loc[:, columns_individual_labels].fillna(0).astype(np.uint8)
 

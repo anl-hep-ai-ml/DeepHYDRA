@@ -14,21 +14,42 @@ from sklearn.metrics import roc_auc_score,\
                                 matthews_corrcoef
 
 from tqdm.auto import trange
-
-run_endpoints = [1404,
-                    8928,
-                    19296,
-                    28948]
-
-channels_to_delete_last_run = [1357,
-                                3685,
-                                3184]
+import pylikwid
 
 
 def save_numpy_array(array: np.array,
                         filename: str):    
     with open(filename, 'wb') as output_file:
         np.save(output_file, array)
+
+
+def expand_labels(data_columns: pd.Index,
+                    labels: pd.DataFrame):
+    
+    app_names = ['exa', 'lammps', 'sw4', 'sw4lite']
+
+    def _renaming_func(element):
+
+        column_name = ''
+
+        for app_name in app_names:
+            if f'{app_name}_' in element:
+                column_name = app_name
+
+        return column_name
+    
+    label_columns_expanded =\
+        pd.Index(data_columns.map(_renaming_func))
+
+    labels_expanded = pd.DataFrame(columns=label_columns_expanded)
+
+    for app_name in app_names:
+        labels_expanded[app_name] =\
+                        labels.loc[:, app_name]
+
+    labels_expanded.columns = data_columns
+
+    return labels_expanded
 
 
 def adjust_predicts(score, label,
@@ -199,7 +220,8 @@ def parameter_exploration(data: np.array,
                             c_upper: np.float64=1.,
                             c_count: int=16,
                             k_lower: int=2,
-                            k_upper: int=16):
+                            k_upper: int=16,
+                            variant: str='median'):
 
     '''
     One-liner-based anomaly detection as defined by
@@ -282,7 +304,7 @@ def parameter_exploration(data: np.array,
 
         results_best.iloc[channel, :] = (mcc, b,)
 
-    results_best.to_csv('parameters_best_method_3_hlt_reduced.csv', sep='\t')
+    results_best.to_csv(f'parameters_best_method_3_eclipse_{variant}_reduced.csv', sep='\t')
 
     # Method 4: abs(diff(TS)) > movmean(abs(diff(TS)), k) + c*movstd(diff(TS), k) + b
 
@@ -334,12 +356,12 @@ def parameter_exploration(data: np.array,
                         cs_best_per_channel_pd),
                         keys=('mcc', 'b', 'c'))
 
-    data_per_channel_pd.to_hdf('results_hlt_reduced_2018_one_liner_test.h5',
-                                    key='results_hlt_reduced_2018_one_liner_test',
+    data_per_channel_pd.to_hdf(f'results_eclipse_reduced_one_liner_test_{variant}.h5',
+                                    key=f'results_eclipse_reduced_one_liner_test_{variant}',
                                     mode='w')
 
-    data_per_channel_pd = pd.read_hdf('results_hlt_reduced_2018_one_liner_test.h5',
-                                        key='results_hlt_reduced_2018_one_liner_test')
+    data_per_channel_pd = pd.read_hdf(f'results_eclipse_reduced_one_liner_test_{variant}.h5',
+                                        key=f'results_eclipse_reduced_one_liner_test_{variant}')
 
     # Get index of per-column best MCC
     # to determine best combination
@@ -366,14 +388,15 @@ def parameter_exploration(data: np.array,
 
         results_best.iloc[index_col, :] = (mcc, b, c, k)
 
-    results_best.to_csv('parameters_best_method_4_hlt_reduced.csv', sep='\t')
+    results_best.to_csv(f'parameters_best_method_4_eclipse_{variant}_reduced.csv', sep='\t')
 
 
 def test_thresholds_method_3(data: np.array,
-                                labels: np.array):
+                                labels: np.array,
+                                variant: str):
 
     results_best_method_3 =\
-        pd.read_csv('parameters_best_method_3_hlt_reduced.csv', sep='\t')
+        pd.read_csv(f'parameters_best_method_3_eclipse_{variant}_reduced.csv', sep='\t')
 
     diff = np.diff(data, axis=0)
 
@@ -429,14 +452,15 @@ def test_thresholds_method_3(data: np.array,
 
         results_combined.loc[threshold, :] = (auroc, f1, mcc, precision, recall)
 
-    results_combined.to_csv('results_method_3_combined_hlt_reduced.csv', sep='\t')
+    results_combined.to_csv(f'results_method_3_combined_eclipse_{variant}_reduced.csv', sep='\t')
 
 
 def test_thresholds_method_4(data: np.array,
-                                labels: np.array):
+                                labels: np.array,
+                                variant: str):
 
     results_best_method_4 =\
-        pd.read_csv('parameters_best_method_4_hlt_reduced.csv', sep='\t')
+        pd.read_csv(f'parameters_best_method_4_eclipse_{variant}_reduced.csv', sep='\t')
 
     diff = np.diff(data, axis=0)
 
@@ -482,26 +506,48 @@ def test_thresholds_method_4(data: np.array,
 
         results_combined.loc[threshold, :] = (auroc, f1, mcc, precision, recall)
 
-    results_combined.to_csv('results_method_4_combined_hlt_reduced.csv', sep='\t')
+    results_combined.to_csv(f'results_method_4_combined_eclipse_{variant}_reduced.csv', sep='\t')
 
 
 def run_with_best_parameters_method_3(data: np.array,
                                         labels: np.array,
-                                        threshold: np.float64):
+                                        threshold: np.float64,
+                                        variant=str):
 
-    results_best_method_4 =\
-        pd.read_csv('parameters_best_method_3_hlt_reduced.csv', sep='\t')
+    results_best_method_3 =\
+        pd.read_csv(f'parameters_best_method_3_eclipse_{variant}_reduced.csv', sep='\t')
 
+    # pylikwid.markerinit()
+    # pylikwid.markerthreadinit()
+
+    # pylikwid.markerstartregion("1lm3_0")
     diff = np.diff(data, axis=0)
+    # pylikwid.markerstopregion("1lm3_0")
+
+    # nr_events, eventlist, time, count = pylikwid.markergetregion("1lm3_0")
+
+    # for i, e in enumerate(eventlist):
+    #     print(i, e)
+    # pylikwid.markerclose()
 
     labels = labels[1:, :]
 
+    # pylikwid.markerinit()
+    # pylikwid.markerthreadinit()
+    # pylikwid.markerstartregion("1lm3_1")
     abs_diff = np.abs(diff)
+    # pylikwid.markerstopregion("1lm3_1")
+
+    # nr_events, eventlist, time, count = pylikwid.markergetregion("1lm3_1")
+
+    # for i, e in enumerate(eventlist):
+    #     print(i, e)
+    # pylikwid.markerclose()
 
     abs_diff_normalized = MinMaxScaler().fit_transform(abs_diff)
     
-    bs = results_best_method_4.iloc[:, 2].to_numpy()
-    mccs = results_best_method_4.iloc[:, 1].to_numpy()
+    bs = results_best_method_3.iloc[:, 2].to_numpy()
+    mccs = results_best_method_3.iloc[:, 1].to_numpy()
 
     print('Method 3:')
 
@@ -510,6 +556,10 @@ def run_with_best_parameters_method_3(data: np.array,
     preds_all = np.zeros_like(abs_diff_normalized)
 
     bs_included = bs[included_indices]
+
+    # pylikwid.markerinit()
+    # pylikwid.markerthreadinit()
+    # pylikwid.markerstartregion("1lm3_2")
 
     for channel, b in zip(included_indices,
                                 bs_included):
@@ -521,19 +571,53 @@ def run_with_best_parameters_method_3(data: np.array,
             adjust_predicts(data_channel,
                                 labels_channel, b)
 
+    # pylikwid.markerstopregion("1lm3_2")
+
+    # nr_events, eventlist, time, count = pylikwid.markergetregion("1lm3_2")
+
+    # for i, e in enumerate(eventlist):
+    #     print(i, e)
+    # pylikwid.markerclose()
+
+    save_numpy_array(preds_all, f'../../evaluation/reduced_detection_eclipse_{variant}/predictions/method_3.npy')
+
 
 def run_with_best_parameters_method_4(data: np.array,
                                         labels: np.array,
-                                        threshold: np.float64):
+                                        threshold: np.float64,
+                                        variant: str):
+
+    # pylikwid.markerinit()
+    # pylikwid.markerthreadinit()
 
     results_best_method_4 =\
-        pd.read_csv('parameters_best_method_4_hlt_reduced.csv', sep='\t')
+        pd.read_csv(f'parameters_best_method_4_eclipse_{variant}_reduced.csv', sep='\t')
 
+    # pylikwid.markerstartregion("1lm4_0")
     diff = np.diff(data, axis=0)
+    # pylikwid.markerstopregion("1lm4_0")
+
+    # nr_events, eventlist, time, count = pylikwid.markergetregion("1lm4_0")
+
+    # for i, e in enumerate(eventlist):
+    #     print(i, e)
+    # pylikwid.markerclose()
 
     labels = labels[1:, :]
 
+    # pylikwid.markerinit()
+    # pylikwid.markerthreadinit()
+    # pylikwid.markerstartregion("1lm4_1")
+
     abs_diff = np.abs(diff)
+
+    # pylikwid.markerstopregion("1lm4_1")
+
+    # nr_events, eventlist, time, count = pylikwid.markergetregion("1lm4_1")
+
+    # for i, e in enumerate(eventlist):
+    #     print(i, e)
+    # pylikwid.markerclose()
 
     abs_diff_normalized = MinMaxScaler().fit_transform(abs_diff)
     
@@ -547,51 +631,78 @@ def run_with_best_parameters_method_4(data: np.array,
 
     included_indices = np.where(mccs > threshold)[0]
 
+    # pylikwid.markerinit()
+    # pylikwid.markerthreadinit()
+    # pylikwid.markerstartregion("1lm4_2")
+
     preds_all[:, included_indices] =\
                 method_4_combined(abs_diff_normalized[:, included_indices],
                                                 labels[:, included_indices],
                                                 parameters[included_indices, :])
+    
+    # pylikwid.markerstopregion("1lm4_2")
+
+    # nr_events, eventlist, time, count = pylikwid.markergetregion("1lm4_2")
+
+    # for i, e in enumerate(eventlist):
+    #     print(i, e)
+    # pylikwid.markerclose()
+
+    save_numpy_array(preds_all, f'../../evaluation/reduced_detection_eclipse_{variant}/predictions/method_4.npy')
 
 
 if __name__ == '__main__':
 
-    parser = argparse.ArgumentParser(description='HLT One-Liner Test')
+    parser = argparse.ArgumentParser(description='ECLIPSE One-Liner Test')
 
-    parser.add_argument('--data-dir', type=str, default='../../datasets/hlt')
+    parser.add_argument('--data-dir', type=str, default='../../datasets/eclipse')
+    parser.add_argument('--variant', type=str, default='../../datasets/eclipse')
     parser.add_argument('--k-lower', type=int, default=2)
     parser.add_argument('--k-upper', type=int, default=16)
   
     args = parser.parse_args()
 
-    hlt_data_pd = pd.read_hdf(args.data_dir +\
-                                    '/reduced_hlt_test_set_x.h5')
+    eclipse_data_pd = pd.read_hdf(args.data_dir +\
+                                    '/reduced_eclipse_'
+                                    'test_set_'
+                                    f'{args.variant}.h5',
+                                    key='data')
 
-    hlt_data_pd.fillna(0, inplace=True)
-
-    hlt_data_np = hlt_data_pd.to_numpy()
-
+    eclipse_data_np = eclipse_data_pd.to_numpy()
+        
     labels_pd = pd.read_hdf(args.data_dir +\
-                            '/reduced_hlt_test_set_y.h5')
+                                '/reduced_eclipse_'
+                                'test_set_'
+                                f'{args.variant}.h5',
+                                key='labels')
+
+    labels_pd = expand_labels(eclipse_data_pd.columns,
+                                                labels_pd)
 
     labels_np = labels_pd.to_numpy()
 
     labels_np = np.greater_equal(labels_np, 1)
 
-    parameter_exploration(hlt_data_np,
-                                labels_np,
-                                k_lower=args.k_lower,
-                                k_upper=args.k_upper)
+    # parameter_exploration(eclipse_data_np,
+    #                             labels_np,
+    #                             k_lower=args.k_lower,
+    #                             k_upper=args.k_upper,
+    #                             variant=args.variant)
 
-    test_thresholds_method_3(hlt_data_np,
-                                    labels_np)
+    # test_thresholds_method_3(eclipse_data_np,
+    #                                 labels_np,
+    #                                 args.variant)
 
-    test_thresholds_method_4(hlt_data_np,
-                                    labels_np)
+    # test_thresholds_method_4(eclipse_data_np,
+    #                                 labels_np,
+    #                                 args.variant)
 
-    run_with_best_parameters_method_3(hlt_data_np,
+    # run_with_best_parameters_method_3(eclipse_data_np,
+    #                                             labels_np,
+    #                                             0.975,
+    #                                             args.variant)
+
+    run_with_best_parameters_method_4(eclipse_data_np,
                                                 labels_np,
-                                                0.675)
-
-    run_with_best_parameters_method_4(hlt_data_np,
-                                                labels_np,
-                                                0.625)
+                                                0.975,
+                                                args.variant)

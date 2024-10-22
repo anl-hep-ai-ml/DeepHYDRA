@@ -8,6 +8,7 @@ import logging
 
 import numpy as np
 import pandas as pd
+import pylikwid
 from tqdm import tqdm
 from tqdm.contrib import tzip
 from tqdm.contrib.logging import logging_redirect_tqdm
@@ -25,14 +26,14 @@ from utils.exceptions import NonCriticalPredictionException
 # would otherwise cause the T-DBSCAN algorithm
 # to flag them as anomalous
 
-run_endpoints = [1404,
-                    8928,
-                    19296,
-                    28948]
-
-channels_to_delete_last_run = [1357,
-                                3685,
-                                3184]
+# run_endpoints = [1404,
+#                     8928,
+#                     19296,
+#                     28948]
+# 
+# channels_to_delete_last_run = [1357,
+#                                 3685,
+#                                 3184]
 
 
 def _remove_timestamp_jumps(index: pd.DatetimeIndex) -> pd.DatetimeIndex:
@@ -110,6 +111,8 @@ if __name__ == '__main__':
 
     hlt_data_pd.index = _remove_timestamp_jumps(
                             pd.DatetimeIndex(hlt_data_pd.index))
+    
+    # hlt_data_pd = hlt_data_pd.iloc[10000:20000, :]
 
     median_std_reducer = MedianStdReducer('2018')
     
@@ -147,11 +150,39 @@ if __name__ == '__main__':
 
     hlt_data_np = hlt_data_pd.to_numpy()
 
+    flops_dbscan = []
+    flops_reduction = []
+
     with logging_redirect_tqdm():
         for count, (timestamp, data) in enumerate(tzip(timestamps, hlt_data_np)):
 
+            # if count == 4096:
+            #     dbscan_anomaly_detector.write_memory_size()
+            #     break
+
             try:
+                # pylikwid.markerinit()
+                # pylikwid.markerthreadinit()
+
+                # pylikwid.markerstartregion("DBSCAN")
+
                 dbscan_anomaly_detector.process(timestamp, data)
+
+                # pylikwid.markerstopregion("DBSCAN")
+
+                # nr_events, eventlist, time, count = pylikwid.markergetregion("DBSCAN")
+
+                # for i, e in enumerate(eventlist):
+                #     print(i, e)
+
+                # flops_dbscan.append(eventlist[3])
+
+                # pylikwid.markerclose()
+
+                # pylikwid.markerinit()
+                # pylikwid.markerthreadinit()
+
+                # pylikwid.markerstartregion("reduction")
 
                 output_slice =\
                     median_std_reducer.reduce_numpy(tpu_labels,

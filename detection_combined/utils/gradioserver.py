@@ -125,9 +125,6 @@ class GradioServer():
         self._time_series_buffer = deque([], maxlen=64)
         self._log_buffer = deque([], maxlen=25)
 
-        self._time_series_plot = None
-        self._time_series_plot_mutex = mp.Lock()
-
         self._dashboard = gr.Blocks(title='STRADA Dashboard',
                                         analytics_enabled=False)
 
@@ -157,9 +154,6 @@ class GradioServer():
             
             self._dashboard.load(self._get_time_series_plot, None,
                                                 self._plot, every=5)
-
-            self._dashboard.load(self._generate_time_series_plot,
-                                                None, None, every=5)
 
             self._dashboard.load(self._get_log_string, None,
                                     self._log_output, every=1)
@@ -215,7 +209,7 @@ class GradioServer():
         while not self._clustering_queue.empty():
             clustering_anomalies = self._clustering_queue.get()
 
-        html = "<div style='display: grid; grid-template-columns: repeat(10, 40px); grid-gap: 1px;'>"
+        html = "<div style='display: grid; grid-template-columns: repeat(10, 50px); grid-gap: 1px;'>"
         for rack_row in _rack_numbers_expected_2023:
             
             for column in range(10):
@@ -226,18 +220,13 @@ class GradioServer():
                     element = ""
                     color = "gray"
 
-                html += f"<div style='width: 40px; height: 40px; background-color: {color};'>" \
-                        f"<p style='font-size: 20px; text-align: center; margin-top: 5px;'>{element}</p></div>"
+                html += f"<div style='width: 50px; height: 50px; background-color: {color};'>" \
+                        f"<p style='font-size: 25px; text-align: center; margin-top: 5px;'>{element}</p></div>"
         html += "</div>"
         return html
 
-
-    def _get_time_series_plot(self):
-        with self._time_series_plot_mutex:
-             return self._time_series_plot
-
     
-    def _generate_time_series_plot(self):
+    def _get_time_series_plot(self):
         while not self._time_series_queue.empty():
             data, timestamps, labels =\
                 self._time_series_queue.get()
@@ -268,10 +257,15 @@ class GradioServer():
 
             data = np.vstack(data)
 
+            self._logger.info(f'{data.shape}')
+
             data_dims = data.shape[-1]
 
             data_median = data[:, :data_dims//2]
             data_std = data[:, data_dims//2:]
+
+            # timestamps =\
+            #     np.array([timestamp.strftime('%X') for timestamp in timestamps])
             
             label = np.array(label, dtype=np.uint8)
 
@@ -296,20 +290,15 @@ class GradioServer():
             ax.set_ylabel('DCM-Rate')
             ax.set_xlabel('Time')
 
-            median_plot = ax.plot(timestamps,
-                                    data_median,
-                                    linewidth=1.5)
+            ax.plot(timestamps,
+                        data_median,
+                        linewidth=1.5)
 
-            outline_lower = data_median - data_std
-            outline_upper = data_median + data_std
-
-            for channel in range(data_median.shape[-1]):
-                ax.fill_between(timestamps,
-                                        outline_lower[:, channel],
-                                        outline_upper[:, channel],
-                                        color=median_plot[channel].get_color(),
-                                        linewidth=0,
-                                        alpha=0.2)
+            ax.fill_between(timestamps,
+                                    data_median - data_std,
+                                    data_median + data_std,
+                                    linewidth=0,
+                                    alpha=0.4)
 
             anomaly_starts, anomaly_ends =\
                         get_anomalous_runs(label)
@@ -330,8 +319,7 @@ class GradioServer():
 
         plt.tight_layout()
 
-        with self._time_series_plot_mutex:
-            self._time_series_plot = fig
+        return fig
 
     
     def _get_log_string(self):

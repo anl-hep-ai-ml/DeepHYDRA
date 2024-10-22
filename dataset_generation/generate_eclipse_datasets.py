@@ -281,6 +281,10 @@ if __name__ == '__main__':
     train_set_x_df = pd.read_hdf(f'{args.dataset_dir}/prod_train_data.hdf')
     train_set_y_df = pd.read_csv(f'{args.dataset_dir}/prod_train_label.csv')
 
+    print(list(train_set_x_df.columns))
+
+    exit()
+
     train_set_x_df['job_id'] =\
         pd.to_numeric(train_set_x_df['job_id'])
     train_set_x_df['component_id'] =\

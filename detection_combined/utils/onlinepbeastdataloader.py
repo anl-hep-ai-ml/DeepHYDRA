@@ -18,6 +18,7 @@ _data_channel_vars_dict = {'DCMRate': ['ATLAS', 'DCM', 'L1Rate', 'DF_IS:.*.DCM.*
 
 _data_refresh_rates_seconds_dict = {'DCMRate': 5}
 
+
 _backup_tpu_name_reference_timestamp = dt.datetime(2023, 6, 9, 0, 0, 0)
 
 
@@ -79,11 +80,8 @@ class OnlinePBeastDataLoader():
 
         # requested_period_end = dt.datetime.now() - self._delay
 
-        # requested_period_end =\
-        #     ShiftedTimeSingleton(dt.datetime(2023, 7, 13, 14, 30, 0)).now() - self._delay
-
         requested_period_end =\
-            ShiftedTimeSingleton(dt.datetime(2024, 2, 7, 12, 0, 0)).now() - self._delay
+            ShiftedTimeSingleton(dt.datetime(2023, 7, 13, 14, 30, 0)).now() - self._delay
 
         # requested_period_end = dt.datetime.now()
         
@@ -162,16 +160,9 @@ class OnlinePBeastDataLoader():
 
         # requested_period = dt.datetime.now() - self._delay
 
-        # requested_period =\
-        #     ShiftedTimeSingleton(dt.datetime(2023, 7, 13, 14, 30, 0)).now() -\
-        #                                                             self._delay
-
-        # requested_period =\
-        #     ShiftedTimeSingleton(dt.datetime(2023, 10, 18, 23, 45, 0)).now() -\
-        #                                                             self._delay
-
         requested_period =\
-            ShiftedTimeSingleton(dt.datetime(2024, 2, 7, 12, 0, 0)).now() - self._delay
+            ShiftedTimeSingleton(dt.datetime(2023, 7, 13, 14, 30, 0)).now() -\
+                                                                    self._delay
         
         self._logger.info('Executing PBEAST request to force SSO login')
 
@@ -207,18 +198,10 @@ class OnlinePBeastDataLoader():
 
         # requested_period_end = dt.datetime.now() - self._delay - self._window_length
 
-        # requested_period_end =\
-        #     ShiftedTimeSingleton(dt.datetime(2023, 7, 13, 14, 30, 0)).now() -\
-        #                                                         self._delay -\
-        #                                                         self._window_length
-
-        # requested_period_end =\
-        #     ShiftedTimeSingleton(dt.datetime(2023, 10, 18, 23, 45, 0)).now() -\
-        #                                                         self._delay -\
-        #                                                         self._window_length
-        
         requested_period_end =\
-                ShiftedTimeSingleton(dt.datetime(2024, 2, 7, 12, 0, 0)).now() - self._delay
+            ShiftedTimeSingleton(dt.datetime(2023, 7, 13, 14, 30, 0)).now() -\
+                                                                self._delay -\
+                                                                self._window_length
         
         requested_period_start = requested_period_end - size*self._polling_interval
 
@@ -340,14 +323,8 @@ class OnlinePBeastDataLoader():
 
             # requested_period_end = dt.datetime.now() - self._delay
 
-            # requested_period_end =\
-            #     ShiftedTimeSingleton(dt.datetime(2023, 7, 13, 14, 30, 0)).now() - self._delay
-
-            # requested_period_end =\
-            #     ShiftedTimeSingleton(dt.datetime(2023, 10, 18, 23, 45, 0)).now() - self._delay
-
             requested_period_end =\
-                ShiftedTimeSingleton(dt.datetime(2024, 2, 7, 12, 0, 0)).now() - self._delay
+                ShiftedTimeSingleton(dt.datetime(2023, 7, 13, 14, 30, 0)).now() - self._delay
             
             requested_period_start = requested_period_end - self._window_length
 
@@ -379,21 +356,6 @@ class OnlinePBeastDataLoader():
 
             # for count in range(1, len(dcm_rates_all_list)):
             #     dcm_rates_all_list[count] = dcm_rates_all_list[count].alignto(dcm_rates_all_list[0])
-
-            len_min = -1
-
-            for dcm_rate in dcm_rates_all_list:
-                if len_min < len(dcm_rate):
-                    len_min = len(dcm_rate)
-
-            for count in range(0, len(dcm_rates_all_list)):
-                len_before = len(dcm_rates_all_list[count])
-
-                dcm_rates_all_list[count] = dcm_rates_all_list[count][-len_min:]
-
-                if len_before != len(dcm_rates_all_list[count]):
-                    self._logger.debug(f'Pruned channel {count} data from length '
-                                        f'{len_before} to length {len(dcm_rates_all_list[count])}')
 
             for count in range(1, len(dcm_rates_all_list)):
                 dcm_rates_all_list[count].index = dcm_rates_all_list[0].index

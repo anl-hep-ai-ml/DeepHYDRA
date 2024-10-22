@@ -28,8 +28,11 @@ class DataPreprocessor():
                     checkpoint_dir +\
                     '/scaler.pkl'
 
-        self.scaler = pkl.load(open(
-                        scaler_dir_and_filename, 'rb'))
+        # Load the scaler using a context manager
+        with open(scaler_dir_and_filename, 'rb') as file:
+            self.scaler = pkl.load(file)
+        #self.scaler = pkl.load(open(
+        #                scaler_dir_and_filename, 'rb'))
 
         self._data_clipping_val =\
                     data_clipping_val
@@ -39,15 +42,17 @@ class DataPreprocessor():
 
     def process(self, data: pd.DataFrame):
 
+        # Data is a df with all the medians and std deviation for all racks.
         timestamps = pd.DataFrame(data.index,
                                     columns=['date'])
 
         data_x = data.to_numpy()
-
-        if np.any(data_x == nan_fill_value):
-
+        #if np.any(data_x == nan_fill_value):
+        if np.any(np.isclose(data_x, nan_fill_value)):
             _, data_x_nan_indices =\
-                np.nonzero(data_x == nan_fill_value)
+                np.nonzero(np.isclose(data_x, nan_fill_value))
+                #np.nonzero(data_x == nan_fill_value)
+
 
             missing_racks =\
                 [rack.removeprefix('m_')\
@@ -69,16 +74,18 @@ class DataPreprocessor():
 
             self._logger.warning(warning_string)
 
+
         # Clip large positive/negative values
         # that sometimes occur when a sufficiently
         # large number of values in an unreduced
         # slice are large positive/negative values
         # sometimes returned by PBEAST
 
-        # np.clip(data_x,
-        #             -self._data_clipping_val,
-        #             self._data_clipping_val,
-        #             out=data_x)
+        np.clip(data_x,
+                    -self._data_clipping_val,
+                    self._data_clipping_val,
+                    out=data_x)
+
 
         data_x_scaled = self.scaler.transform(data_x)
 

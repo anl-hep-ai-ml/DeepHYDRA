@@ -26,8 +26,9 @@ class MedianStdReducer(BaseReducer):
             self._parse_channel_name =\
                 self._parse_channel_name_hlt_dcm
 
+
     def _parse_channel_name_hlt_dcm(self, channel_name):
-        parameters = [int(substring) for substring in re.findall(r'\d+', channel_name)]
+        parameters = [int(substring) for substring in re.findall(r'\d+', channel_name)] # careful about overallocation configurations
         return parameters[-1]//1000
 
 

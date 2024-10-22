@@ -18,8 +18,10 @@ base_data_anomaly_ends = [264,
                             465,
                             4277]
 
+# output_dir = '../../../evaluation/combined_detection_2023/predictions/'
 # output_dir = '../../../evaluation/combined_detection_dcm_2018/predictions/'
-output_dir = '../../../evaluation/combined_detection_eclipse_median/predictions/'
+#output_dir = '../../../evaluation/combined_detection_eclipse_median/predictions/'
+output_dir = '../../../evaluation/combined_detection_offline_2023/predictions/'
 
 def _save_numpy_array(array: np.array,
                         filename: str):

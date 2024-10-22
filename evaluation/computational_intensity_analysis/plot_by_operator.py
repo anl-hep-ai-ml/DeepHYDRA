@@ -10,7 +10,8 @@ import matplotlib.dates as mdates
 
 plt.rcParams['figure.constrained_layout.use'] = True
 
-data_dir = 'data/smd/by_operator/'
+# data_dir = 'data/smd/by_operator/'
+data_dir = 'data/eclipse/by_operator/'
 
 flop_display_lower_threshold_percent = 0.001
 
