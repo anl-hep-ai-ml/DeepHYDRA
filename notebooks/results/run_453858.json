@@ -1,0 +1,26 @@
+{
+    "50015": {
+        "2023-06-07 00:07:50": {
+            "duration": 10,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        }
+    },
+    "60009": {
+        "2023-06-07 01:10:00": {
+            "duration": 7,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        }
+    },
+    "0": {
+        "2023-06-07 02:49:35": {
+            "duration": 6161,
+            "types": [
+                "TransformerBased"
+            ]
+        }
+    }
+}

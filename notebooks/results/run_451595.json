@@ -1,0 +1,122 @@
+{
+    "0": {
+        "2023-05-06 18:51:20": {
+            "duration": 8444,
+            "types": [
+                "TransformerBased"
+            ]
+        }
+    },
+    "21032": {
+        "2023-05-06 20:06:35": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "9029": {
+        "2023-05-06 20:06:40": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "10008": {
+        "2023-05-06 20:06:40": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "82027": {
+        "2023-05-06 20:06:40": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "19008": {
+        "2023-05-06 20:06:45": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "66005": {
+        "2023-05-06 20:06:45": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "70027": {
+        "2023-05-06 20:06:45": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "82039": {
+        "2023-05-06 20:06:50": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "21029": {
+        "2023-05-06 20:06:55": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "66012": {
+        "2023-05-06 20:06:55": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "83009": {
+        "2023-05-06 20:06:55": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "71015": {
+        "2023-05-06 20:07:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "79037": {
+        "2023-05-06 20:08:35": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "66028": {
+        "2023-05-06 20:08:40": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    }
+}

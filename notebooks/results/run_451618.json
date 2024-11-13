@@ -1,0 +1,218 @@
+{
+    "0": {
+        "2023-05-07 21:56:20": {
+            "duration": 5900,
+            "types": [
+                "TransformerBased"
+            ]
+        }
+    },
+    "8025": {
+        "2023-05-07 22:39:35": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "8030": {
+        "2023-05-07 22:39:35": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "11021": {
+        "2023-05-07 22:39:35": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "1017": {
+        "2023-05-07 22:39:40": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "18026": {
+        "2023-05-07 22:39:40": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "9014": {
+        "2023-05-07 22:39:50": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "3015": {
+        "2023-05-07 22:40:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "95017": {
+        "2023-05-07 22:40:05": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "1013": {
+        "2023-05-07 22:40:10": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "13002": {
+        "2023-05-07 22:40:15": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "91034": {
+        "2023-05-07 22:40:15": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "1023": {
+        "2023-05-07 22:40:20": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "3006": {
+        "2023-05-07 22:40:20": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "4022": {
+        "2023-05-07 22:40:20": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "68011": {
+        "2023-05-07 22:40:20": {
+            "duration": 8,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "70038": {
+        "2023-05-07 22:40:20": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "95013": {
+        "2023-05-07 22:40:20": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "26030": {
+        "2023-05-07 22:40:35": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "84023": {
+        "2023-05-07 22:40:35": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "77019": {
+        "2023-05-07 22:40:40": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "80030": {
+        "2023-05-07 22:40:45": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "2028": {
+        "2023-05-07 22:41:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "13019": {
+        "2023-05-07 22:41:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "90026": {
+        "2023-05-07 22:41:15": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "94004": {
+        "2023-05-07 22:41:30": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "94038": {
+        "2023-05-07 22:41:30": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    }
+}

@@ -1,0 +1,1988 @@
+{
+    "0": {
+        "2023-05-07 08:28:20": {
+            "duration": 8888,
+            "types": [
+                "TransformerBased"
+            ]
+        }
+    },
+    "10028": {
+        "2023-05-07 09:19:35": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "1012": {
+        "2023-05-07 09:19:50": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "19025": {
+        "2023-05-07 09:21:55": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "13025": {
+        "2023-05-07 09:22:05": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "87019": {
+        "2023-05-07 09:22:05": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "6022": {
+        "2023-05-07 09:22:15": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "7014": {
+        "2023-05-07 09:22:15": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "26012": {
+        "2023-05-07 09:22:15": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "26004": {
+        "2023-05-07 09:22:20": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "68040": {
+        "2023-05-07 09:22:20": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "90009": {
+        "2023-05-07 09:22:20": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "18020": {
+        "2023-05-07 09:22:25": {
+            "duration": 6,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "70038": {
+        "2023-05-07 09:22:25": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "90004": {
+        "2023-05-07 09:22:25": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "90018": {
+        "2023-05-07 09:22:25": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "64012": {
+        "2023-05-07 09:22:30": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "88038": {
+        "2023-05-07 09:22:30": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "67020": {
+        "2023-05-07 09:22:45": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "95034": {
+        "2023-05-07 09:22:50": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "65008": {
+        "2023-05-07 09:22:55": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "72015": {
+        "2023-05-07 09:22:55": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "70022": {
+        "2023-05-07 09:23:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "68030": {
+        "2023-05-07 09:23:15": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "69024": {
+        "2023-05-07 09:23:15": {
+            "duration": 6,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "80012": {
+        "2023-05-07 09:23:15": {
+            "duration": 6,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "7028": {
+        "2023-05-07 09:23:20": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "12029": {
+        "2023-05-07 09:23:20": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "10012": {
+        "2023-05-07 09:23:25": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "17026": {
+        "2023-05-07 09:23:25": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "73004": {
+        "2023-05-07 09:23:25": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "73020": {
+        "2023-05-07 09:23:25": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "73023": {
+        "2023-05-07 09:23:25": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "86018": {
+        "2023-05-07 09:23:25": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "86022": {
+        "2023-05-07 09:23:25": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "76002": {
+        "2023-05-07 11:18:00": {
+            "duration": 77,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 11:24:25": {
+            "duration": 39,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 11:27:40": {
+            "duration": 1200,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 13:07:45": {
+            "duration": 1877,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 15:44:10": {
+            "duration": 58,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 15:49:00": {
+            "duration": 28,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 15:51:30": {
+            "duration": 102,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 16:00:10": {
+            "duration": 1682,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 18:20:20": {
+            "duration": 29,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 18:22:45": {
+            "duration": 655,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 19:17:30": {
+            "duration": 1011,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 20:41:45": {
+            "duration": 70,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 20:47:35": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 20:48:00": {
+            "duration": 13,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        }
+    },
+    "76003": {
+        "2023-05-07 11:18:00": {
+            "duration": 76,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 11:24:20": {
+            "duration": 39,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 11:27:35": {
+            "duration": 1200,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 13:07:40": {
+            "duration": 1877,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 15:44:05": {
+            "duration": 58,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 15:48:55": {
+            "duration": 28,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 15:51:30": {
+            "duration": 101,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 16:00:05": {
+            "duration": 1683,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 18:20:20": {
+            "duration": 28,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 18:22:40": {
+            "duration": 655,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 19:17:25": {
+            "duration": 1012,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 20:41:45": {
+            "duration": 26,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 20:44:05": {
+            "duration": 41,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 20:47:30": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 20:47:55": {
+            "duration": 13,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        }
+    },
+    "76004": {
+        "2023-05-07 11:18:00": {
+            "duration": 77,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 11:24:25": {
+            "duration": 39,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 11:27:40": {
+            "duration": 1200,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 13:07:45": {
+            "duration": 1877,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 15:44:10": {
+            "duration": 58,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 15:49:00": {
+            "duration": 28,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 15:51:30": {
+            "duration": 102,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 16:00:10": {
+            "duration": 1682,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 18:20:20": {
+            "duration": 29,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 18:22:45": {
+            "duration": 655,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 19:17:30": {
+            "duration": 1011,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 20:41:45": {
+            "duration": 27,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 20:44:10": {
+            "duration": 19,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 20:45:55": {
+            "duration": 20,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 20:47:35": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 20:48:00": {
+            "duration": 13,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        }
+    },
+    "76005": {
+        "2023-05-07 11:18:00": {
+            "duration": 76,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 11:24:20": {
+            "duration": 39,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 11:27:35": {
+            "duration": 1200,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 13:07:40": {
+            "duration": 1877,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 15:44:05": {
+            "duration": 58,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 15:48:55": {
+            "duration": 28,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 15:51:20": {
+            "duration": 103,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 16:00:05": {
+            "duration": 1682,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 18:20:15": {
+            "duration": 29,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 18:22:40": {
+            "duration": 655,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 19:17:25": {
+            "duration": 1011,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 20:41:40": {
+            "duration": 27,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 20:44:05": {
+            "duration": 41,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 20:47:30": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 20:47:55": {
+            "duration": 13,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        }
+    },
+    "76006": {
+        "2023-05-07 11:18:00": {
+            "duration": 76,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 11:24:20": {
+            "duration": 39,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 11:27:35": {
+            "duration": 1200,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 13:07:40": {
+            "duration": 1877,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 15:44:05": {
+            "duration": 58,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 15:48:55": {
+            "duration": 28,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 15:51:25": {
+            "duration": 102,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 16:00:05": {
+            "duration": 1682,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 18:20:15": {
+            "duration": 29,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 18:22:40": {
+            "duration": 655,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 19:17:25": {
+            "duration": 1011,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 20:41:40": {
+            "duration": 27,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 20:44:05": {
+            "duration": 19,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 20:45:50": {
+            "duration": 20,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 20:47:30": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 20:47:55": {
+            "duration": 13,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        }
+    },
+    "76007": {
+        "2023-05-07 11:18:00": {
+            "duration": 77,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 11:24:25": {
+            "duration": 38,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 11:27:35": {
+            "duration": 1200,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 13:07:40": {
+            "duration": 1877,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 15:44:05": {
+            "duration": 58,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 15:48:55": {
+            "duration": 28,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 15:51:20": {
+            "duration": 103,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 16:00:05": {
+            "duration": 1682,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 18:20:15": {
+            "duration": 29,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 18:22:40": {
+            "duration": 655,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 19:17:25": {
+            "duration": 1011,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 20:41:40": {
+            "duration": 70,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 20:47:30": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 20:47:55": {
+            "duration": 14,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        }
+    },
+    "76008": {
+        "2023-05-07 11:18:00": {
+            "duration": 77,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 11:24:25": {
+            "duration": 39,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 11:27:40": {
+            "duration": 1200,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 13:07:45": {
+            "duration": 1877,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 15:44:10": {
+            "duration": 58,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 15:49:00": {
+            "duration": 28,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 15:51:30": {
+            "duration": 102,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 16:00:10": {
+            "duration": 1682,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 18:20:20": {
+            "duration": 29,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 18:22:45": {
+            "duration": 655,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 19:17:30": {
+            "duration": 1011,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 20:41:45": {
+            "duration": 70,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 20:47:35": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 20:48:00": {
+            "duration": 13,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        }
+    },
+    "76009": {
+        "2023-05-07 11:18:00": {
+            "duration": 77,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 11:24:25": {
+            "duration": 39,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 11:27:40": {
+            "duration": 1200,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 13:07:45": {
+            "duration": 1877,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 15:44:10": {
+            "duration": 58,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 15:49:00": {
+            "duration": 28,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 15:51:25": {
+            "duration": 103,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 16:00:10": {
+            "duration": 1682,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 18:20:20": {
+            "duration": 29,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 18:22:45": {
+            "duration": 655,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 19:17:30": {
+            "duration": 1011,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 20:41:45": {
+            "duration": 70,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 20:47:35": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 20:48:00": {
+            "duration": 13,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        }
+    },
+    "76010": {
+        "2023-05-07 11:18:00": {
+            "duration": 77,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 11:24:25": {
+            "duration": 39,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 11:27:40": {
+            "duration": 1200,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 13:07:45": {
+            "duration": 1877,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 15:44:10": {
+            "duration": 58,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 15:49:00": {
+            "duration": 28,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 15:51:30": {
+            "duration": 102,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 16:00:10": {
+            "duration": 1682,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 18:20:20": {
+            "duration": 22,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 18:22:20": {
+            "duration": 5,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 18:22:45": {
+            "duration": 655,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 19:17:30": {
+            "duration": 1011,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 20:41:45": {
+            "duration": 27,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 20:44:10": {
+            "duration": 19,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 20:45:55": {
+            "duration": 20,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 20:47:35": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 20:48:00": {
+            "duration": 13,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        }
+    },
+    "76011": {
+        "2023-05-07 11:18:00": {
+            "duration": 77,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 11:24:25": {
+            "duration": 39,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 11:27:40": {
+            "duration": 1200,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 13:07:45": {
+            "duration": 1877,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 15:44:10": {
+            "duration": 58,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 15:49:00": {
+            "duration": 28,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 15:51:30": {
+            "duration": 102,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 16:00:10": {
+            "duration": 1682,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 18:20:20": {
+            "duration": 29,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 18:22:45": {
+            "duration": 655,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 19:17:30": {
+            "duration": 1011,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 20:41:45": {
+            "duration": 27,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 20:44:10": {
+            "duration": 41,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 20:47:35": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 20:48:00": {
+            "duration": 13,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        }
+    },
+    "76012": {
+        "2023-05-07 11:18:00": {
+            "duration": 76,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 11:24:20": {
+            "duration": 40,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 11:27:40": {
+            "duration": 1199,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 13:07:40": {
+            "duration": 1878,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 15:44:10": {
+            "duration": 57,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 15:48:55": {
+            "duration": 28,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 15:51:25": {
+            "duration": 102,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 16:00:05": {
+            "duration": 1683,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 18:20:20": {
+            "duration": 21,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 18:22:10": {
+            "duration": 7,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 18:22:45": {
+            "duration": 654,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 19:17:30": {
+            "duration": 1011,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 20:41:45": {
+            "duration": 69,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 20:47:30": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 20:47:55": {
+            "duration": 14,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        }
+    },
+    "76013": {
+        "2023-05-07 11:18:00": {
+            "duration": 76,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 11:24:20": {
+            "duration": 39,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 11:27:35": {
+            "duration": 1200,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 13:07:40": {
+            "duration": 1877,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 15:44:05": {
+            "duration": 58,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 15:48:55": {
+            "duration": 28,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 15:51:20": {
+            "duration": 104,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 16:00:05": {
+            "duration": 1682,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 18:20:15": {
+            "duration": 29,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 18:22:40": {
+            "duration": 655,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 19:17:25": {
+            "duration": 1011,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 20:41:40": {
+            "duration": 49,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 20:45:50": {
+            "duration": 20,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 20:47:30": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 20:47:55": {
+            "duration": 13,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        }
+    },
+    "76014": {
+        "2023-05-07 11:18:00": {
+            "duration": 77,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 11:24:25": {
+            "duration": 39,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 11:27:40": {
+            "duration": 1200,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 13:07:45": {
+            "duration": 1877,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 15:44:10": {
+            "duration": 58,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 15:49:00": {
+            "duration": 28,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 15:51:25": {
+            "duration": 103,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 16:00:10": {
+            "duration": 1682,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 18:20:20": {
+            "duration": 29,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 18:22:45": {
+            "duration": 655,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 19:17:30": {
+            "duration": 1011,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 20:41:45": {
+            "duration": 70,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 20:47:35": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 20:48:00": {
+            "duration": 13,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        }
+    },
+    "76015": {
+        "2023-05-07 11:18:00": {
+            "duration": 76,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 11:24:20": {
+            "duration": 39,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 11:27:35": {
+            "duration": 1200,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 13:07:40": {
+            "duration": 1877,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 15:44:05": {
+            "duration": 58,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 15:48:55": {
+            "duration": 28,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 15:51:20": {
+            "duration": 103,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 16:00:05": {
+            "duration": 1682,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 18:20:15": {
+            "duration": 29,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 18:22:40": {
+            "duration": 655,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 19:17:25": {
+            "duration": 1011,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 20:41:40": {
+            "duration": 49,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 20:45:50": {
+            "duration": 20,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 20:47:30": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 20:47:55": {
+            "duration": 13,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        }
+    },
+    "76016": {
+        "2023-05-07 11:18:00": {
+            "duration": 77,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 11:24:25": {
+            "duration": 39,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 11:27:40": {
+            "duration": 3078,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 15:44:10": {
+            "duration": 57,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 15:48:55": {
+            "duration": 133,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 16:00:10": {
+            "duration": 1682,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 18:20:20": {
+            "duration": 29,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 18:22:45": {
+            "duration": 655,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 19:17:30": {
+            "duration": 1011,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 20:41:45": {
+            "duration": 69,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 20:47:30": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 20:47:55": {
+            "duration": 13,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        }
+    },
+    "76017": {
+        "2023-05-07 11:18:00": {
+            "duration": 76,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 11:24:20": {
+            "duration": 40,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 11:27:40": {
+            "duration": 1199,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 13:07:40": {
+            "duration": 1878,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 15:44:10": {
+            "duration": 57,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 15:48:55": {
+            "duration": 133,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 16:00:05": {
+            "duration": 1682,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 18:20:15": {
+            "duration": 30,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 18:22:45": {
+            "duration": 655,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 19:17:30": {
+            "duration": 1011,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 20:41:45": {
+            "duration": 69,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 20:47:30": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 20:47:55": {
+            "duration": 14,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        }
+    },
+    "76018": {
+        "2023-05-07 11:18:00": {
+            "duration": 77,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 11:24:25": {
+            "duration": 39,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 11:27:40": {
+            "duration": 1200,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 13:07:45": {
+            "duration": 1877,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 15:44:10": {
+            "duration": 58,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 15:49:00": {
+            "duration": 28,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 15:51:30": {
+            "duration": 102,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 16:00:10": {
+            "duration": 1682,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 18:20:20": {
+            "duration": 29,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 18:22:45": {
+            "duration": 655,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 19:17:25": {
+            "duration": 1012,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 20:41:45": {
+            "duration": 27,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 20:44:10": {
+            "duration": 19,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 20:45:55": {
+            "duration": 20,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 20:47:35": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 20:48:00": {
+            "duration": 13,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        }
+    },
+    "76019": {
+        "2023-05-07 11:18:00": {
+            "duration": 77,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 11:24:25": {
+            "duration": 39,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 11:27:40": {
+            "duration": 1200,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 13:07:45": {
+            "duration": 1877,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 15:44:10": {
+            "duration": 58,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 15:49:00": {
+            "duration": 28,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 15:51:30": {
+            "duration": 102,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 16:00:10": {
+            "duration": 1682,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 18:20:20": {
+            "duration": 29,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 18:22:45": {
+            "duration": 655,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 19:17:30": {
+            "duration": 1011,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 20:41:45": {
+            "duration": 70,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 20:47:35": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 20:48:00": {
+            "duration": 13,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        }
+    },
+    "76020": {
+        "2023-05-07 11:18:00": {
+            "duration": 77,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 11:24:25": {
+            "duration": 39,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 11:27:40": {
+            "duration": 1200,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 13:07:45": {
+            "duration": 1877,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 15:44:10": {
+            "duration": 58,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 15:49:00": {
+            "duration": 28,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 15:51:25": {
+            "duration": 103,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 16:00:10": {
+            "duration": 1682,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 18:20:20": {
+            "duration": 29,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 18:22:45": {
+            "duration": 655,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 19:17:30": {
+            "duration": 1011,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 20:41:45": {
+            "duration": 70,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-05-07 20:47:35": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-05-07 20:48:00": {
+            "duration": 13,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        }
+    }
+}

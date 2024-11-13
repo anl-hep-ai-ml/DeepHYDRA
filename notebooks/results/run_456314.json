@@ -1,0 +1,72 @@
+{
+    "77035": {
+        "2023-07-11 11:41:05": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "70037": {
+        "2023-07-11 11:41:15": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "26026": {
+        "2023-07-11 11:42:20": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "71040": {
+        "2023-07-11 11:43:20": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "68018": {
+        "2023-07-11 11:57:50": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-11 12:00:35": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "69037": {
+        "2023-07-11 11:58:20": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "4011": {
+        "2023-07-11 12:00:35": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "0": {
+        "2023-07-11 12:02:00": {
+            "duration": 0,
+            "types": [
+                "TransformerBased"
+            ]
+        }
+    }
+}

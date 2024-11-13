@@ -1,0 +1,54 @@
+{
+    "0": {
+        "2023-06-05 11:50:20": {
+            "duration": 9608,
+            "types": [
+                "TransformerBased"
+            ]
+        }
+    },
+    "71038": {
+        "2023-06-05 11:54:20": {
+            "duration": 11,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        }
+    },
+    "72003": {
+        "2023-06-05 11:54:20": {
+            "duration": 11,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-06-05 11:55:20": {
+            "duration": 4,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        }
+    },
+    "26012": {
+        "2023-06-05 11:54:25": {
+            "duration": 10,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-06-05 11:55:20": {
+            "duration": 5,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        }
+    },
+    "58040": {
+        "2023-06-05 11:54:30": {
+            "duration": 9,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        }
+    }
+}

@@ -1,0 +1,44 @@
+{
+    "52020": {
+        "2023-06-07 22:26:20": {
+            "duration": 15,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-06-07 22:27:40": {
+            "duration": 8,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        }
+    },
+    "91038": {
+        "2023-06-07 22:26:20": {
+            "duration": 15,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-06-07 22:27:40": {
+            "duration": 8,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        }
+    },
+    "0": {
+        "2023-06-07 22:31:00": {
+            "duration": 0,
+            "types": [
+                "TransformerBased"
+            ]
+        },
+        "2023-06-08 13:51:00": {
+            "duration": 0,
+            "types": [
+                "TransformerBased"
+            ]
+        }
+    }
+}

@@ -1,0 +1,5462 @@
+{
+    "48002": {
+        "2023-07-14 08:54:45": {
+            "duration": 24,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:56:50": {
+            "duration": 26,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:59:15": {
+            "duration": 53,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:03:55": {
+            "duration": 191,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:20:30": {
+            "duration": 240,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:41:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:43:05": {
+            "duration": 92,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:50:55": {
+            "duration": 74,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:02:50": {
+            "duration": 37,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:06:15": {
+            "duration": 90,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:22:15": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:45": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:25:35": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:35": {
+            "duration": 10,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:35:15": {
+            "duration": 6,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:37:15": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:35": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:40:00": {
+            "duration": 13,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:42:00": {
+            "duration": 103,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:51:15": {
+            "duration": 9,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "48003": {
+        "2023-07-14 08:54:45": {
+            "duration": 24,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:56:50": {
+            "duration": 26,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:59:15": {
+            "duration": 53,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:03:55": {
+            "duration": 191,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:20:30": {
+            "duration": 240,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:41:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:43:00": {
+            "duration": 93,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:50:55": {
+            "duration": 74,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:02:50": {
+            "duration": 37,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:06:15": {
+            "duration": 90,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:22:15": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:45": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:25:35": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:35": {
+            "duration": 10,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:35:15": {
+            "duration": 6,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:37:15": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:35": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:40:00": {
+            "duration": 13,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:42:00": {
+            "duration": 103,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:51:15": {
+            "duration": 9,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "48004": {
+        "2023-07-14 08:54:45": {
+            "duration": 24,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:56:50": {
+            "duration": 26,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:59:15": {
+            "duration": 53,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:03:55": {
+            "duration": 191,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:20:30": {
+            "duration": 240,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:41:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:43:05": {
+            "duration": 92,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:50:55": {
+            "duration": 74,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:02:50": {
+            "duration": 37,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:06:15": {
+            "duration": 90,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:22:15": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:45": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:25:35": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:35": {
+            "duration": 10,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:35:15": {
+            "duration": 6,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:37:15": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:35": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:40:00": {
+            "duration": 13,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:42:00": {
+            "duration": 103,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:51:15": {
+            "duration": 9,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "48005": {
+        "2023-07-14 08:54:45": {
+            "duration": 24,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:56:50": {
+            "duration": 26,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:59:15": {
+            "duration": 53,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:03:55": {
+            "duration": 191,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:20:30": {
+            "duration": 240,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:41:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:43:05": {
+            "duration": 92,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:50:55": {
+            "duration": 74,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:02:50": {
+            "duration": 37,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:06:15": {
+            "duration": 90,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:22:15": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:45": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:25:35": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:35": {
+            "duration": 10,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:35:15": {
+            "duration": 6,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:37:15": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:35": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:40:00": {
+            "duration": 13,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:42:00": {
+            "duration": 103,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:51:15": {
+            "duration": 9,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "48006": {
+        "2023-07-14 08:54:45": {
+            "duration": 24,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:56:50": {
+            "duration": 26,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:59:15": {
+            "duration": 53,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:03:55": {
+            "duration": 191,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:20:30": {
+            "duration": 240,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:41:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:43:00": {
+            "duration": 93,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:50:55": {
+            "duration": 74,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:02:50": {
+            "duration": 37,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:06:15": {
+            "duration": 90,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:22:15": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:45": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:25:35": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:35": {
+            "duration": 10,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:35:15": {
+            "duration": 6,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:37:15": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:35": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:40:00": {
+            "duration": 13,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:42:00": {
+            "duration": 103,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:51:15": {
+            "duration": 9,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "48007": {
+        "2023-07-14 08:54:45": {
+            "duration": 24,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:56:50": {
+            "duration": 26,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:59:15": {
+            "duration": 53,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:03:55": {
+            "duration": 191,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:20:30": {
+            "duration": 240,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:41:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:43:00": {
+            "duration": 93,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:50:55": {
+            "duration": 74,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:02:50": {
+            "duration": 37,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:06:15": {
+            "duration": 90,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:22:15": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:45": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:25:35": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:35": {
+            "duration": 10,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:35:15": {
+            "duration": 6,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:37:15": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:35": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:40:00": {
+            "duration": 13,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:42:00": {
+            "duration": 103,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:51:15": {
+            "duration": 9,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "48008": {
+        "2023-07-14 08:54:45": {
+            "duration": 24,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:56:50": {
+            "duration": 26,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:59:15": {
+            "duration": 53,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:03:55": {
+            "duration": 191,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:20:30": {
+            "duration": 240,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:41:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:43:00": {
+            "duration": 93,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:50:55": {
+            "duration": 74,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:02:50": {
+            "duration": 37,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:06:15": {
+            "duration": 90,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:22:15": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:45": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:25:35": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:35": {
+            "duration": 10,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:35:15": {
+            "duration": 6,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:37:15": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:35": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:40:00": {
+            "duration": 13,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:42:00": {
+            "duration": 103,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:51:15": {
+            "duration": 9,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "48009": {
+        "2023-07-14 08:54:45": {
+            "duration": 24,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:56:50": {
+            "duration": 26,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:59:15": {
+            "duration": 53,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:03:55": {
+            "duration": 191,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:20:30": {
+            "duration": 240,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:41:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:43:00": {
+            "duration": 93,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:50:55": {
+            "duration": 74,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:02:50": {
+            "duration": 37,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:06:15": {
+            "duration": 90,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:22:15": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:45": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:25:35": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:35": {
+            "duration": 10,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:35:15": {
+            "duration": 6,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:37:15": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:35": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:40:00": {
+            "duration": 13,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:42:00": {
+            "duration": 103,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:51:15": {
+            "duration": 9,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "48010": {
+        "2023-07-14 08:54:45": {
+            "duration": 24,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:56:50": {
+            "duration": 26,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:59:15": {
+            "duration": 53,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:03:55": {
+            "duration": 191,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:20:30": {
+            "duration": 240,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:41:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:43:00": {
+            "duration": 93,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:50:55": {
+            "duration": 74,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:02:50": {
+            "duration": 37,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:06:15": {
+            "duration": 90,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:22:15": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:45": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:25:35": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:35": {
+            "duration": 10,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:35:15": {
+            "duration": 6,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:37:15": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:35": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:40:00": {
+            "duration": 13,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:42:00": {
+            "duration": 103,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:51:15": {
+            "duration": 9,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "48011": {
+        "2023-07-14 08:54:45": {
+            "duration": 24,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:56:50": {
+            "duration": 26,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:59:15": {
+            "duration": 53,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:03:55": {
+            "duration": 191,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:20:30": {
+            "duration": 240,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:41:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:43:00": {
+            "duration": 93,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:50:55": {
+            "duration": 74,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:02:50": {
+            "duration": 37,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:06:15": {
+            "duration": 90,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:22:15": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:45": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:25:35": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:35": {
+            "duration": 10,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:35:15": {
+            "duration": 6,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:37:15": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:35": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:40:00": {
+            "duration": 13,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:42:00": {
+            "duration": 103,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:51:15": {
+            "duration": 9,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "48012": {
+        "2023-07-14 08:54:45": {
+            "duration": 24,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:56:50": {
+            "duration": 26,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:59:15": {
+            "duration": 53,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:03:55": {
+            "duration": 191,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:20:30": {
+            "duration": 240,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:41:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:43:00": {
+            "duration": 93,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:50:55": {
+            "duration": 74,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:02:50": {
+            "duration": 37,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:06:15": {
+            "duration": 90,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:22:15": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:45": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:25:35": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:35": {
+            "duration": 10,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:35:15": {
+            "duration": 6,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:37:15": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:35": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:40:00": {
+            "duration": 13,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:42:00": {
+            "duration": 103,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:51:15": {
+            "duration": 9,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "48013": {
+        "2023-07-14 08:54:45": {
+            "duration": 24,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:56:50": {
+            "duration": 26,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:59:15": {
+            "duration": 53,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:03:55": {
+            "duration": 191,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:20:30": {
+            "duration": 240,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:41:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:43:05": {
+            "duration": 92,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:50:55": {
+            "duration": 74,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:02:50": {
+            "duration": 37,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:06:15": {
+            "duration": 90,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:22:15": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:45": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:25:35": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:35": {
+            "duration": 10,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:35:15": {
+            "duration": 6,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:37:15": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:35": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:40:00": {
+            "duration": 13,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:42:00": {
+            "duration": 103,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:51:15": {
+            "duration": 9,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "48014": {
+        "2023-07-14 08:54:45": {
+            "duration": 24,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:56:50": {
+            "duration": 26,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:59:15": {
+            "duration": 53,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:03:55": {
+            "duration": 191,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:20:30": {
+            "duration": 240,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:41:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:43:00": {
+            "duration": 93,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:50:55": {
+            "duration": 74,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:02:50": {
+            "duration": 37,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:06:15": {
+            "duration": 90,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:22:15": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:45": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:25:35": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:35": {
+            "duration": 10,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:35:15": {
+            "duration": 6,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:37:15": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:35": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:40:00": {
+            "duration": 13,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:42:00": {
+            "duration": 103,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:51:15": {
+            "duration": 9,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "48015": {
+        "2023-07-14 08:54:45": {
+            "duration": 24,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:56:50": {
+            "duration": 26,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:59:15": {
+            "duration": 53,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:03:55": {
+            "duration": 191,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:20:30": {
+            "duration": 240,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:41:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:43:00": {
+            "duration": 93,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:50:55": {
+            "duration": 74,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:02:50": {
+            "duration": 37,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:06:15": {
+            "duration": 90,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:22:15": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:45": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:25:35": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:35": {
+            "duration": 10,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:35:15": {
+            "duration": 6,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:37:15": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:35": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:40:00": {
+            "duration": 13,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:42:00": {
+            "duration": 103,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:51:15": {
+            "duration": 9,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "48016": {
+        "2023-07-14 08:54:45": {
+            "duration": 24,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:56:50": {
+            "duration": 26,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:59:15": {
+            "duration": 53,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:03:55": {
+            "duration": 191,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:20:30": {
+            "duration": 240,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:41:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:43:00": {
+            "duration": 93,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:50:55": {
+            "duration": 74,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:02:50": {
+            "duration": 37,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:06:15": {
+            "duration": 90,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:22:15": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:45": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:25:35": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:35": {
+            "duration": 10,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:35:15": {
+            "duration": 6,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:37:15": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:35": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:40:00": {
+            "duration": 13,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:42:00": {
+            "duration": 103,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:51:15": {
+            "duration": 9,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "48017": {
+        "2023-07-14 08:54:45": {
+            "duration": 24,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:56:50": {
+            "duration": 26,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:59:15": {
+            "duration": 53,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:03:55": {
+            "duration": 191,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:20:30": {
+            "duration": 240,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:41:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:43:00": {
+            "duration": 93,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:50:55": {
+            "duration": 74,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:02:50": {
+            "duration": 37,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:06:15": {
+            "duration": 90,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:22:15": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:45": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:25:35": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:35": {
+            "duration": 10,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:35:15": {
+            "duration": 6,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:37:15": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:35": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:40:00": {
+            "duration": 13,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:42:00": {
+            "duration": 103,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:51:15": {
+            "duration": 9,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "48018": {
+        "2023-07-14 08:54:45": {
+            "duration": 24,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:56:50": {
+            "duration": 26,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:59:15": {
+            "duration": 53,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:03:55": {
+            "duration": 191,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:20:30": {
+            "duration": 240,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:41:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:43:00": {
+            "duration": 93,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:50:55": {
+            "duration": 74,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:02:50": {
+            "duration": 37,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:06:15": {
+            "duration": 90,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:22:15": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:45": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:25:35": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:35": {
+            "duration": 10,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:35:15": {
+            "duration": 6,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:37:15": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:35": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:40:00": {
+            "duration": 13,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:42:00": {
+            "duration": 103,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:51:15": {
+            "duration": 9,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "48019": {
+        "2023-07-14 08:54:45": {
+            "duration": 24,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:56:50": {
+            "duration": 26,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:59:15": {
+            "duration": 53,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:03:55": {
+            "duration": 191,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:20:30": {
+            "duration": 240,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:41:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:43:00": {
+            "duration": 93,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:50:55": {
+            "duration": 74,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:02:50": {
+            "duration": 37,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:06:15": {
+            "duration": 90,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:22:15": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:45": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:25:35": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:35": {
+            "duration": 10,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:35:15": {
+            "duration": 6,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:37:15": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:35": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:40:00": {
+            "duration": 13,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:42:00": {
+            "duration": 103,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:51:15": {
+            "duration": 9,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "48020": {
+        "2023-07-14 08:54:45": {
+            "duration": 24,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:56:50": {
+            "duration": 26,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:59:15": {
+            "duration": 53,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:03:55": {
+            "duration": 191,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:20:30": {
+            "duration": 240,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:41:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:43:00": {
+            "duration": 93,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:50:55": {
+            "duration": 74,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:02:50": {
+            "duration": 37,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:06:15": {
+            "duration": 90,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:22:15": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:45": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:25:35": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:35": {
+            "duration": 10,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:35:15": {
+            "duration": 6,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:37:15": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:35": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:40:00": {
+            "duration": 13,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:42:00": {
+            "duration": 103,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:51:15": {
+            "duration": 9,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "48021": {
+        "2023-07-14 08:54:45": {
+            "duration": 24,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:56:50": {
+            "duration": 26,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:59:15": {
+            "duration": 53,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:03:55": {
+            "duration": 191,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:20:30": {
+            "duration": 240,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:41:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:43:00": {
+            "duration": 93,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:50:55": {
+            "duration": 74,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:02:50": {
+            "duration": 37,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:06:15": {
+            "duration": 90,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:22:15": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:45": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:25:35": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:35": {
+            "duration": 10,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:35:15": {
+            "duration": 6,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:37:15": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:35": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:40:00": {
+            "duration": 13,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:42:00": {
+            "duration": 103,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:51:15": {
+            "duration": 9,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "48022": {
+        "2023-07-14 08:54:45": {
+            "duration": 24,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:56:50": {
+            "duration": 26,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:59:15": {
+            "duration": 53,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:03:55": {
+            "duration": 191,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:20:30": {
+            "duration": 240,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:41:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:43:05": {
+            "duration": 92,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:50:55": {
+            "duration": 74,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:02:50": {
+            "duration": 37,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:06:15": {
+            "duration": 90,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:22:15": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:45": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:25:35": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:35": {
+            "duration": 10,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:35:15": {
+            "duration": 6,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:37:15": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:35": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:40:00": {
+            "duration": 13,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:42:00": {
+            "duration": 103,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:51:15": {
+            "duration": 9,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "48023": {
+        "2023-07-14 08:54:45": {
+            "duration": 24,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:56:50": {
+            "duration": 26,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:59:15": {
+            "duration": 53,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:03:55": {
+            "duration": 191,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:20:30": {
+            "duration": 240,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:41:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:43:00": {
+            "duration": 93,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:50:55": {
+            "duration": 74,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:02:50": {
+            "duration": 37,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:06:15": {
+            "duration": 90,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:22:15": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:45": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:25:35": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:35": {
+            "duration": 10,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:35:15": {
+            "duration": 6,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:37:15": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:35": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:40:00": {
+            "duration": 13,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:42:00": {
+            "duration": 103,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:51:15": {
+            "duration": 9,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "48024": {
+        "2023-07-14 08:54:45": {
+            "duration": 24,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:56:50": {
+            "duration": 26,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:59:15": {
+            "duration": 53,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:03:55": {
+            "duration": 191,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:20:30": {
+            "duration": 240,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:41:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:43:00": {
+            "duration": 93,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:50:55": {
+            "duration": 74,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:02:50": {
+            "duration": 37,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:06:15": {
+            "duration": 90,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:22:15": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:45": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:25:35": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:35": {
+            "duration": 10,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:35:15": {
+            "duration": 6,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:37:15": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:35": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:40:00": {
+            "duration": 13,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:42:00": {
+            "duration": 103,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:51:15": {
+            "duration": 9,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "48025": {
+        "2023-07-14 08:54:45": {
+            "duration": 24,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:56:50": {
+            "duration": 26,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:59:15": {
+            "duration": 53,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:03:55": {
+            "duration": 191,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:20:30": {
+            "duration": 240,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:41:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:43:00": {
+            "duration": 93,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:50:55": {
+            "duration": 74,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:02:50": {
+            "duration": 37,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:06:15": {
+            "duration": 90,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:22:15": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:45": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:25:35": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:35": {
+            "duration": 10,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:35:15": {
+            "duration": 6,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:37:15": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:35": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:40:00": {
+            "duration": 13,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:42:00": {
+            "duration": 103,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:51:15": {
+            "duration": 9,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "48026": {
+        "2023-07-14 08:54:45": {
+            "duration": 24,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:56:50": {
+            "duration": 26,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:59:15": {
+            "duration": 53,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:03:55": {
+            "duration": 191,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:20:30": {
+            "duration": 240,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:41:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:43:00": {
+            "duration": 93,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:50:55": {
+            "duration": 74,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:02:50": {
+            "duration": 37,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:06:15": {
+            "duration": 90,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:22:15": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:45": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:25:35": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:35": {
+            "duration": 10,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:35:15": {
+            "duration": 6,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:37:15": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:35": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:40:00": {
+            "duration": 13,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:42:00": {
+            "duration": 103,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:51:15": {
+            "duration": 9,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "48027": {
+        "2023-07-14 08:54:45": {
+            "duration": 24,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:56:50": {
+            "duration": 26,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:59:15": {
+            "duration": 53,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:03:55": {
+            "duration": 191,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:20:30": {
+            "duration": 240,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:41:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:43:00": {
+            "duration": 93,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:50:55": {
+            "duration": 74,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:02:50": {
+            "duration": 37,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:06:15": {
+            "duration": 90,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:22:15": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:45": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:25:35": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:35": {
+            "duration": 10,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:35:15": {
+            "duration": 6,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:37:15": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:35": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:40:00": {
+            "duration": 13,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:42:00": {
+            "duration": 103,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:51:15": {
+            "duration": 9,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "48028": {
+        "2023-07-14 08:54:45": {
+            "duration": 24,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:56:50": {
+            "duration": 26,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:59:15": {
+            "duration": 53,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:03:55": {
+            "duration": 191,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:20:30": {
+            "duration": 240,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:41:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:43:00": {
+            "duration": 93,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:50:55": {
+            "duration": 74,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:02:50": {
+            "duration": 37,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:06:15": {
+            "duration": 90,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:22:15": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:45": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:25:35": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:35": {
+            "duration": 10,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:35:15": {
+            "duration": 6,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:37:15": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:35": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:40:00": {
+            "duration": 13,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:42:00": {
+            "duration": 103,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:51:15": {
+            "duration": 9,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "48029": {
+        "2023-07-14 08:54:45": {
+            "duration": 24,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:56:50": {
+            "duration": 26,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:59:15": {
+            "duration": 53,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:03:55": {
+            "duration": 191,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:20:30": {
+            "duration": 240,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:41:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:43:05": {
+            "duration": 92,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:50:55": {
+            "duration": 74,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:02:50": {
+            "duration": 37,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:06:15": {
+            "duration": 90,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:22:15": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:45": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:25:35": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:35": {
+            "duration": 10,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:35:15": {
+            "duration": 6,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:37:15": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:35": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:40:00": {
+            "duration": 13,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:42:00": {
+            "duration": 103,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:51:15": {
+            "duration": 9,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "48030": {
+        "2023-07-14 08:54:45": {
+            "duration": 24,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:56:50": {
+            "duration": 26,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:59:15": {
+            "duration": 53,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:03:55": {
+            "duration": 191,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:20:30": {
+            "duration": 240,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:41:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:43:00": {
+            "duration": 93,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:50:55": {
+            "duration": 74,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:02:50": {
+            "duration": 37,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:06:15": {
+            "duration": 90,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:22:15": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:45": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:25:35": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:35": {
+            "duration": 10,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:35:15": {
+            "duration": 6,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:37:15": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:35": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:40:00": {
+            "duration": 13,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:42:00": {
+            "duration": 103,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:51:15": {
+            "duration": 9,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "48031": {
+        "2023-07-14 08:54:45": {
+            "duration": 24,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:56:50": {
+            "duration": 26,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:59:15": {
+            "duration": 53,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:03:55": {
+            "duration": 191,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:20:30": {
+            "duration": 240,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:41:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:43:00": {
+            "duration": 93,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:50:55": {
+            "duration": 74,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:02:50": {
+            "duration": 37,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:06:15": {
+            "duration": 90,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:22:15": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:45": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:25:35": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:35": {
+            "duration": 10,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:35:15": {
+            "duration": 6,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:37:15": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:35": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:40:00": {
+            "duration": 13,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:42:00": {
+            "duration": 103,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:51:15": {
+            "duration": 9,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "48032": {
+        "2023-07-14 08:54:45": {
+            "duration": 24,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:56:50": {
+            "duration": 26,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:59:15": {
+            "duration": 53,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:03:55": {
+            "duration": 191,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:20:30": {
+            "duration": 240,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:41:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:43:00": {
+            "duration": 93,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:50:55": {
+            "duration": 74,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:02:50": {
+            "duration": 37,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:06:15": {
+            "duration": 90,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:22:15": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:45": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:25:35": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:35": {
+            "duration": 10,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:35:15": {
+            "duration": 6,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:37:15": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:35": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:40:00": {
+            "duration": 13,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:42:00": {
+            "duration": 103,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:51:15": {
+            "duration": 9,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "48033": {
+        "2023-07-14 08:54:45": {
+            "duration": 24,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:56:50": {
+            "duration": 26,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:59:15": {
+            "duration": 53,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:03:55": {
+            "duration": 191,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:20:30": {
+            "duration": 240,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:41:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:43:00": {
+            "duration": 93,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:50:55": {
+            "duration": 74,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:02:50": {
+            "duration": 37,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:06:15": {
+            "duration": 90,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:22:15": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:45": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:25:35": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:35": {
+            "duration": 10,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:35:15": {
+            "duration": 6,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:37:15": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:35": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:40:00": {
+            "duration": 13,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:42:00": {
+            "duration": 103,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:51:15": {
+            "duration": 9,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "48034": {
+        "2023-07-14 08:54:45": {
+            "duration": 24,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:56:50": {
+            "duration": 26,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:59:15": {
+            "duration": 53,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:03:55": {
+            "duration": 191,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:20:30": {
+            "duration": 240,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:41:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:43:05": {
+            "duration": 92,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:50:55": {
+            "duration": 74,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:02:50": {
+            "duration": 37,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:06:15": {
+            "duration": 90,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:22:15": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:45": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:25:35": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:35": {
+            "duration": 10,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:35:15": {
+            "duration": 6,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:37:15": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:35": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:40:00": {
+            "duration": 13,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:42:00": {
+            "duration": 103,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:51:15": {
+            "duration": 9,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "48035": {
+        "2023-07-14 08:54:45": {
+            "duration": 24,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:56:50": {
+            "duration": 26,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:59:15": {
+            "duration": 53,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:03:55": {
+            "duration": 191,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:20:30": {
+            "duration": 240,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:41:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:43:00": {
+            "duration": 93,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:50:55": {
+            "duration": 74,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:02:50": {
+            "duration": 37,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:06:15": {
+            "duration": 90,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:22:15": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:45": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:25:35": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:35": {
+            "duration": 10,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:35:15": {
+            "duration": 6,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:37:15": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:35": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:40:00": {
+            "duration": 13,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:42:00": {
+            "duration": 103,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:51:15": {
+            "duration": 9,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "48036": {
+        "2023-07-14 08:54:45": {
+            "duration": 24,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:56:50": {
+            "duration": 26,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:59:15": {
+            "duration": 53,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:03:55": {
+            "duration": 191,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:20:30": {
+            "duration": 240,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:41:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:43:00": {
+            "duration": 93,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:50:55": {
+            "duration": 74,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:02:50": {
+            "duration": 37,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:06:15": {
+            "duration": 90,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:22:15": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:45": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:25:35": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:35": {
+            "duration": 10,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:35:15": {
+            "duration": 6,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:37:15": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:35": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:40:00": {
+            "duration": 13,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:42:00": {
+            "duration": 103,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:51:15": {
+            "duration": 9,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "48037": {
+        "2023-07-14 08:54:45": {
+            "duration": 24,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:56:50": {
+            "duration": 26,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:59:15": {
+            "duration": 53,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:03:55": {
+            "duration": 191,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:20:30": {
+            "duration": 240,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:41:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:43:00": {
+            "duration": 93,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:50:55": {
+            "duration": 74,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:02:50": {
+            "duration": 37,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:06:15": {
+            "duration": 90,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:22:15": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:45": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:25:35": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:35": {
+            "duration": 10,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:35:15": {
+            "duration": 6,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:37:15": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:35": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:40:00": {
+            "duration": 13,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:42:00": {
+            "duration": 103,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:51:15": {
+            "duration": 9,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "48038": {
+        "2023-07-14 08:54:45": {
+            "duration": 24,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:56:50": {
+            "duration": 26,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:59:15": {
+            "duration": 53,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:03:55": {
+            "duration": 191,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:20:30": {
+            "duration": 240,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:41:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:43:00": {
+            "duration": 93,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:50:55": {
+            "duration": 74,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:02:50": {
+            "duration": 37,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:06:15": {
+            "duration": 90,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:22:15": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:45": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:25:35": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:35": {
+            "duration": 10,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:35:15": {
+            "duration": 6,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:37:15": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:35": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:40:00": {
+            "duration": 13,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:42:00": {
+            "duration": 103,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:51:15": {
+            "duration": 9,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "48039": {
+        "2023-07-14 08:54:45": {
+            "duration": 24,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:56:50": {
+            "duration": 26,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:59:15": {
+            "duration": 53,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:03:55": {
+            "duration": 191,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:20:30": {
+            "duration": 240,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:41:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:43:00": {
+            "duration": 93,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:50:55": {
+            "duration": 74,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:02:50": {
+            "duration": 37,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:06:15": {
+            "duration": 90,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:22:15": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:45": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:25:35": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:35": {
+            "duration": 10,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:35:15": {
+            "duration": 6,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:37:15": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:35": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:40:00": {
+            "duration": 13,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:42:00": {
+            "duration": 103,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:51:15": {
+            "duration": 9,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "48040": {
+        "2023-07-14 08:54:45": {
+            "duration": 24,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:56:50": {
+            "duration": 26,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 08:59:15": {
+            "duration": 53,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:03:55": {
+            "duration": 191,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:20:30": {
+            "duration": 240,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:41:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:43:00": {
+            "duration": 93,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 09:50:55": {
+            "duration": 74,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:02:50": {
+            "duration": 37,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:06:15": {
+            "duration": 90,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:22:15": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:10": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:23:45": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:25:35": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:30:35": {
+            "duration": 10,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:35:15": {
+            "duration": 6,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:37:15": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:00": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:38:35": {
+            "duration": 5,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:40:00": {
+            "duration": 13,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:42:00": {
+            "duration": 103,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        },
+        "2023-07-14 10:51:15": {
+            "duration": 9,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    }
+}

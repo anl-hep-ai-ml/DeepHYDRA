@@ -1,0 +1,16 @@
+{
+    "76019": {
+        "2023-07-09 13:44:45": {
+            "duration": 15,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-07-09 14:02:50": {
+            "duration": 19,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        }
+    }
+}

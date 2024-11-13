@@ -6,7 +6,7 @@ from collections import defaultdict
 
 import numpy as np
 import pandas as pd
-import cv2 as cv
+#import cv2 as cv
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 
@@ -17,9 +17,9 @@ image_height = 1080
 
 plot_window_size = 100
 
-font = cv.FONT_HERSHEY_SIMPLEX
-font_scale = 1
-font_color = (255,255,255)
+#font = cv.FONT_HERSHEY_SIMPLEX
+#font_scale = 1
+#font_color = (255,255,255)
 thickness = 1
 line_type = 2
 

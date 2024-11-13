@@ -176,3 +176,81 @@ class MedianStdReducer(BaseReducer):
         return self.reduce_numpy(machine_labels,
                                     timestamps,
                                     input_slice_np)
+
+
+    # Function to extract rack number from a column name
+    def extract_rack_number(self, column_name):
+        match = re.search(r'tpu-rack-(\d+)', column_name)
+        if match:
+            return int(match.group(1))
+        else:
+            return np.nan  # Use NaN for columns without a rack number
+
+    @tqdmloggingdecorator
+    def reduce_bulk_offline(self,
+                        hlt_data_pd: pd.DataFrame) -> pd.DataFrame:
+
+
+        # Apply the function to all column names
+        rack_numbers = [self.extract_rack_number(col) for col in hlt_data_pd.columns]
+
+        # Create a DataFrame mapping columns to rack numbers
+        columns_df = pd.DataFrame({
+            'column_name': hlt_data_pd.columns,
+            'rack_number': rack_numbers
+        })
+        print(columns_df)
+
+        #subgroup_labels_expected_hlt_dcm_2023 =   [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95]
+
+        # Inheritance from BaseReducer
+        subgroup_labels_expected_hlt_dcm_2023 = self._subgroup_numbers_expected
+
+        # Convert rack numbers to integers and drop NaNs
+        columns_df = columns_df.dropna(subset=['rack_number'])
+        columns_df['rack_number'] = columns_df['rack_number'].astype(int)
+
+        # Filter columns for expected racks
+        expected_racks = subgroup_labels_expected_hlt_dcm_2023
+        columns_df = columns_df[columns_df['rack_number'].isin(expected_racks)]
+        print(columns_df)
+
+        rack_to_columns = defaultdict(list)
+        for _, row in columns_df.iterrows():
+            rack_to_columns[row['rack_number']].append(row['column_name'])
+
+        print(rack_to_columns)
+        timestamps = hlt_data_pd.index
+
+        # Initialize DataFrames with NaNs
+        medians_df = pd.DataFrame(index=timestamps, columns=expected_racks)
+        stds_df = pd.DataFrame(index=timestamps, columns=expected_racks)
+
+        for rack in expected_racks:
+            columns = rack_to_columns.get(rack, [])
+            if columns:
+                data = hlt_data_pd[columns]
+                # Compute median and std across the columns for each timestamp
+                medians_df[rack] = data.median(axis=1)
+                stds_df[rack] = data.std(axis=1)
+            else:
+                # If no data for the rack, fill with dummy values or leave as NaN
+                medians_df[rack] = 0  
+                stds_df[rack] = 0  
+        print(medians_df.iloc[500:501])
+        print(stds_df.iloc[500:501])
+
+
+        # Rename columns to indicate median and std
+        medians_df = medians_df.add_prefix('m_')
+        stds_df = stds_df.add_prefix('std_')
+
+        # Concatenate along the columns
+        reduced_data_df = pd.concat([medians_df, stds_df], axis=1)
+
+        print(reduced_data_df.iloc[500:501])
+
+        return reduced_data_df
+
+
+

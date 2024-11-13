@@ -1,0 +1,18 @@
+{
+    "48040": {
+        "2023-07-10 12:59:25": {
+            "duration": 8,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        }
+    },
+    "20030": {
+        "2023-07-10 16:02:25": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    }
+}

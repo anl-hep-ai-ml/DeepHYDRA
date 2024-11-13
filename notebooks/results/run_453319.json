@@ -1,0 +1,18 @@
+{
+    "0": {
+        "2023-05-30 18:21:20": {
+            "duration": 3380,
+            "types": [
+                "TransformerBased"
+            ]
+        }
+    },
+    "5030": {
+        "2023-05-30 20:20:30": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    }
+}

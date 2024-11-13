@@ -1,0 +1,18 @@
+{
+    "90026": {
+        "2023-05-18 10:04:35": {
+            "duration": 4,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        }
+    },
+    "0": {
+        "2023-05-18 20:04:00": {
+            "duration": 7440,
+            "types": [
+                "TransformerBased"
+            ]
+        }
+    }
+}

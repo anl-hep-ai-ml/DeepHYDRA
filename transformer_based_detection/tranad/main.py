@@ -19,10 +19,11 @@ import torch.nn as nn
 from torch.utils.tensorboard import SummaryWriter
 from sklearn.preprocessing import MinMaxScaler
 
-from torch_profiling_utils.torchinfowriter import TorchinfoWriter
-from torch_profiling_utils.fvcorewriter import FVCoreWriter
+#from torch_profiling_utils.torchinfowriter import TorchinfoWriter
+#from torch_profiling_utils.fvcorewriter import FVCoreWriter
 
-device='cuda:0'
+#device='cuda:0'
+device='cpu'
 
 
 def _save_model_attributes(model,
@@ -63,6 +64,13 @@ def _save_model_attributes(model,
 
 def _save_numpy_array(array: np.array,
                         filename: str):
+    #with open(filename, 'wb') as output_file:
+    #    np.save(output_file, array)
+    # Create all necessary directories in the path if they don't exist
+    directory = os.path.dirname(filename)
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+    
     with open(filename, 'wb') as output_file:
         np.save(output_file, array)
 
@@ -89,7 +97,8 @@ def load_dataset(dataset):
 
     if 'HLT' in dataset:
 
-        data_source = dataset.split('_')[1]
+        #data_source = dataset.split('_')[1]
+        data_source = dataset.split('_')[0]
         variant = int(dataset.split('_')[-1])
 
         train_set = HLTDataset(data_source, variant,
@@ -246,33 +255,57 @@ def backprop(epoch,
         data = data.to(device)
 
         if training:
+            total_loss = 0
             for d in data:
                 d = d.to(device)
-
-                # _save_model_attributes(model, d, dataset_name)
-                # exit()
-
-                _, x_hat, z, gamma = model(d)
-                l1, l2 = l(x_hat, d), l(gamma, d)
-                l1s.append(torch.mean(l1).item()); l2s.append(torch.mean(l2).item())
-                loss = torch.mean(l1) + torch.mean(l2)
+                z_c, x_hat, z, gamma = model(d)
+                loss = compute.forward(d.view(1, -1), x_hat.view(1, -1), z, gamma.view(1, -1))
                 optimizer.zero_grad()
                 loss.backward()
                 optimizer.step()
+                total_loss += loss.item()
             scheduler.step()
-            tqdm.write(f'Epoch {epoch},\tL1 = {np.mean(l1s)},\tL2 = {np.mean(l2s)}')
-            return np.mean(l1s)+np.mean(l2s), optimizer.param_groups[0]['lr']
+            avg_loss = total_loss / len(data)
+            tqdm.write(f'Epoch {epoch},\tLoss = {avg_loss}')
+            return avg_loss, optimizer.param_groups[0]['lr']
+          
         else:
-            ae1s = []
-
+            anomaly_scores = []
             for d in data:
-                # d = d.to(device)
-                _, x_hat, _, _ = model(d)
-                ae1s.append(x_hat)
-            ae1s = torch.stack(ae1s)
-            y_pred = ae1s[:, data.shape[1]-feats:data.shape[1]].view(-1, feats)
-            loss = l(ae1s, data)[:, data.shape[1]-feats:data.shape[1]].view(-1, feats)
-            return loss.detach().cpu().numpy(), y_pred.detach().cpu().numpy()
+                d = d.to(device)
+                z_c, x_hat, z, gamma = model(d)
+                sample_energy, _ = compute.compute_energy(z, gamma)
+                anomaly_scores.append(sample_energy.item())
+            return anomaly_scores
+
+        # if training:
+        #     for d in data:
+        #         d = d.to(device)
+
+        #         # _save_model_attributes(model, d, dataset_name)
+        #         # exit()
+
+        #         _, x_hat, z, gamma = model(d)
+        #         l1, l2 = l(x_hat, d), l(gamma, d)
+        #         l1s.append(torch.mean(l1).item()); l2s.append(torch.mean(l2).item())
+        #         loss = torch.mean(l1) + torch.mean(l2)
+        #         optimizer.zero_grad()
+        #         loss.backward()
+        #         optimizer.step()
+        #     scheduler.step()
+        #     tqdm.write(f'Epoch {epoch},\tL1 = {np.mean(l1s)},\tL2 = {np.mean(l2s)}')
+        #     return np.mean(l1s)+np.mean(l2s), optimizer.param_groups[0]['lr']
+        # else:
+        #     ae1s = []
+
+        #     for d in data:
+        #         # d = d.to(device)
+        #         _, x_hat, _, _ = model(d)
+        #         ae1s.append(x_hat)
+        #     ae1s = torch.stack(ae1s)
+        #     y_pred = ae1s[:, data.shape[1]-feats:data.shape[1]].view(-1, feats)
+        #     loss = l(ae1s, data)[:, data.shape[1]-feats:data.shape[1]].view(-1, feats)
+        #     return loss.detach().cpu().numpy(), y_pred.detach().cpu().numpy()
 
 
     if 'Attention' in model.name:
@@ -766,9 +799,9 @@ if __name__ == '__main__':
 
     if not args.test:
         print(f'{color.HEADER}Training {args.model} on {args.dataset}{color.ENDC}')
-        num_epochs = 5
-        # num_epochs = 10
-        # num_epochs = 1
+        #num_epochs = 5
+        #num_epochs = 10
+        num_epochs = 1
         e = epoch + 1
         start = time()
 

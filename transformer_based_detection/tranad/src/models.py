@@ -3,8 +3,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 import pickle
-import dgl
-from dgl.nn import GATConv
+#import dgl
+#from dgl.nn import GATConv
 from torch.nn import TransformerEncoder
 from torch.nn import TransformerDecoder
 from src.dlutils import *

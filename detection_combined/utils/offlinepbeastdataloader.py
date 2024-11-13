@@ -46,6 +46,9 @@ class OfflinePBeastDataLoader():
     def get_run_numbers(self) -> list:
         return self._run_numbers_all
 
+    def get_runs_df(self) -> pd.DataFrame:
+        return self._runs_df
+
 
     def __getitem__(self, run_number: int) -> pd.DataFrame:
 

@@ -1,0 +1,26 @@
+{
+    "11023": {
+        "2023-07-01 14:36:05": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "22029": {
+        "2023-07-01 14:36:05": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "0": {
+        "2023-07-01 16:46:00": {
+            "duration": 0,
+            "types": [
+                "TransformerBased"
+            ]
+        }
+    }
+}

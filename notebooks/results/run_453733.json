@@ -1,0 +1,40 @@
+{
+    "0": {
+        "2023-06-04 13:25:20": {
+            "duration": 4268,
+            "types": [
+                "TransformerBased"
+            ]
+        }
+    },
+    "85029": {
+        "2023-06-04 13:33:00": {
+            "duration": 8,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-06-04 13:33:45": {
+            "duration": 5,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        }
+    },
+    "52034": {
+        "2023-06-04 13:33:05": {
+            "duration": 7,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        }
+    },
+    "48040": {
+        "2023-06-04 16:18:55": {
+            "duration": 8,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        }
+    }
+}
