@@ -7,8 +7,8 @@ import logging
 
 from .timefeatures import time_features
 from sklearn.preprocessing import MinMaxScaler
-from utils.exceptions import PredictionInputException
-from utils.variables import nan_fill_value
+from detection_combined.utils.exceptions import PredictionInputException
+from detection_combined.utils.variables import nan_fill_value
 
 class DataPreprocessor():
     def __init__(self,
@@ -27,28 +27,28 @@ class DataPreprocessor():
         self.freq = parameter_dict['freq']
         self.inverse = parameter_dict['inverse']
         
-        # scaler_dir_and_filename =\
-        #             checkpoint_dir +\
-        #             '/scaler.pkl'
-
         scaler_dir_and_filename =\
                     checkpoint_dir +\
-                    '/scaler_params.json'
+                    '/scaler.pkl'
 
-        # This is a hack to avoid the issues between different versions of the scaler
-        self.scaler = MinMaxScaler()
-        # Load the scaler using a context manager
-        with open(scaler_dir_and_filename, 'rb') as file:
-            #old_scaler = pkl.load(file)
-            scaler_params = json.load(file)
+        # scaler_dir_and_filename =\
+        #             checkpoint_dir +\
+        #             '/scaler_params.json'
+
+        # # This is a hack to avoid the issues between different versions of the scaler
+        # self.scaler = MinMaxScaler()
+        # # Load the scaler using a context manager
+        # with open(scaler_dir_and_filename, 'rb') as file:
+        #     #old_scaler = pkl.load(file)
+        #     scaler_params = json.load(file)
             
-        self.scaler.min_ = np.array(scaler_params['min_'])
-        self.scaler.scale_ = np.array(scaler_params['scale_'])
-        self.scaler.data_min_ = np.array(scaler_params['data_min_'])
-        self.scaler.data_max_ = np.array(scaler_params['data_max_'])
-        self.scaler.feature_range = tuple(scaler_params['feature_range'])
-        ###self.scaler = pkl.load(open(
-        ###                scaler_dir_and_filename, 'rb'))
+        # self.scaler.min_ = np.array(scaler_params['min_'])
+        # self.scaler.scale_ = np.array(scaler_params['scale_'])
+        # self.scaler.data_min_ = np.array(scaler_params['data_min_'])
+        # self.scaler.data_max_ = np.array(scaler_params['data_max_'])
+        # self.scaler.feature_range = tuple(scaler_params['feature_range'])
+        self.scaler = pkl.load(open(
+                       scaler_dir_and_filename, 'rb'))
 
 
         self._data_clipping_val =\

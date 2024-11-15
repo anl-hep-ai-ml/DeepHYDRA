@@ -167,6 +167,8 @@ if __name__ == '__main__':
 
     atlas_runs_df = atlas_runs_parser.runs
 
+    anomaly_log_file_name_list = glob.glob(f'{args.anomaly_log_dir}/*.json')
+
     if args.mode == 'partitioned':
 
         if args.run_partition >= args.run_partition_count:
@@ -202,7 +204,7 @@ if __name__ == '__main__':
                                                                             format='[%(asctime)s] %(message)s',
                                                                             datefmt='%Y-%m-%d %H:%M:%S')
         
-        anomaly_log_file_name_list = glob.glob('{}/*.json'.format(args.anomaly_log_dir))
+        
 
         run_numbers_processed = [[int(substring) for substring in re.findall(r'\d+', anomaly_log_file_name)][0]\
                                                             for anomaly_log_file_name in anomaly_log_file_name_list]
@@ -224,6 +226,8 @@ if __name__ == '__main__':
         time_start = run_data['start']
         time_end = run_data['end']
         duration = run_data['duration']
+
+        f'{}/run_{}.json'.format(args.anomaly_log_dir, run_number)
 
         logging.info("Processing run: {}\tstart time: {}\tend time: {}\tduration: {} s".format(run_number,
                                                                                                     time_start,

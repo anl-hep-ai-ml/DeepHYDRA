@@ -7,7 +7,7 @@ import numpy as np
 #from pandas import DataFrame
 import pandas as pd
 
-from utils.channellabels import subgroup_labels_expected_hlt_dcm_2018,\
+from ..utils.channellabels import subgroup_labels_expected_hlt_dcm_2018,\
                                     subgroup_labels_expected_hlt_dcm_2023,\
                                     subgroup_labels_expected_eclipse
                                     
@@ -41,6 +41,74 @@ class BaseReducer(ABC):
                         tpu_labels: list,
                         timestamps: list) -> pd.DataFrame:
         pass
+
+
+    def _adjust_reduced_data(self,
+                                labels_reduced: np.array,
+                                data_reduced: np.array) -> np.array:
+
+        subgroup_count_expected = len(self._subgroup_numbers_expected)
+        subgroup_count_observed = len(labels_reduced)//2
+
+        if subgroup_count_observed < subgroup_count_expected:
+            subgroup_numbers_observed =\
+                    [int(label.removeprefix('m_'))\
+                        for label in labels_reduced[:subgroup_count_observed]]
+
+            missing_subgroups = np.setdiff1d(self._subgroup_numbers_expected,
+                                                subgroup_numbers_observed)
+
+            indices_missing =\
+                    np.nonzero(np.isin(self._subgroup_numbers_expected,
+                                                    missing_subgroups))[0]
+
+            if not self._missing_subgroups_feedback_given:
+                
+                missing_subgroups_string = ''
+
+                for subgroup in missing_subgroups:
+                    missing_subgroups_string += f'{subgroup}, '
+
+                self._logger.warning(f'Rack(s) {missing_subgroups_string} are '
+                                        'missing. 2nd stage detection '
+                                        'performance might be affected.')
+
+                # missing_subgroup_indices_string =\
+                #             ', '.join(str(indices_missing))\
+                #                 if len(indices_missing) > 1\
+                #                 else str(indices_missing[0])
+
+                # self._logger.debug('Indices missing subgroups: '
+                #                     f'{missing_subgroup_indices_string}')
+
+                self._missing_subgroups_feedback_given = True
+
+            data_reduced = np.insert(data_reduced,
+                                        indices_missing,
+                                        0, axis=1)
+
+            data_reduced = np.insert(data_reduced,
+                                        indices_missing +\
+                                            subgroup_count_expected,
+                                        0, axis=1)
+
+            missing_labels_median =\
+                [f'm_{subgroup}' for subgroup in missing_subgroups]
+
+            labels_reduced = np.insert(labels_reduced,
+                                        indices_missing,
+                                        missing_labels_median)
+
+            missing_labels_std =\
+                [f'std_{subgroup}' for subgroup in missing_subgroups]
+
+            labels_reduced = np.insert(labels_reduced,
+                                        indices_missing +\
+                                            subgroup_count_expected,
+                                        missing_labels_std)
+
+        return labels_reduced, data_reduced
+
 
 
     # # VERSION WITH DATAFRAMES
@@ -192,47 +260,47 @@ class BaseReducer(ABC):
     #     #return labels_reduced, data_reduced
 
 
-    def _adjust_reduced_data(self,
-                                 labels_reduced: np.array,
-                                 data_reduced: np.array) -> np.array:
+    # def _adjust_reduced_data(self,
+    #                              labels_reduced: np.array,
+    #                              data_reduced: np.array) -> np.array:
 
-        subgroup_count_expected = len(self._subgroup_numbers_expected)
-        subgroup_count_observed = len(labels_reduced)//2
+    #     subgroup_count_expected = len(self._subgroup_numbers_expected)
+    #     subgroup_count_observed = len(labels_reduced)//2
 
-        if subgroup_count_observed < subgroup_count_expected:
+    #     if subgroup_count_observed < subgroup_count_expected:
 
-            if not self._missing_subgroups_feedback_given:
-                self._logger.warning(f'Some Racks are missing... 2nd stage detection performance might be affected.')
-                self._missing_subgroups_feedback_given = True
+    #         if not self._missing_subgroups_feedback_given:
+    #             self._logger.warning(f'Some Racks are missing... 2nd stage detection performance might be affected.')
+    #             self._missing_subgroups_feedback_given = True
 
-            # Flatten the data array to handle as a 1D array
-            data_reduced = data_reduced.flatten()
+    #         # Flatten the data array to handle as a 1D array
+    #         data_reduced = data_reduced.flatten()
 
-            # Extract the rack numbers from 'm_' and 'std_' labels. With only one should be enough. Improve!!!
-            m_mask = np.char.startswith(labels_reduced, 'm_')
-            std_mask = np.char.startswith(labels_reduced, 'std_')
+    #         # Extract the rack numbers from 'm_' and 'std_' labels. With only one should be enough. Improve!!!
+    #         m_mask = np.char.startswith(labels_reduced, 'm_')
+    #         std_mask = np.char.startswith(labels_reduced, 'std_')
 
-            current_m_racks = np.array([int(label.split('_')[1]) for label in labels_reduced[m_mask]])
-            current_std_racks = np.array([int(label.split('_')[1]) for label in labels_reduced[std_mask]])
+    #         current_m_racks = np.array([int(label.split('_')[1]) for label in labels_reduced[m_mask]])
+    #         current_std_racks = np.array([int(label.split('_')[1]) for label in labels_reduced[std_mask]])
 
-            # Dictionary to hold the data for faster lookups
-            m_data_dict = dict(zip(current_m_racks, data_reduced[m_mask]))
-            std_data_dict = dict(zip(current_std_racks, data_reduced[std_mask]))
+    #         # Dictionary to hold the data for faster lookups
+    #         m_data_dict = dict(zip(current_m_racks, data_reduced[m_mask]))
+    #         std_data_dict = dict(zip(current_std_racks, data_reduced[std_mask]))
 
-            # Preallocate new labels and data arrays
-            m_labels = [f'm_{rack}' for rack in self._subgroup_numbers_expected]
-            std_labels = [f'std_{rack}' for rack in self._subgroup_numbers_expected]
+    #         # Preallocate new labels and data arrays
+    #         m_labels = [f'm_{rack}' for rack in self._subgroup_numbers_expected]
+    #         std_labels = [f'std_{rack}' for rack in self._subgroup_numbers_expected]
 
-            m_data = np.array([m_data_dict.get(rack, 0) for rack in self._subgroup_numbers_expected])
-            std_data = np.array([std_data_dict.get(rack, 0) for rack in self._subgroup_numbers_expected])
+    #         m_data = np.array([m_data_dict.get(rack, 0) for rack in self._subgroup_numbers_expected])
+    #         std_data = np.array([std_data_dict.get(rack, 0) for rack in self._subgroup_numbers_expected])
 
-            labels_reduced_adjusted = np.array(m_labels + std_labels)
-            data_reduced_adjusted = np.concatenate((m_data, std_data))
-            # Reshape the data to be 2D (1, N)
-            data_reduced_adjusted = data_reduced_adjusted.reshape(1, -1)
+    #         labels_reduced_adjusted = np.array(m_labels + std_labels)
+    #         data_reduced_adjusted = np.concatenate((m_data, std_data))
+    #         # Reshape the data to be 2D (1, N)
+    #         data_reduced_adjusted = data_reduced_adjusted.reshape(1, -1)
 
-        else:
-            labels_reduced_adjusted = labels_reduced
-            data_reduced_adjusted = data_reduced
+    #     else:
+    #         labels_reduced_adjusted = labels_reduced
+    #         data_reduced_adjusted = data_reduced
 
-        return labels_reduced_adjusted, data_reduced_adjusted       
+    #     return labels_reduced_adjusted, data_reduced_adjusted       

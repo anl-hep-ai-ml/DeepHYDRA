@@ -18,9 +18,9 @@ from sklearn.cluster import DBSCAN
 from sklearn.preprocessing import OrdinalEncoder
 
 from .baseclusteringdetector import BaseClusteringDetector
-from utils.anomalyclassification import AnomalyType
-from utils.variables import nan_fill_value
-from utils.tqdmloggingdecorator import tqdmloggingdecorator
+from detection_combined.utils.anomalyclassification import AnomalyType
+from detection_combined.utils.variables import nan_fill_value
+from detection_combined.utils.tqdmloggingdecorator import tqdmloggingdecorator
 
 # from sklearn2pmml.util import deep_sizeof
 

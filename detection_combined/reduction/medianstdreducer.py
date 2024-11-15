@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 
 from .basereducer import BaseReducer
-from utils.tqdmloggingdecorator import tqdmloggingdecorator
+from ..utils.tqdmloggingdecorator import tqdmloggingdecorator
 
 
 class MedianStdReducer(BaseReducer):
