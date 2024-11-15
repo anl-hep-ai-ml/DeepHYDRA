@@ -12,8 +12,8 @@ from .data_augmentation import HLTDataTimeseriesAugmentor
 import warnings
 warnings.filterwarnings('ignore')
 
-#dataset_path = '../../datasets/hlt/'
-dataset_path = '/eos/user/k/kstehle/atlas-hlt-datasets/'
+dataset_path = '/home/kstehle/Documents/phd/strada/datasets/hlt/'
+# dataset_path = '/eos/user/k/kstehle/atlas-hlt-datasets/'
 
 #dataset_path = '/eos/user/j/jhoya/DAQ/AnomalyDetection/strada/notebooks/h5_datasets/'
 
@@ -28,6 +28,8 @@ class HLTDataset(Dataset):
                     applied_augmentations=[],
                     augmented_dataset_size_relative=1,
                     augmented_data_ratio=0):
+
+        print(data_source)
 
         self.data_source = data_source.lower()
         self.variant = variant
