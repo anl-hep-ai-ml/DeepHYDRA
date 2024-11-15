@@ -139,7 +139,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
     parser.add_argument('--anomaly-log-dir', nargs="?", type=path, default='./results', help='Log file storage directory')
-    parser.add_argument('--run-summary-file', nargs="?", type=path)
+    parser.add_argument('--run-summary-file', nargs="?", type=str)
     parser.add_argument('--year', type=int, default=2023)
     parser.add_argument('--duration-threshold', type=int, default=4)
 
@@ -155,7 +155,7 @@ if __name__ == '__main__':
 
     os.environ['PBEAST_SERVER_SSO_SETUP_TYPE'] = 'AutoUpdateKerberos'
 
-    beauty_instance = Beauty()
+    beauty_instance = Beauty('https://vm-atlas-tdaq-cc.cern.ch/tbed/pbeast/api/')
 
     with open(args.run_summary_file) as file:
         html_string = file.read()
