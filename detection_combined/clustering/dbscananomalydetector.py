@@ -147,7 +147,7 @@ class HLTDBSCANAnomalyDetector(BaseClusteringDetector):
                         self.anomaly_registry_dropout.pop(machine_label, None)
                         self.anomaly_registry_general.pop(machine_label, None)
                     elif np.isclose(datapoint, nan_fill_value):
-                        self.anomaly_registrydropout.[machine_label] += 1
+                        self.anomaly_registrydropout[machine_label] += 1
                         self.anomaly_registry_drop_to_0.pop(machine_label, None)
                         self.anomaly_registry_general.pop(machine_label, None)
                     else:
