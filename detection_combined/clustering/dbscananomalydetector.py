@@ -78,6 +78,7 @@ class HLTDBSCANAnomalyDetector(BaseClusteringDetector):
 
         self.anomaly_registry_general = defaultdict(int)
         self.anomaly_registry_drop_to_0 = defaultdict(int)
+        self.anomaly_registry_dropout = defaultdict(int)
 
         self.datapoints_processed = 0
 
@@ -143,15 +144,19 @@ class HLTDBSCANAnomalyDetector(BaseClusteringDetector):
                 if y == 1:
                     if np.isclose(datapoint, 0):
                         self.anomaly_registry_drop_to_0[machine_label] += 1
+                        self.anomaly_registry_dropout.pop(machine_label, None)
                         self.anomaly_registry_general.pop(machine_label, None)
                     elif np.isclose(datapoint, nan_fill_value):
+                        self.anomaly_registrydropout.[machine_label] += 1
                         self.anomaly_registry_drop_to_0.pop(machine_label, None)
                         self.anomaly_registry_general.pop(machine_label, None)
                     else:
                         self.anomaly_registry_general[machine_label] += 1
                         self.anomaly_registry_drop_to_0.pop(machine_label, None)
+                        self.anomaly_registry_dropout.pop(machine_label, None)
                 else:
                     self.anomaly_registry_drop_to_0.pop(machine_label, None)
+                    self.anomaly_registry_dropout.pop(machine_label, None)
                     self.anomaly_registry_general.pop(machine_label, None)
 
         # Add subgroups that show anomalous behavior for longer than the
@@ -184,6 +189,21 @@ class HLTDBSCANAnomalyDetector(BaseClusteringDetector):
             if anomaly_duration >= self.duration_threshold:
                 self.detection_callback(int(machine_label),
                                             AnomalyType.ClusteringDropToZero,
+                                            anomaly_start,
+                                            anomaly_duration)
+
+                cluster_anomaly_set.add(machine_label//1000)
+
+        for machine_label, anomaly_duration in self.anomaly_registry_dropout.items():
+            anomaly_start = self.timesteps[self.datapoints_processed - anomaly_duration + 1].strftime('%Y-%m-%d %H:%M:%S')
+
+            if anomaly_duration == self.duration_threshold:
+                 self._logger.warning(f'{machine_label}: dropped out '
+                                        f'at element {self.datapoints_processed}')
+
+            if anomaly_duration >= self.duration_threshold:
+                self.detection_callback(int(machine_label),
+                                            AnomalyType.ClusteringDropout,
                                             anomaly_start,
                                             anomaly_duration)
 
