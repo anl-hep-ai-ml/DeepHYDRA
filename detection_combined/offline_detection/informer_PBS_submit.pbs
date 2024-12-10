@@ -1,0 +1,15 @@
+#!/bin/bash
+#PBS -l nodes=1:ppn=4
+#PBS -l walltime=02:00:00
+#PBS -A ATLAS-HEP-GROUP
+#PBS -j oe
+
+
+module --ignore_cache load python/3.9.12
+
+
+cd /lcrc/group/ATLAS/users/jj/DeepHydra/detection_combined/offline_detection/informer_PBS_res  
+
+
+python ../informers_localData.py --model Informer-MSE --data-dir /lcrc/group/ATLAS/users/jhoya/DAQ/atlas-hlt-datasets/ --checkpoint-dir '/lcrc/group/ATLAS/users/jhoya/DAQ/trained_models/hlt_2023_mse_Scale_0.8_1.0_Scale_APP_0.8_1.0_0.01_0.05_0.05_rel_size_1.0_ratio_0.25_seed_192/' --inp-data-name 'val_set_dcm_rates_2023.csv' --variant '2023' --seed 42
+

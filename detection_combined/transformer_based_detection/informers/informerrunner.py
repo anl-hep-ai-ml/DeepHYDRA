@@ -6,18 +6,24 @@ import numpy as np
 import pandas as pd
 import torch
 
+#单独跑这个代码在Jupyter的时候需要保证os在/lcrc/group/ATLAS/users/jj/DiHydra_jj
+#import os
+#os.chdir('/lcrc/group/ATLAS/users/jj/DiHydra_jj') #这样就可以保证了,不然找不到以下的Module
+
 from .models.model import Informer
 from .utils.datapreprocessor import DataPreprocessor
-import utils.spotunpickler as supkl
+#from utils.spotunpickler import SPOTUnpickler as supkl
 from utils.spot import SPOT
-from utils.exceptions import NonCriticalPredictionException
-from utils.anomalyclassification import AnomalyType
-from utils.tqdmloggingdecorator import tqdmloggingdecorator
+from detection_combined.utils.exceptions import NonCriticalPredictionException
+#utils.anomalyclassification import AnomalyType #❌会找不到module,即使sys.path.append('/lcrc/group/ATLAS/users/jj/DiHydra/detection_combined')
+#from utils.tqdmloggingdecorator import tqdmloggingdecorator
+from detection_combined.utils.anomalyclassification import AnomalyType
+from detection_combined.utils.tqdmloggingdecorator import tqdmloggingdecorator
 
 class InformerRunner():
     def __init__(self,
                     checkpoint_dir,
-                    nan_output_tolerance_period: int = 10,
+                    nan_output_tolerance_period: int = 10,      #it should be a dictionary, not a int
                     loss_type: str = 'mse',
                     use_spot_detection: bool = False,
                     device: str = 'cuda:0',
@@ -184,14 +190,15 @@ class InformerRunner():
             #     np.mean((preds[:, 0, :] - self._data_x_last[:, -1, :])**2, 1)[0]
             
             l2_dist =\
-                np.mean((preds[:, 0, :] - data_y.detach().cpu().numpy()[:, -1, :])**2, 1)[0]
+                np.mean((preds[:, 0, :] - data_y.detach().cpu().numpy()[:, -1, :])**2, 1)[0] 
+            #l2_dist measure the Euclidean distance between the prediction and the target value
 
             self._predictions_all.append(l2_dist)
         
-            if self._use_spot_detection:
-                l2_dist_detection = self._spot.run_online([l2_dist])
-            else:
-                l2_dist_detection = (l2_dist > 0.5)
+            #if self._use_spot_detection: #we don't use SPOT method, that is for the online anomaly detection
+                #l2_dist_detection = self._spot.run_online([l2_dist])
+            #else:
+            l2_dist_detection = (l2_dist > 0.5)
 
             if l2_dist_detection:
 
@@ -278,4 +285,4 @@ class InformerRunner():
 
 
     def get_predictions(self) -> np.array:
-        return np.array(self._predictions_all)
+        return np.array(self._predictions_all) #just convert list to np.array

@@ -1,0 +1,70 @@
+{
+    "50015": {
+        "2023-06-07 00:07:50": {
+            "duration": 10,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        }
+    },
+    "60009": {
+        "2023-06-07 01:10:00": {
+            "duration": 7,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        }
+    },
+    "12008": {
+        "2023-06-08 23:33:15": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "73008": {
+        "2023-06-08 23:33:15": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "49040": {
+        "2023-06-12 23:17:50": {
+            "duration": 10,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-06-12 23:19:00": {
+            "duration": 21,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        }
+    },
+    "76013": {
+        "2023-06-13 04:29:45": {
+            "duration": 4,
+            "types": [
+                "ClusteringGeneral"
+            ]
+        }
+    },
+    "48040": {
+        "2023-06-13 04:55:10": {
+            "duration": 9,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        },
+        "2023-06-13 05:02:20": {
+            "duration": 9,
+            "types": [
+                "ClusteringDropToZero"
+            ]
+        }
+    }
+}

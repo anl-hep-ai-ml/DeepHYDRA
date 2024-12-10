@@ -105,6 +105,7 @@ class Informer(nn.Module):
         # dec_out = self.end_conv2(dec_out.transpose(2,1)).transpose(1,2)
 
         if self.output_attention:
-            return dec_out[:,-self.pred_len:,:], attns
+            return dec_out[:,-self.pred_len:,:], attns 
+            #dec_out的中间切片语法: -self.pred_len: 从倒数第 self.pred_len 个时间步开始,取到最后一个时间步。
         else:
             return dec_out[:,-self.pred_len:,:] # [B, L, D]

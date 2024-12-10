@@ -6,8 +6,12 @@ import logging
 
 from .timefeatures import time_features
 
-from utils.exceptions import PredictionInputException
-from utils.variables import nan_fill_value
+#from utils.exceptions import PredictionInputException
+#from utils.variables import nan_fill_value
+from detection_combined.utils.exceptions import PredictionInputException
+from detection_combined.utils.variables import nan_fill_value
+
+
 
 class DataPreprocessor():
     def __init__(self,

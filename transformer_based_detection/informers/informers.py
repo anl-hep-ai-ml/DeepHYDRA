@@ -20,10 +20,11 @@ if __name__ == '__main__':
     parser.add_argument('--seed', type=float, default=42, help='Random seed')
     
     parser.add_argument('--features', type=str, default='M', help='forecasting task, options:[M, S, MS]; M:multivariate predict multivariate, S:univariate predict univariate, MS:multivariate predict univariate')
+    #以上的单变量如果就预测温度是否异常用S,如果要预测温度,湿度,压力,基于多个特质判断是否异常应用MS,预测温度,压力,湿度是否每个都异常,用M
     parser.add_argument('--target', type=str, default='OT', help='target feature in S or MS task')
     parser.add_argument('--freq', type=str, default='h', help='freq for time features encoding, options:[s:secondly, t:minutely, h:hourly, d:daily, b:business days, w:weekly, m:monthly], you can also use more detailed freq like 15min or 3h')
     parser.add_argument('--checkpoints', type=str, default='./checkpoints/', help='location of model checkpoints')
-
+    
     parser.add_argument('--seq_len', type=int, default=64, help='input sequence length of Informer encoder')
     parser.add_argument('--label_len', type=int, default=32, help='start token length of Informer decoder')
     parser.add_argument('--pred_len', type=int, default=24, help='prediction sequence length')

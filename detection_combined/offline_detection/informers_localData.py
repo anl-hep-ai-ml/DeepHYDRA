@@ -6,7 +6,7 @@ import os
 import datetime as dt
 import json
 import logging
-
+import time 
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
@@ -23,7 +23,7 @@ from utils.reduceddatabuffer import ReducedDataBuffer
 from utils.exceptions import NonCriticalPredictionException
 from utils.consolesingleton import ConsoleSingleton
 
-
+start_time = time.time()
 
 if __name__ == '__main__':
 
@@ -33,11 +33,12 @@ if __name__ == '__main__':
     parser.add_argument('--checkpoint-dir', type=str, default='../../../transformer_based_detection')
     parser.add_argument('--data-dir', type=str, default='../../../datasets/hlt/')
     parser.add_argument('--inp-data-name', type=str, default='test_set_dcm_rates_2023.csv')
+    
     parser.add_argument('--output-dir', type=str, default='./results/')
     parser.add_argument('--log-level', type=str, default='info')
     parser.add_argument('--log-dir', type=str, default='./log/')
     
-    parser.add_argument('--dbscan-eps', type=float, default=3)
+    parser.add_argument('--dbscan-eps', type=float, default=0.6)
     parser.add_argument('--dbscan-min-samples', type=int, default=4)
     parser.add_argument('--dbscan-duration-threshold', type=int, default=4)
 
@@ -67,7 +68,7 @@ if __name__ == '__main__':
                                     format=logging_format,
                                     datefmt='%Y-%m-%d %H:%M:%S')
 
-    #inp_data_name = args.inp_data_name
+    inp_data_name = args.inp_data_name
 
     logger.info(f'Starting data loading for {args.inp_data_name}')
 
@@ -123,14 +124,17 @@ if __name__ == '__main__':
     with logging_redirect_tqdm():
         for count, (timestamp, data) in enumerate(tzip(timestamps, hlt_data_np)):
             try:
-                dbscan_anomaly_detector.process(timestamp, data)
+                #if count==0: # Process only the first timestamp
+                    dbscan_anomaly_detector.process(timestamp, data)
 
-                output_slice =\
-                    median_std_reducer.reduce_numpy(tpu_labels,
-                                                        timestamp,
-                                                        data)
-                reduced_data_buffer.push(output_slice)
-                
+                    #output_slice =\
+                        #median_std_reducer.reduce_numpy(tpu_labels,
+                                                       #timestamp,
+                                                       #data)
+                    #reduced_data_buffer.push(output_slice)
+                #else:
+                    #break  # Exit loop after processing the first timestamp
+
             except NonCriticalPredictionException:
                 break
 
@@ -142,3 +146,7 @@ if __name__ == '__main__':
 
     logger.info(f'Exported results for {args.inp_data_name} '
                         f'to file {log_file_name}.json')
+
+end_time = time.time()
+total_time = end_time - start_time
+print(f"Total running time: {total_time:.2f} seconds")

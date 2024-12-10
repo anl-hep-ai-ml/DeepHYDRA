@@ -7,9 +7,11 @@ import numpy as np
 #from pandas import DataFrame
 import pandas as pd
 
-from utils.channellabels import subgroup_labels_expected_hlt_dcm_2018,\
-                                    subgroup_labels_expected_hlt_dcm_2023,\
-                                    subgroup_labels_expected_eclipse
+#Need to put detection_combined. in fornt of utils when os.chdir('/lcrc/group/ATLAS/users/jj/DiHydra_jj')
+from detection_combined.utils.channellabels import subgroup_labels_expected_hlt_dcm_2018, subgroup_labels_expected_hlt_dcm_2023, subgroup_labels_expected_eclipse 
+#from utils.channellabels import subgroup_labels_expected_hlt_dcm_2018,\
+                                    #subgroup_labels_expected_hlt_dcm_2023,\
+                                    #subgroup_labels_expected_eclipse
                                     
 
 class BaseReducer(ABC):

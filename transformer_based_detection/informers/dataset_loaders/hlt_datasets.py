@@ -15,7 +15,8 @@ import warnings
 warnings.filterwarnings('ignore')
 
 #dataset_path_local = '/home/kstehle/Documents/phd/strada/datasets/hlt/'
-dataset_path_local = '/eos/user/k/kstehle/atlas-hlt-datasets/'
+#dataset_path_local = '/eos/user/k/kstehle/atlas-hlt-datasets/'
+dataset_path_local = '/lcrc/group/ATLAS/users/jhoya/DAQ/atlas-hlt-datasets/'
 
 class HLTDataset(Dataset):
     def __init__(self,
@@ -41,7 +42,7 @@ class HLTDataset(Dataset):
         self.mode = mode
 
         self.seq_len = size[0]
-        self.label_len = size[1]
+        self.label_len = size[1]#不是异常标签长度,而是目标序列与输入序列重叠的部分的长度
         self.pred_len = size[2]
 
         self.features = features
@@ -146,9 +147,11 @@ class HLTDataset(Dataset):
                             data_unlabeled_train_set_x_pd.to_numpy()
 
                 self.scaler.fit(data_unlabeled_train_set_x_np)
+                #因为train时候,有可能unlabeled的数据更广泛,所以应该scale这些数据
 
             elif scaling_source == 'individual_set_fit':
                 self.scaler.fit(data_labeled_train_set_x_np)
+                #因为train时候,有可能labeled的数据更广泛,所以应该scale这些数据
             else:
                 raise RuntimeError(
                         'Invalid dataset scaling source')
@@ -213,9 +216,11 @@ class HLTDataset(Dataset):
                 data_train_set_x_np = data_train_set_x_pd.to_numpy()
 
                 self.scaler.fit(data_train_set_x_np)
+                #因为有可能val_set相对于train_set非常少,而且train和val的数据分布相似,所以用train_set来scale
 
             elif scaling_source == 'individual_set_fit':
                 self.scaler.fit(data_x_np)
+                #如果train和val的数据分布不相似,所以用val_set自己来scale
             else:
                 raise RuntimeError(
                         'Invalid scaling source')
@@ -227,10 +232,10 @@ class HLTDataset(Dataset):
         if np.any(np.isnan(self.data_x)):
             raise RuntimeError(f'NaN in transformed {mode} data')
 
-        if self.inverse:
-            self.data_y = data_x_np
+        if self.inverse:#inverse是用来决定预测时,用标准化scale数据还是原始数据
+            self.data_y = data_x_np #用原始数据
         else:
-            self.data_y = self.data_x
+            self.data_y = self.data_x #用scale后的数据
 
         timestamps = pd.DataFrame(data_x_pd.index,
                                         columns=['date'])
@@ -265,7 +270,7 @@ class HLTDataset(Dataset):
         return index
 
 
-    def __getitem__(self, index):
+    def __getitem__(self, index): #
         s_begin = index
         s_end = s_begin + self.seq_len
         r_begin = s_end - self.label_len 
@@ -278,8 +283,8 @@ class HLTDataset(Dataset):
                                     self.data_y[r_begin + self.label_len:r_end]], 0)
         else:
             seq_y = self.data_y[r_begin:r_end]
-        seq_x_mark = self.data_stamp[s_begin:s_end]
-        seq_y_mark = self.data_stamp[r_begin:r_end]
+        seq_x_mark = self.data_stamp[s_begin:s_end] #是原始序列seq_x对应的时间标记time_encodings
+        seq_y_mark = self.data_stamp[r_begin:r_end] #是目标序列seq_y对应的时间标记time_encodings
 
         if self.mode != 'labeled_train':
             return seq_x,\
@@ -319,3 +324,4 @@ class HLTDataset(Dataset):
     def pickle_scaler(self,
                         filename: str) -> None:
         pickle.dump(self.scaler, open(filename, 'wb'))
+        #pickle是用二进制存scaler标准化参数,避免重复计算
