@@ -318,7 +318,8 @@ class HLTDataTimeseriesAugmentor():
         # original data
 
         for count in range(len(index_zeros)):
-            jitter = self.rng.normal(scale=stdev_index_original.delta)
+            #jitter = self.rng.normal(scale=stdev_index_original.delta)
+            jitter = self.rng.normal(scale=stdev_index_original.value)
             index_zeros[count] += pd.Timedelta(jitter,
                                                 unit='ns')
 
@@ -360,7 +361,8 @@ class HLTDataTimeseriesAugmentor():
         # original data
 
         for count in range(len(index_zeros)):
-            jitter = self.rng.normal(scale=stdev_index_original.delta)
+            #jitter = self.rng.normal(scale=stdev_index_original.delta)
+            jitter = self.rng.normal(scale=stdev_index_original.value)
             index_zeros[count] += pd.Timedelta(jitter,
                                                 unit='ns')
 

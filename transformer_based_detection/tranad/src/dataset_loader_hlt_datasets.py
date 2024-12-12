@@ -12,6 +12,7 @@ from .data_augmentation import HLTDataTimeseriesAugmentor
 import warnings
 warnings.filterwarnings('ignore')
 
+#dataset_path = '/home/kstehle/Documents/phd/strada/datasets/hlt/'
 dataset_path = '/home/kstehle/Documents/phd/strada/datasets/hlt/'
 # dataset_path = '/eos/user/k/kstehle/atlas-hlt-datasets/'
 
