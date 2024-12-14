@@ -1,5 +1,5 @@
 # DeepHydra Merlin Setup Guide
-This guide provides step-by-step instructions for setting up and running the `Merlin` environment in the `DeepHydra` project. Follow the steps carefully to ensure proper configuration and execution.
+This guide provides step-by-step instructions for setting up and running the `Merlin` environment in the `DeepHydra` project.
 ---
 ## **1. Replace `merlin_conda_env.txt`**
 ### Replace the Intel channel packages in the `merlin_conda_env.txt` file with equivalent packages from public channels. Convert the dependencies into a `.yml` file (e.g., `merlin_conda_env.yml`).
@@ -10,7 +10,7 @@ conda env create -f /path/to/merlin_conda_env.yml --name merlin_env
 ```
 ### Run above command to create the Conda environment
 ---
-## **3. Verify the Environment **
+## **3. Verify the Environment**
 ```bash line start
 conda env list
 ```
@@ -36,9 +36,9 @@ chmod +x ./run_merlin.s
 ### Make the run_merlin.sh script executable
 ---
 
-## **7. Download Merlin Library **
-### Refer to the instructions in the Py-Merlin GitLab repository: https://gitlab.com/dlr-dw/py-merlin  for the Standalone part.
----
+## **7. Download Merlin Library**
+### Refer to the instructions in the Py-Merlin GitLab repository: https://gitlab.com/dlr-dw/py-merlin  for the Standalone part. Build and install this package inside the Merlin environment. 
+
 ## **8.Return to the Parent Directory**
 ```bash line start
 cd ..
@@ -50,7 +50,7 @@ cd ..
 ---
 ## **10.Fixed the typo in run_merlin.sh**
 ### change to " python3 merlin_hlt_datasets.py " instead of python3 run_merlin_hlt_datasets.py 
-change to " python3 merlin_hlt_datasets_reduced.py" instead of python3 run_merlin_hlt_datasets_reduced.py
+### change to " python3 merlin_hlt_datasets_reduced.py" instead of python3 run_merlin_hlt_datasets_reduced.py
 ---
 ## **11.Fixed the complainted**
 ### Got the complained about the pylikwid("Like I Knew What I'm Doing"), so I comment it out all(comment out inside the function  ofget_merlin_flops at line 244) since it is used for analyze CPU performance, memory usage, and optimize code for high-performance computing.
