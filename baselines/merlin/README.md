@@ -2,13 +2,13 @@
 This guide provides step-by-step instructions for setting up and running the `Merlin` environment in the `DeepHydra` project. Follow the steps carefully to ensure proper configuration and execution.
 ---
 ## **1. Replace `merlin_conda_env.txt`**
-Replace the Intel channel packages in the `merlin_conda_env.txt` file with equivalent packages from public channels. Convert the dependencies into a `.yml` file (e.g., `merlin_conda_env.yml`).
+### Replace the Intel channel packages in the `merlin_conda_env.txt` file with equivalent packages from public channels. Convert the dependencies into a `.yml` file (e.g., `merlin_conda_env.yml`).
 ---
 ## **2. Create the Conda Environment**
 ```bash line start
 conda env create -f /path/to/merlin_conda_env.yml --name merlin_env
 ```
-Run above command to create the Conda environment
+###Run above command to create the Conda environment
 ---
 ## **3. Verify the Environment **
 ```bash line start
