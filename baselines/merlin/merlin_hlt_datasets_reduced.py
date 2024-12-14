@@ -13,7 +13,16 @@ from sklearn.metrics import roc_auc_score,\
 from tqdm import trange
 
 from merlin import merlin
-import pylikwid
+#import pylikwid
+import os
+import sys
+
+script_name = os.path.basename(__file__) #File itself name
+# Function to log the input paths
+def log_input_paths(dataset_path, labels_path):
+    print(f"Script Name: {script_name}")
+    print(f"Input Dataset Path: {dataset_path}")
+    print(f"Input Labels Path: {labels_path}")
 
 
 def save_numpy_array(array: np.array,
@@ -242,20 +251,20 @@ def get_merlin_flops(data: np.ndarray,
     flops_all = []
 
     for channel in trange(columns):
-        pylikwid.markerinit()
-        pylikwid.markerthreadinit()
-        pylikwid.markerstartregion("MERLIN")
+        #pylikwid.markerinit()
+        #pylikwid.markerthreadinit()
+        #pylikwid.markerstartregion("MERLIN")
 
         merlin(data[:, channel], l_min, l_max,
                         sanitize=near_constant_fix)
         
-        pylikwid.markerstopregion("MERLIN")
+        #pylikwid.markerstopregion("MERLIN")
 
-        _, eventlist, _, _ = pylikwid.markergetregion("MERLIN")
+        #_, eventlist, _, _ = pylikwid.markergetregion("MERLIN")
 
-        flops_all.append(eventlist[4])
+        #flops_all.append(eventlist[4])
         
-        pylikwid.markerclose()
+        #pylikwid.markerclose()
 
         for channel, flops in enumerate(flops_all):
             print(f'FLOPs channel {channel}: {flops}')
@@ -413,18 +422,21 @@ def get_preds_best_threshold(data: np.ndarray,
     pred_reduced[:, included_indices] =\
                     pred[:, included_indices]
 
-    save_numpy_array(pred_reduced, '../../evaluation/reduced_detection_hlt_dcm_2018/predictions/merlin.npy')
-
+    #save_numpy_array(pred_reduced, '../../evaluation/reduced_detection_hlt_dcm_2018/predictions/merlin.npy')
+    output_path = '/lcrc/project/AIDQ/JJ/DiHydra_jj/evaluation/reduced_hlt_test_set_2023/predictions/merlin.npy'
+    output_dir = os.path.dirname(output_path)
+    os.makedirs(output_dir, exist_ok=True) # Create intermediate directories if they don't exist
+    save_numpy_array(pred_reduced, output_path)
 
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='MERLIN HLT Test')
 
     parser.add_argument('--dataset', type=str, default=\
-                            '../../datasets/hlt/reduced_hlt_dcm_test_set_2018_x.h5')
+                            '/lcrc/group/ATLAS/users/jhoya/DAQ/atlas-hlt-datasets/reduced_hlt_test_set_2023_x.h5')
     
     parser.add_argument('--labels', type=str, default=\
-                            '../../datasets/hlt/reduced_hlt_dcm_test_set_2018_y.h5')
+                            '/lcrc/group/ATLAS/users/jhoya/DAQ/atlas-hlt-datasets/reduced_hlt_test_set_2023_y.h5')
 
     parser.add_argument('--l-min', type=int, default=8)
     parser.add_argument('--l-max', type=int, default=96)
@@ -433,6 +445,8 @@ if __name__ == '__main__':
     parser.add_argument('--no-near-constant-fix', action='store_true', default=False)
   
     args = parser.parse_args()
+
+    log_input_paths(args.dataset, args.labels) # Log input paths
 
     hlt_data_pd = pd.read_hdf(args.dataset)
     hlt_data_pd.fillna(0, inplace=True)

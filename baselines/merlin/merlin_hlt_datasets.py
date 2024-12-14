@@ -14,7 +14,17 @@ from tqdm import trange
 
 from merlin import merlin
 
-import pylikwid
+#import pylikwid
+import os
+import sys
+
+script_name = os.path.basename(__file__) #File itself name
+# Function to log the input paths
+def log_input_paths(dataset_path, labels_path):
+    print(f"Script Name: {script_name}")
+    print(f"Input Dataset Path: {dataset_path}")
+    print(f"Input Labels Path: {labels_path}")
+
 
 run_endpoints = [1404,
                     8928,
@@ -233,11 +243,16 @@ def get_merlin_param_counts(data: np.ndarray,
                                             l_min, l_max,
                                             sanitize=near_constant_fix,
                                             get_params=True)
+        _, _, _  = merlin(data[:, channel],
+                                            l_min, l_max,
+                                            sanitize=near_constant_fix,
+                                            get_params=True)
+        
 
-        parameters_all.append(parameters)
+        #parameters_all.append(parameters)
 
-    print(f'Size MERLIN sequential: {np.max(parameters_all)}')
-    print(f'Size MERLIN parallel: {np.sum(parameters_all)}')
+    #print(f'Size MERLIN sequential: {np.max(parameters_all)}')
+    #print(f'Size MERLIN parallel: {np.sum(parameters_all)}')
 
 
 def get_merlin_flops(data: np.ndarray,
@@ -250,20 +265,20 @@ def get_merlin_flops(data: np.ndarray,
     flops_all = []
 
     for channel in trange(columns):
-        pylikwid.markerinit()
-        pylikwid.markerthreadinit()
-        pylikwid.markerstartregion("MERLIN")
+        #pylikwid.markerinit()
+        #pylikwid.markerthreadinit()
+        #pylikwid.markerstartregion("MERLIN")
 
         merlin(data[:, channel], l_min, l_max,
                         sanitize=near_constant_fix)
         
-        pylikwid.markerstopregion("MERLIN")
+        #pylikwid.markerstopregion("MERLIN")
 
-        _, eventlist, _, _ = pylikwid.markergetregion("MERLIN")
+        #_, eventlist, _, _ = pylikwid.markergetregion("MERLIN")
 
-        flops_all.append(eventlist[4])
+        #flops_all.append(eventlist[4])
         
-        pylikwid.markerclose()
+        #pylikwid.markerclose()
 
         for channel, flops in enumerate(flops_all):
             print(f'FLOPs channel {channel}: {flops}')
@@ -283,22 +298,26 @@ def run_merlin(data: np.ndarray,
     distances_all = []
     lengths_all = []
 
-    parameters_all = []
+    #parameters_all = []
 
     for channel in trange(columns):
-        discords, distances, lengths, parameters =\
+        #discords, distances, lengths, parameters =\
+                                #merlin(data[:, channel],
+                                            #l_min, l_max,
+                                            #sanitize=near_constant_fix)
+        discords, distances, lengths =\
                                 merlin(data[:, channel],
                                             l_min, l_max,
                                             sanitize=near_constant_fix)
 
-        parameters_all.append(parameters)
+        #parameters_all.append(parameters)
 
         # discords_all.append(discords)
         # distances_all.append(distances)
         # lengths_all.append(lengths)
 
-    print(f'Size MERLIN sequential: {np.max(parameters_all)}')
-    print(f'Size MERLIN parallel: {np.sum(parameters_all)}')
+    #print(f'Size MERLIN sequential: {np.max(parameters_all)}')
+    #print(f'Size MERLIN parallel: {np.sum(parameters_all)}')
 
     exit()
 
@@ -417,8 +436,14 @@ def get_preds_best_threshold(data: np.ndarray,
     pred_reduced = np.zeros_like(pred)
     pred_reduced[:, included_indices] =\
                     pred[:, included_indices]
+     
+    #save_numpy_array(pred_reduced, '../../evaluation/combined_detection_hlt_dcm_2018/predictions/merlin.npy')
 
-    save_numpy_array(pred_reduced, '../../evaluation/combined_detection_hlt_dcm_2018/predictions/merlin.npy')
+    output_path = '/lcrc/project/AIDQ/JJ/DiHydra_jj/evaluation/unreduced_hlt_test_set_2023/predictions/merlin.npy'
+    output_dir = os.path.dirname(output_path)
+    os.makedirs(output_dir, exist_ok=True) # Create intermediate directories if they don't exist
+    save_numpy_array(pred_reduced, output_path)
+
 
 
 if __name__ == '__main__':
@@ -426,9 +451,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='MERLIN HLT Test')
 
     parser.add_argument('--dataset', type=str, default=\
-                            '../../datasets/hlt/unreduced_hlt_dcm_test_set_2018_x.h5')
+                            '/lcrc/group/ATLAS/users/jhoya/DAQ/atlas-hlt-datasets/unreduced_hlt_test_set_2023_x.h5')
     parser.add_argument('--labels', type=str, default=\
-                            '../../datasets/hlt/unreduced_hlt_dcm_test_set_2018_y.h5')
+                            '/lcrc/group/ATLAS/users/jhoya/DAQ/atlas-hlt-datasets/unreduced_hlt_test_set_2023_y.h5')
                                 
     parser.add_argument('--l-min', type=int, default=8)
     parser.add_argument('--l-max', type=int, default=96)
@@ -438,14 +463,18 @@ if __name__ == '__main__':
   
     args = parser.parse_args()
 
+    log_input_paths(args.dataset, args.labels)  # Log input paths
+    
     hlt_data_pd = pd.read_hdf(args.dataset)
 
     # This removes a few actual anomalous dropouts in the last run.
     # These are very easy to detect, so we remove them to not
     # overshadow the the more subtle injected anomalies
 
-    hlt_data_pd.iloc[run_endpoints[-2]:-1,
-                            channels_to_delete_last_run] = 0
+    #hlt_data_pd.iloc[run_endpoints[-2]:-1,channels_to_delete_last_run] = 0
+    valid_channels = [ch for ch in channels_to_delete_last_run if ch < hlt_data_pd.shape[1]]
+    hlt_data_pd.iloc[run_endpoints[-2]:-1, valid_channels] = 0
+
 
     hlt_data_pd.fillna(0, inplace=True)
 
