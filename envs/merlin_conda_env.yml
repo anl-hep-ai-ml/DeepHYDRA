@@ -203,4 +203,5 @@ dependencies:
       - threadpoolctl==3.1.0
       - tomli==2.0.1
       - tqdm==4.65.0
-prefix: /home/jijun.chen/.conda/envs/merlin_env
+
+#prefix: /home/jijun.chen/.conda/envs/merlin_env   #used to install your merlin_env in this defined path 
