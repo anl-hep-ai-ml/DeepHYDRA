@@ -17,14 +17,6 @@ from merlin import merlin
 import os
 import sys
 
-script_name = os.path.basename(__file__) #File itself name
-# Function to log the input paths
-def log_input_paths(dataset_path, labels_path):
-    print(f"Script Name: {script_name}")
-    print(f"Input Dataset Path: {dataset_path}")
-    print(f"Input Labels Path: {labels_path}")
-
-
 def save_numpy_array(array: np.array,
                         filename: str):    
     with open(filename, 'wb') as output_file:
@@ -446,7 +438,6 @@ if __name__ == '__main__':
   
     args = parser.parse_args()
 
-    log_input_paths(args.dataset, args.labels) # Log input paths
 
     hlt_data_pd = pd.read_hdf(args.dataset)
     hlt_data_pd.fillna(0, inplace=True)

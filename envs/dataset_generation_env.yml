@@ -1,0 +1,36 @@
+name: dataset_generation_env
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.9
+  - numpy=1.21.4
+  - pandas=1.4.1
+  - python-dateutil=2.8.2
+  - pytz=2023.3
+  - six=1.16.0
+  - tqdm=4.64.0
+  - mkl
+  - mkl-service
+  - mkl_fft
+  - mkl_random
+  - mkl_umath
+  - daal4py
+  - scikit-learn
+  - scikit-learn-intelex
+  - matplotlib
+  - numexpr
+  - scipy
+  - pytables
+  - seaborn
+  - hdf5
+  - pyyaml
+  - joblib
+  - mock
+  - pyeditline
+  - pyparsing
+  - threadpoolctl
+  - wheel
+  - packaging
+  - setuptools
+  - pip
