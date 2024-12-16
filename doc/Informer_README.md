@@ -24,14 +24,13 @@ remote_read_timeout_secs: 120.0
                           
 ## **3. Create the Conda Environment**
 ```bash line start
-conda env create -f /path/to/informer_conda_env.yml --name informer_conda_env
+conda env create -f /path/to/DeepHydra/envs/informer_conda_env.yml --name informer_conda_env
 ```
-### Run above command to create the informer conda environment
-
-**Note:**  if came across the problem of "CondaHTTPError: HTTP 000 CONNECTION FAILED for url <https://repo.anaconda.com/pkgs/main/linux-64/cudatoolkit-11.3.1-h2bc3f7f_2.conda> Elapsed: - An HTTP error occurred when trying to retrieve this URL. HTTP errors are often intermittent, and a simple retry will get you on your way. CondaHTTPError: HTTP 000 CONNECTION FAILED for url <https://repo.anaconda.com/pkgs/main/linux-64/cudatoolkit-11.3.1-h2bc3f7f_2.conda> Elapsed: - An HTTP error occurred when trying to retrieve this URL. HTTP errors are often intermittent, and a simple retry will get you on your way."  This error typically indicates a network-related issue. Common causes include intermittent connectivity problems, firewalls blocking access, or SSL certificate verification issues. Just try the following and keep your fingers crossed:
+###  **Note:**  Running above line could have the problem like "CondaHTTPError: HTTP 000 CONNECTION FAILED for url <https://repo.anaconda.com/pkgs/main/linux-64/cudatoolkit-11.3.1-h2bc3f7f_2.conda> Elapsed: - An HTTP error occurred when trying to retrieve this URL. HTTP errors are often intermittent, and a simple retry will get you on your way. CondaHTTPError: HTTP 000 CONNECTION FAILED for url <https://repo.anaconda.com/pkgs/main/linux-64/cudatoolkit-11.3.1-h2bc3f7f_2.conda> Elapsed: - An HTTP error occurred when trying to retrieve this URL. HTTP errors are often intermittent, and a simple retry will get you on your way."  
+### This error typically indicates a network-related issue. Common causes include intermittent connectivity problems, firewalls blocking access, or SSL certificate verification issues. Just try the following code (might need to do multiple times):
 ```bash line start
 conda clean --all
-conda env create -f ./informer_conda_env.yml --name informer_conda_env
+conda env create -f /path/to/DeepHydra/envs/informer_conda_env.yml --name informer_conda_env
 ```
 ---
 ## **4. Activate the created environment:**
@@ -44,14 +43,14 @@ conda activate informer_conda_env
 ---
 ## **5. Download the python requirements**
 ```bash line start
-pip install -r ./informers_python_requirements.txt
+pip install -r  /path/to/DeepHydra/envs/informers_python_requirements.txt
 ```
 
 
 ## **6. Navigate to the DeepHydra informer working Directory:**
 
 ```bash line start
-cd DeepHydra/transformer_based_detection/informers
+cd /path/to/DeepHydra/transformer_based_detection/informers
 ```
 ### Change to the informer training directory
 ---
