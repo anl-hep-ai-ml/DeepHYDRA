@@ -20,10 +20,10 @@ import sys
 
 script_name = os.path.basename(__file__) #File itself name
 # Function to log the input paths
-def log_input_paths(dataset_path, labels_path):
-    print(f"Script Name: {script_name}")
-    print(f"Input Dataset Path: {dataset_path}")
-    print(f"Input Labels Path: {labels_path}")
+# def log_input_paths(dataset_path, labels_path):
+#     print(f"Script Name: {script_name}")
+#     print(f"Input Dataset Path: {dataset_path}")
+#     print(f"Input Labels Path: {labels_path}")
 
 
 run_endpoints = [1404,
@@ -463,7 +463,7 @@ if __name__ == '__main__':
   
     args = parser.parse_args()
 
-    log_input_paths(args.dataset, args.labels)  # Log input paths
+    #log_input_paths(args.dataset, args.labels)  # Log input paths
     
     hlt_data_pd = pd.read_hdf(args.dataset)
 

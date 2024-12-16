@@ -17,7 +17,7 @@ conda env list
 ---
 ## **4. Activate the created environment:**
 ```bash line start
-conda activate merline_env
+conda activate merlin_env
 ```
 ### Activate the created env
 ---

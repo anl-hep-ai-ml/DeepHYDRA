@@ -1,0 +1,3 @@
+Script Name: merlin_hlt_datasets_reduced.py
+Input Dataset Path: /lcrc/group/ATLAS/users/jhoya/DAQ/atlas-hlt-datasets/reduced_hlt_test_set_2023_x.h5
+Input Labels Path: /lcrc/group/ATLAS/users/jhoya/DAQ/atlas-hlt-datasets/reduced_hlt_test_set_2023_y.h5
