@@ -2,7 +2,7 @@
 ---
 ## 1. Replace Packages in `informers_conda_env.txt`
 ### Replace all packages sourced from the Intel channel in `informers_conda_env.txt` with equivalent packages from public channels (e.g., `defaults`, `conda-forge`, `pytorch`). Once done, convert `informers_conda_env.txt` into `informers_conda_env.yml`.
-**Note:** Although ideally we could merge the packages from `informers_python_requirements.txt` into a single `informer_env.yml` file, keeping them separate helps avoid extremely long environment build times.
+#### **Note:** Although ideally we could merge the packages from `informers_python_requirements.txt` into a single `informer_env.yml` file, keeping them separate helps avoid extremely long environment build times.
 ---
 
 ## 2. Update Your Conda Configuration
