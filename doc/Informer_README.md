@@ -1,7 +1,7 @@
 # DeepHydra Informer Setup Guide
 ---
 ## 1. Replace Packages in `informers_conda_env.txt`
-#### Replace all packages sourced from the Intel channel in `informers_conda_env.txt` with equivalent packages from public channels (e.g., `defaults`, `conda-forge`, `pytorch`). Once done, convert `informers_conda_env.txt` into `informers_conda_env.yml`.
+#### Replace all packages sourced from the Intel channel in `informers_conda_env.txt` with equivalent packages from public channels (e.g., `defaults`, `conda-forge`, `pytorch`). Once done, convert `informers_conda_env.txt` into `informers_conda_env.yml`. 
 #### **Note:** Although ideally we could merge the packages from `informers_python_requirements.txt` into a single `informer_env.yml` file, keeping them separate helps avoid extremely long environment build times.
 ---
 
@@ -18,8 +18,8 @@ channels:
 show_channel_urls: true
 ssl_verify: false
 restore_free_channel: false
-remote_connect_timeout_secs: 60.0
-remote_read_timeout_secs: 120.0
+remote_connect_timeout_secs: 60.0 #without this line, conda default value for this is 9 sec
+remote_read_timeout_secs: 120.0 #without this line, conda default value for this is 60 sec
 ```
                           
 ## **3. Create the Conda Environment**
