@@ -13,7 +13,7 @@ dependencies:
   - libgfortran4
   - libstdcxx-ng
   - mpi
-  - pytorch-mutex=*cuda
+  #- pytorch-mutex=*cuda
   - tzdata
   - libgfortran-ng
   - libgomp
@@ -84,7 +84,7 @@ dependencies:
   - mock
   - munkres
   - networkx
-  - pillow=9.5.0
+  - pillow
   - protobuf
   - pyasn1
   - pycparser
