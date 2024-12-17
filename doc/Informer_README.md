@@ -18,7 +18,7 @@ channels:
 show_channel_urls: true
 ssl_verify: false
 restore_free_channel: false
-remote_connect_timeout_secs: 60.0 #without this line, conda default value for this is 9 sec
+remote_connect_timeout_secs: 60.0 #without this line, conda default value for this is 10 sec
 remote_read_timeout_secs: 120.0 #without this line, conda default value for this is 60 sec
 ```
                           
