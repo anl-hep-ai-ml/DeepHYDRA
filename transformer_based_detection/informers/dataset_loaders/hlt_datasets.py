@@ -14,8 +14,8 @@ from utils.timefeatures import time_features
 import warnings
 warnings.filterwarnings('ignore')
 
-#dataset_path_local = '/home/kstehle/Documents/phd/strada/datasets/hlt/'
-dataset_path_local = '/eos/user/k/kstehle/atlas-hlt-datasets/'
+
+dataset_path_local = '/lcrc/group/ATLAS/users/jhoya/DAQ/atlas-hlt-datasets/'
 
 class HLTDataset(Dataset):
     def __init__(self,
