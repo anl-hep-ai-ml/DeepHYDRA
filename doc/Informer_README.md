@@ -27,7 +27,7 @@ remote_read_timeout_secs: 120.0
 conda env create -f /path/to/DeepHydra/envs/informer_conda_env.yml --name informer_conda_env
 ```
 #### Running above line could have the problem like "CondaHTTPError: HTTP 000 CONNECTION FAILED for url <https://repo.anaconda.com/pkgs/main/linux-64/cudatoolkit-11.3.1-h2bc3f7f_2.conda> Elapsed: - An HTTP error occurred when trying to retrieve this URL. HTTP errors are often intermittent, and a simple retry will get you on your way. CondaHTTPError: HTTP 000 CONNECTION FAILED for url <https://repo.anaconda.com/pkgs/main/linux-64/cudatoolkit-11.3.1-h2bc3f7f_2.conda> Elapsed: - An HTTP error occurred when trying to retrieve this URL. HTTP errors are often intermittent, and a simple retry will get you on your way."  
-### This error typically indicates a network-related issue. Common causes include intermittent connectivity problems, firewalls blocking access, or SSL certificate verification issues. Just try the following code (might need to do multiple times):
+#### This error typically indicates a network-related issue. Common causes include intermittent connectivity problems, firewalls blocking access, or SSL certificate verification issues. Just try the following code (might need to do multiple times):
 ```bash line start
 conda clean --all
 conda env create -f /path/to/DeepHydra/envs/informer_conda_env.yml --name informer_conda_env
@@ -39,54 +39,17 @@ conda activate informer_conda_env
 ```
 ### Activate the created env
 ---
-
----
 ## **5. Download the python requirements**
 ```bash line start
 pip install -r  /path/to/DeepHydra/envs/informers_python_requirements.txt
 ```
-
-
-## **6. Navigate to the DeepHydra informer working Directory:**
-
+## **6. Navigate to the DeepHydra informer working notebook:**
 ```bash line start
-cd /path/to/DeepHydra/transformer_based_detection/informers
+cd DeepHydra/analysis_scripts
 ```
-### Change to the informer training directory
 ---
-## **6.**
+## **7.Open jupyter notebook **
 ```bash line start
+jupyter notebook 
 ```
-###
----
-## **7.**
-### 
----
-## **8.**
-```bash line start
-cd ..
-```
-### 
----
-## **9. **
-### 
----
-## **10.**
-### 
----
-## **11.**
-### 
---- 
-## **12.**
-### 
----
-## **13.**
-### 
----
-## **14. Run informer**
-```bash line start
-```
-### 
----
-## **15.Estimated Runtime**
-### 
+### Find the Strada_train.ipynb and edit it to run informer!
